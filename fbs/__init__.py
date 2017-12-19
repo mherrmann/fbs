@@ -47,7 +47,7 @@ def run():
 @command
 def freeze():
 	"""
-	Compile your app to target/app
+	Compile your application to target/App.app
 	"""
 	# Import respective functions late to avoid circular import
 	# fbs <-> fbs.freeze.X:

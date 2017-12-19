@@ -23,8 +23,8 @@ def freeze_mac():
 	_remove_unwanted_pyinstaller_files()
 	_fix_sparkle_delta_updates()
 	generate_resources(
-		dest_dir=path('target/app'),
-		dest_dir_for_base=path('target/app/Contents/Resources')
+		dest_dir=path('target/App.app'),
+		dest_dir_for_base=path('target/App.app/Contents/Resources')
 	)
 
 def _generate_iconset():
@@ -36,11 +36,11 @@ def _generate_iconset():
 def _remove_unwanted_pyinstaller_files():
 	for unwanted in ('include', 'lib', 'lib2to3'):
 		try:
-			unlink(path('target/app/Contents/MacOS/' + unwanted))
+			unlink(path('target/App.app/Contents/MacOS/' + unwanted))
 		except FileNotFoundError:
 			pass
 		try:
-			rmtree(path('target/app/Contents/Resources/' + unwanted))
+			rmtree(path('target/App.app/Contents/Resources/' + unwanted))
 		except FileNotFoundError:
 			pass
 
@@ -51,10 +51,10 @@ def _fix_sparkle_delta_updates():
 	# Fortunately, everything still works if we then create a symlink
 	# MacOS/base_library.zip -> ../Resources/base_library.zip.
 	rename(
-		path('target/app/Contents/MacOS/base_library.zip'),
-		path('target/app/Contents/Resources/base_library.zip')
+		path('target/App.app/Contents/MacOS/base_library.zip'),
+		path('target/App.app/Contents/Resources/base_library.zip')
 	)
 	symlink(
 		'../Resources/base_library.zip',
-		path('target/app/Contents/MacOS/base_library.zip')
+		path('target/App.app/Contents/MacOS/base_library.zip')
 	)
