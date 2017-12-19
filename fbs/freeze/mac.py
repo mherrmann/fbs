@@ -10,11 +10,16 @@ def freeze_mac():
 	if not exists(path('target/Icon.icns')):
 		_generate_iconset()
 		run(['iconutil', '-c', 'icns', path('target/Icon.iconset')], check=True)
-	run_pyinstaller(extra_args=[
+	pyinstaller_args = [
 		'--windowed',
-		'--osx-bundle-identifier', SETTINGS['mac_bundle_identifier'],
 		'--icon', path('target/Icon.icns')
-	])
+	]
+	bundle_identifier = SETTINGS.get('mac_bundle_identifier', '')
+	if bundle_identifier:
+		pyinstaller_args.extend([
+			'--osx-bundle-identifier', bundle_identifier
+		])
+	run_pyinstaller(extra_args=pyinstaller_args)
 	_remove_unwanted_pyinstaller_files()
 	_fix_sparkle_delta_updates()
 	generate_resources(
