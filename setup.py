@@ -14,7 +14,7 @@ setup(
 	long_description=
 		description + '\n\nHome page: https://github.com/mherrmann/fbs',
 	author='Michael Herrmann',
-	author_email='[my first name]@[my last name].io',
+	author_email='michael+removethisifyouarehuman@herrmann.io',
 	url='https://github.com/mherrmann/fbs',
 	packages=find_packages(),
 	package_data={'fbs': ['build.json.default']},
