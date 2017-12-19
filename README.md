@@ -4,8 +4,8 @@ Easily create cross-platform desktop apps based on PyQt.
 ## Motivation
 Cross-platform desktop applications require a lot more work than other apps:
 
- * Creating standalone executables / installers for your app is not trivial.
- * Code signing is a hassle but necessary to avoid OS warnings "app untrusted".
+ * Creating standalone executables / installers for an app is not trivial.
+ * Code signing is a hassle but necessary to avoid OS warnings "untrusted app".
  * Auto-updating is a pain.
 
 What makes the situation even worse is that most solutions to the above 
