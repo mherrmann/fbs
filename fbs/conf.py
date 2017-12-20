@@ -23,7 +23,7 @@ def path(path_str):
 	try:
 		project_dir = SETTINGS['project_dir']
 	except KeyError:
-		error_message = "Setting 'project_dir' is not defined. " \
-						"Did you call fbs.init(...)?"
+		error_message = "Cannot call path(...) until fbs.init(...) has been " \
+						"called."
 		raise RuntimeError(error_message) from None
 	return normpath(join(project_dir, *path_str.split('/')))
