@@ -2,7 +2,8 @@ from argparse import ArgumentParser
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
 from fbs.conf import path, SETTINGS, load_settings
 from os import listdir, remove, unlink, getcwd
-from os.path import join, isfile, isdir, islink, abspath, basename, splitext
+from os.path import join, isfile, isdir, islink, abspath, basename, splitext, \
+	abspath
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
@@ -10,10 +11,12 @@ import os
 import subprocess
 import sys
 
-def main(project_dir=None):
+def main(project_dir=None, settings_path=None):
 	if project_dir is None:
 		project_dir = getcwd()
-	init(abspath(project_dir))
+	if settings_path is None:
+		settings_path = join(project_dir, 'build.json')
+	init(project_dir, settings_path)
 	parser = _get_cmdline_parser()
 	args = parser.parse_args()
 	if hasattr(args, 'cmd'):
@@ -21,9 +24,9 @@ def main(project_dir=None):
 	else:
 		parser.print_help()
 
-def init(project_dir):
-	SETTINGS['project_dir'] = project_dir
-	SETTINGS.update(load_settings(join(project_dir, 'build.json')))
+def init(project_dir, settings_path):
+	SETTINGS['project_dir'] = abspath(project_dir)
+	SETTINGS.update(load_settings(settings_path))
 
 def command(f):
 	_COMMANDS[f.__name__] = f
@@ -47,7 +50,7 @@ def run():
 @command
 def freeze():
 	"""
-	Compile your application to target/App.app
+	Compile your application to a standalone executable
 	"""
 	# Import respective functions late to avoid circular import
 	# fbs <-> fbs.freeze.X:

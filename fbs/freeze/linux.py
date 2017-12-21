@@ -7,8 +7,8 @@ from shutil import copy
 
 def freeze_linux():
 	run_pyinstaller()
-	generate_resources(dest_dir=path('target/App.app'))
-	copy(path('src/main/icons/Icon.ico'), path('target/App.app'))
+	generate_resources(dest_dir=path('${freeze_dir}'))
+	copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
 	# For some reason, PyInstaller packages libstdc++.so.6 even though it is
 	# available on most Linux distributions. If we include it and run our app on
 	# a different Ubuntu version, then Popen(...) calls fail with errors
@@ -21,5 +21,5 @@ def freeze_linux():
 
 def remove_shared_libraries(*filename_patterns):
 	for pattern in filename_patterns:
-		for file_path in glob(path('target/App.app/' + pattern)):
+		for file_path in glob(path('${freeze_dir}/' + pattern)):
 			remove(file_path)

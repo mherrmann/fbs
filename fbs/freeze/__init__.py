@@ -20,4 +20,4 @@ def run_pyinstaller(extra_args=None):
 	]
 	run(cmdline, check=True)
 	output_dir = path('target/' + app_name + ('.app' if is_mac() else ''))
-	rename(output_dir, path('target/App.app'))
+	rename(output_dir, path('${freeze_dir}'))

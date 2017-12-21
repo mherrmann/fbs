@@ -19,10 +19,10 @@ def freeze_windows(extra_pyinstaller_args=None):
 	# https://github.com/pyinstaller/pyinstaller/issues/2526
 	# Restore the uncorrupted original:
 	for dll_name in ('python3.dll', 'python35.dll'):
-		remove(path('target/App.app/' + dll_name))
-		copy(join(dirname(sys.executable), dll_name), path('target/App.app'))
-	generate_resources(dest_dir=path('target/App.app'))
-	copy(path('src/main/icons/Icon.ico'), path('target/App.app'))
+		remove(path('${freeze_dir}/' + dll_name))
+		copy(join(dirname(sys.executable), dll_name), path('${freeze_dir}'))
+	generate_resources(dest_dir=path('${freeze_dir}'))
+	copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
 	_add_missing_dlls()
 
 def _add_missing_dlls():
@@ -31,4 +31,4 @@ def _add_missing_dlls():
 		'msvcp140.dll', 'concrt140.dll', 'vccorlib140.dll',
 		'api-ms-win-crt-multibyte-l1-1-0.dll'
 	):
-		copy(join(r'c:\Windows\System32', dll), path('target/App.app'))
+		copy(join(r'c:\Windows\System32', dll), path('${freeze_dir}'))
