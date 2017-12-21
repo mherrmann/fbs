@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
 	name='fbs',
-	version='0.0.1',
+	version='0.0.2',
 	description=description,
 	long_description=
 		description + '\n\nHome page: https://github.com/mherrmann/fbs',
