@@ -22,7 +22,7 @@ def _load_settings(json_path):
 	result = {}
 	with open(json_path, 'r') as f:
 		result_raw = json.load(f)
-	default_settings = join(dirname(__file__), 'build.json.default')
+	default_settings = join(dirname(__file__), 'build.json')
 	extends = result_raw.pop('extends', [default_settings])
 	for extended in extends:
 		if not isabs(extended):
