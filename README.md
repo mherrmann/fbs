@@ -1,7 +1,8 @@
 ## Motivation
-Cross-platform desktop applications require a lot more work than other apps:
+Cross-platform desktop applications are a lot of work:
 
- * Creating standalone executables / installers for an app is not trivial.
+ * Packaging an app as a standalone executable is not trivial.
+ * Creating installers is tedious.
  * Code signing is a hassle but necessary to avoid OS warnings "untrusted app".
  * Auto-updating is a pain.
 
@@ -10,11 +11,11 @@ problems are platform-specific. So you have to create an installer for Mac, one
 for Windows, etc.
 
 In recent years, [Electron](https://electronjs.org/) has seen a lot of interest
-as a platform for cross-platform desktop apps. The problem is, its performance
-is not good enough for many use cases.
+as a platform for cross-platform desktop apps. The problem is, it is very
+resource intensive and its performance is not good enough for many use cases.
 
 An alternative to Electron is [Qt](https://www.qt.io). It has been around for
-many years and can be much faster than Electron. Qt is written in C++, but
+many more years and can be much faster than Electron. Qt is written in C++, but
 bindings are available for other languages. A popular choice for Python is
 [PyQt](https://riverbankcomputing.com/software/pyqt/intro).
 
