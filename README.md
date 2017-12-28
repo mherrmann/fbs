@@ -1,7 +1,7 @@
 ## Motivation
 Cross-platform desktop applications are a lot of work:
 
- * Packaging an app as a standalone executable is not trivial.
+ * Packaging an app into a standalone executable is not trivial.
  * Creating installers is tedious.
  * Code signing is a hassle but necessary to avoid OS warnings "untrusted app".
  * Auto-updating is a pain.
