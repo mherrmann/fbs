@@ -2,8 +2,7 @@ from argparse import ArgumentParser
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
 from fbs.conf import path, SETTINGS, load_settings
 from os import listdir, remove, unlink, getcwd
-from os.path import join, isfile, isdir, islink, abspath, basename, splitext, \
-	abspath
+from os.path import join, isfile, isdir, islink, abspath, basename, splitext
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
