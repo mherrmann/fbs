@@ -1,0 +1,4 @@
+{
+	"extends": ["base.json"],
+	"freeze_dir": "target/${app_name}.app"
+}

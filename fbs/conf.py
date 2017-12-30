@@ -1,3 +1,4 @@
+from fbs.platform import is_mac
 from os.path import normpath, join, dirname, isabs
 
 import json
@@ -22,7 +23,9 @@ def _load_settings(json_path):
 	result = {}
 	with open(json_path, 'r') as f:
 		result_raw = json.load(f)
-	default_settings = join(dirname(__file__), 'build.json')
+	default_settings_dir = join(dirname(__file__), 'default_settings')
+	default_settings = \
+		join(default_settings_dir, 'mac.json' if is_mac() else 'base.json')
 	extends = result_raw.pop('extends', [default_settings])
 	for extended in extends:
 		if not isabs(extended):
