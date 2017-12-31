@@ -1,5 +1,5 @@
+from fbs import path, SETTINGS
 from fbs.freeze import run_pyinstaller
-from fbs.conf import path, SETTINGS
 from fbs.resources import generate_resources, get_icons
 from os import makedirs, unlink, rename, symlink
 from os.path import exists

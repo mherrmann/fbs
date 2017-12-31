@@ -9,6 +9,8 @@ def main(project_dir=None):
 	if project_dir is None:
 		project_dir = getcwd()
 	fbs.init(project_dir)
+	# Load built-in commands:
+	from fbs import builtin_commands
 	parser = _get_cmdline_parser()
 	args = parser.parse_args()
 	if hasattr(args, 'cmd'):

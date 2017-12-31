@@ -1,4 +1,4 @@
-from fbs.conf import path
+from fbs import path
 from fbs.freeze import run_pyinstaller
 from fbs.resources import generate_resources
 from glob import glob

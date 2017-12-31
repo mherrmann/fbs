@@ -1,5 +1,4 @@
-from fbs import platform
-from fbs.conf import path, SETTINGS
+from fbs import platform, path, SETTINGS
 from glob import glob
 from os import makedirs
 from os.path import exists, dirname, isfile, join, basename, relpath, splitext
