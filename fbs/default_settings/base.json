@@ -1,5 +1,4 @@
 {
-	"extends": [],
 	"freeze_dir": "target/${app_name}",
 	"test_dirs": [
 		"src/unittest/python",
