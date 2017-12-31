@@ -2,7 +2,8 @@ from argparse import ArgumentParser
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
 from fbs.conf import path, SETTINGS, load_settings
 from os import listdir, remove, unlink, getcwd
-from os.path import join, isfile, isdir, islink, abspath, basename, splitext
+from os.path import join, isfile, isdir, islink, abspath, basename, splitext, \
+	dirname, exists
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
@@ -10,12 +11,10 @@ import os
 import subprocess
 import sys
 
-def main(project_dir=None, settings_path=None):
+def main(project_dir=None):
 	if project_dir is None:
 		project_dir = getcwd()
-	if settings_path is None:
-		settings_path = join(project_dir, 'build.json')
-	init(project_dir, settings_path)
+	init(project_dir)
 	parser = _get_cmdline_parser()
 	args = parser.parse_args()
 	if hasattr(args, 'cmd'):
@@ -23,9 +22,18 @@ def main(project_dir=None, settings_path=None):
 	else:
 		parser.print_help()
 
-def init(project_dir, settings_path):
+def init(project_dir):
 	SETTINGS['project_dir'] = abspath(project_dir)
-	SETTINGS.update(load_settings(settings_path))
+	default_settings_dir = join(dirname(__file__), 'default_settings')
+	project_settings_dir = join(project_dir, *'src/build/settings'.split('/'))
+	json_names = ['base.json', platform.name().lower() + '.json']
+	json_paths = [
+		join(dir_path, json_name)
+		for dir_path in (default_settings_dir, project_settings_dir)
+		for json_name in json_names
+	]
+	existing_json_paths = [p for p in json_paths if exists(p)]
+	SETTINGS.update(load_settings(existing_json_paths))
 
 def command(f):
 	_COMMANDS[f.__name__] = f

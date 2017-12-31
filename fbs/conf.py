@@ -1,13 +1,15 @@
-from fbs.platform import is_mac
-from os.path import normpath, join, dirname, isabs
+from os.path import normpath, join, isabs
 
 import json
 import re
 
 SETTINGS = {}
 
-def load_settings(json_path):
-	result = _load_settings(json_path)
+def load_settings(json_paths):
+	result = {}
+	for json_path in json_paths:
+		with open(json_path, 'r') as f:
+			result.update(json.load(f))
 	while True:
 		for key, value in result.items():
 			if isinstance(value, str):
@@ -17,21 +19,6 @@ def load_settings(json_path):
 					break
 		else:
 			break
-	return result
-
-def _load_settings(json_path):
-	result = {}
-	with open(json_path, 'r') as f:
-		result_raw = json.load(f)
-	default_settings_dir = join(dirname(__file__), 'default_settings')
-	default_settings = \
-		join(default_settings_dir, 'mac.json' if is_mac() else 'base.json')
-	extends = result_raw.pop('extends', [default_settings])
-	for extended in extends:
-		if not isabs(extended):
-			extended = join(dirname(json_path), extended)
-		result.update(_load_settings(extended))
-	result.update(result_raw)
 	return result
 
 def path(path_str):

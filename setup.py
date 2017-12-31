@@ -17,7 +17,7 @@ setup(
 	author_email='michael+removethisifyouarehuman@herrmann.io',
 	url='https://github.com/mherrmann/fbs',
 	packages=find_packages(),
-	package_data={'fbs': ['build.json']},
+	package_data={'fbs': ['default_settings']},
 	classifiers=[
 		'Development Status :: 2 - Pre-Alpha',
 		'Intended Audience :: Developers',
