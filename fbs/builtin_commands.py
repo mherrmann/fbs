@@ -1,4 +1,4 @@
-from fbs import command
+from fbs.cmdline import command
 from fbs.conf import path, SETTINGS
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
 from os import listdir, remove, unlink
