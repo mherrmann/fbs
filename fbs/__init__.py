@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 from fbs import platform
-from fbs.conf import path, SETTINGS, load_settings
+from fbs.conf import path, SETTINGS, activate_profile
 from os import getcwd
-from os.path import join, abspath, basename, splitext, dirname, exists
+from os.path import abspath, basename, splitext
 
 import sys
 
@@ -19,16 +19,8 @@ def main(project_dir=None):
 
 def init(project_dir):
 	SETTINGS['project_dir'] = abspath(project_dir)
-	default_settings_dir = join(dirname(__file__), 'default_settings')
-	project_settings_dir = join(project_dir, *'src/build/settings'.split('/'))
-	json_names = ['base.json', platform.name().lower() + '.json']
-	json_paths = [
-		join(dir_path, json_name)
-		for dir_path in (default_settings_dir, project_settings_dir)
-		for json_name in json_names
-	]
-	existing_json_paths = [p for p in json_paths if exists(p)]
-	SETTINGS.update(load_settings(existing_json_paths))
+	activate_profile('base')
+	activate_profile(platform.name().lower())
 	# Load built-in commands:
 	import fbs.builtin_commands
 
