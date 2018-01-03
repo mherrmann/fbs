@@ -19,10 +19,9 @@ def freeze_windows(extra_pyinstaller_args=None):
 	# https://github.com/pyinstaller/pyinstaller/issues/2526
 	# Restore the uncorrupted original:
 	python_dlls = (
-		'python' + str(sys.version_info.major) + '.dll',
-		'python' + str(sys.version_info.major) +
-		str(sys.version_info.minor) + '.dll',
-		)
+		'python%s.dll' % sys.version_info.major,
+		'python%s%s.dll' % (sys.version_info.major, sys.version_info.minor)
+	)
 	for dll_name in python_dlls:
 		remove(path('${freeze_dir}/' + dll_name))
 		copy(join(dirname(sys.executable), dll_name), path('${freeze_dir}'))
