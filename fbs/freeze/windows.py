@@ -2,7 +2,7 @@ from fbs import path
 from fbs.freeze import run_pyinstaller
 from fbs.resources import generate_resources
 from os import remove
-from os.path import join, dirname
+from os.path import join, dirname, exists
 from shutil import copy
 
 import sys
@@ -30,9 +30,11 @@ def freeze_windows(extra_pyinstaller_args=None):
     _add_missing_dlls()
 
 def _add_missing_dlls():
-    for dll in (
+    freeze_dir = path('${freeze_dir}')
+    for dll_name in (
         'msvcr100.dll', 'msvcr110.dll', 'msvcp110.dll', 'vcruntime140.dll',
         'msvcp140.dll', 'concrt140.dll', 'vccorlib140.dll',
         'api-ms-win-crt-multibyte-l1-1-0.dll'
     ):
-        copy(join(r'c:\Windows\System32', dll), path('${freeze_dir}'))
+        if not exists(join(freeze_dir, dll_name)):
+            copy(join(r'c:\Windows\System32', dll_name), freeze_dir)
