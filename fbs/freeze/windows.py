@@ -18,7 +18,12 @@ def freeze_windows(extra_pyinstaller_args=None):
 	# PyInstaller somehow corrupts python3*.dll - see:
 	# https://github.com/pyinstaller/pyinstaller/issues/2526
 	# Restore the uncorrupted original:
-	for dll_name in ('python3.dll', 'python35.dll'):
+	python_dlls = (
+		'python' + str(sys.version_info.major) + '.dll',
+		'python' + str(sys.version_info.major) +
+		str(sys.version_info.minor) + '.dll',
+		)
+	for dll_name in python_dlls:
 		remove(path('${freeze_dir}/' + dll_name))
 		copy(join(dirname(sys.executable), dll_name), path('${freeze_dir}'))
 	generate_resources(dest_dir=path('${freeze_dir}'))
