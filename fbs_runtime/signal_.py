@@ -1,14 +1,14 @@
 try:
-    from PyQt5.QtNetwork import QAbstractSocket
+	from PyQt5.QtNetwork import QAbstractSocket
 except ImportError:
-    from PySide2.QtNetwork import QAbstractSocket
+	from PySide2.QtNetwork import QAbstractSocket
 
 from socket import socketpair, SOCK_DGRAM
 
 import signal
 
 class SignalWakeupHandler(QAbstractSocket):
-    """
+	"""
 	Python's `signal` module lets us define custom signal handlers. What we want
 	in particular is a graceful handling of Ctrl+C, meaning that the app shuts
 	down cleanly.
@@ -34,30 +34,30 @@ class SignalWakeupHandler(QAbstractSocket):
 
 	See: https://stackoverflow.com/a/37229299/1839209
 	"""
-    def __init__(self, app):
-        super().__init__(QAbstractSocket.UdpSocket, app)
-        self._app = app
-        self.old_fd = None
-        # Create a socket pair
-        self.wsock, self.rsock = socketpair(type=SOCK_DGRAM)
-        # Let Qt listen on the one end
-        self.setSocketDescriptor(self.rsock.fileno())
-        # And let Python write on the other end
-        self.wsock.setblocking(False)
-        self.old_fd = signal.set_wakeup_fd(self.wsock.fileno())
-        # First Python code executed gets any exception from
-        # the signal handler, so add a dummy handler first
-        self.readyRead.connect(lambda : None)
-        # Second handler does the real handling
-        self.readyRead.connect(self._readSignal)
-    def install(self):
-        signal.signal(signal.SIGINT, lambda *_: self._app.exit(130))
-    def __del__(self):
-        # Restore any old handler on deletion
-        if self.old_fd is not None and signal and signal.set_wakeup_fd:
-            signal.set_wakeup_fd(self.old_fd)
-    def _readSignal(self):
-        # Read the written byte.
-        # Note: readyRead is blocked from occuring again until readData()
-        # was called, so call it, even if you don't need the value.
-        _ = self.readData(1)
+	def __init__(self, app):
+		super().__init__(QAbstractSocket.UdpSocket, app)
+		self._app = app
+		self.old_fd = None
+		# Create a socket pair
+		self.wsock, self.rsock = socketpair(type=SOCK_DGRAM)
+		# Let Qt listen on the one end
+		self.setSocketDescriptor(self.rsock.fileno())
+		# And let Python write on the other end
+		self.wsock.setblocking(False)
+		self.old_fd = signal.set_wakeup_fd(self.wsock.fileno())
+		# First Python code executed gets any exception from
+		# the signal handler, so add a dummy handler first
+		self.readyRead.connect(lambda : None)
+		# Second handler does the real handling
+		self.readyRead.connect(self._readSignal)
+	def install(self):
+		signal.signal(signal.SIGINT, lambda *_: self._app.exit(130))
+	def __del__(self):
+		# Restore any old handler on deletion
+		if self.old_fd is not None and signal and signal.set_wakeup_fd:
+			signal.set_wakeup_fd(self.old_fd)
+	def _readSignal(self):
+		# Read the written byte.
+		# Note: readyRead is blocked from occuring again until readData()
+		# was called, so call it, even if you don't need the value.
+		_ = self.readData(1)
