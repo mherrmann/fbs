@@ -1,4 +1,8 @@
-from PyQt5.QtNetwork import QAbstractSocket
+try:
+	from PyQt5.QtNetwork import QAbstractSocket
+except ImportError:
+	from PySide2.QtNetwork import QAbstractSocket
+
 from socket import socketpair, SOCK_DGRAM
 
 import signal

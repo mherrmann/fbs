@@ -4,8 +4,15 @@ from fbs_runtime.system import is_windows, is_mac
 from functools import lru_cache
 from os.path import join, exists, pardir, dirname, realpath
 from pathlib import PurePath
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication
+
+try:
+	from PyQt5.QtGui import QIcon
+except ImportError:
+	from PySide2.QtGui import QIcon
+try:
+	from PyQt5.QtWidgets import QApplication
+except ImportError:
+	from PySide2.QtWidgets import QApplication
 
 import errno
 import inspect
