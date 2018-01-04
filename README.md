@@ -11,8 +11,9 @@ problems are platform-specific. So you have to create an installer for Mac, one
 for Windows, etc.
 
 In recent years, [Electron](https://electronjs.org/) has seen a lot of interest
-as a platform for cross-platform desktop apps. The problem is, it is very
-resource intensive and its performance is not good enough for many use cases.
+as a technology for creating cross-platform desktop apps. The problem is, it is
+very resource intensive and its performance is not good enough for many use
+cases.
 
 An alternative to Electron is [Qt](https://www.qt.io). It has been around for
 many more years and can be much faster than Electron. Qt is written in C++, but
