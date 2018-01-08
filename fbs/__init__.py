@@ -18,8 +18,9 @@ def activate_profile(profile_name):
     default_settings = join(dirname(__file__), 'default_settings')
     project_settings = path('src/build/settings')
     json_paths = [
-        join(dir_path, profile_name + '.json')
+        join(dir_path, profile + '.json')
         for dir_path in (default_settings, project_settings)
+        for profile in _LOADED_PROFILES
     ]
     SETTINGS.update(_load_settings(p for p in json_paths if exists(p)))
 
