@@ -28,7 +28,7 @@ def generate_resources(dest_dir=None, dest_dir_for_base=None, exclude=None):
 
 def copy_with_filtering(
     src_dir_or_file, dest_dir, replacements=None, files_to_filter=None,
-    exclude=None
+    exclude=None, placeholder='${%s}'
 ):
     if replacements is None:
         replacements = SETTINGS
@@ -41,7 +41,7 @@ def copy_with_filtering(
     for src, dest in to_copy:
         makedirs(dirname(dest), exist_ok=True)
         if files_to_filter is None or src in to_filter:
-            _copy_with_filtering(src, dest, replacements)
+            _copy_with_filtering(src, dest, replacements, placeholder)
         else:
             copy(src, dest)
 
@@ -69,11 +69,11 @@ def _get_files_to_copy(src_dir_or_file, dest_dir, exclude):
                     yield file_path, dest_path
 
 def _copy_with_filtering(
-    src_file, dest_file, dict_, place_holder='${%s}', encoding='utf-8'
+    src_file, dest_file, dict_, placeholder='${%s}', encoding='utf-8'
 ):
     replacements = []
     for key, value in dict_.items():
-        old = (place_holder % key).encode(encoding)
+        old = (placeholder % key).encode(encoding)
         new = str(value).encode(encoding)
         replacements.append((old, new))
     with open(src_file, 'rb') as open_src_file:

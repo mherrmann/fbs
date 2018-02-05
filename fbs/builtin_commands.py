@@ -51,7 +51,10 @@ def installer():
     """
     Create an installer for your app
     """
-    if is_mac():
+    if is_windows():
+        from fbs.installer.windows import create_installer_windows
+        create_installer_windows()
+    elif is_mac():
         from fbs.installer.mac import create_installer_mac
         create_installer_mac()
     else:
