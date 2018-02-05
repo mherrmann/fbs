@@ -10,7 +10,7 @@ from os.path import relpath, join
 from setuptools import setup, find_packages
 
 def _get_package_data(pkg_dir, data_subdir):
-    glob_parts = pkg_dir.split('/') + [data_subdir, '**', '*.*']
+    glob_parts = pkg_dir.split('/') + [data_subdir, '**', '*']
     glob_pattern = join(*glob_parts)
     return [
         relpath(file_path, pkg_dir)
