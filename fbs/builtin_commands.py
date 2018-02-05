@@ -47,6 +47,17 @@ def freeze():
         raise RuntimeError('Unsupported OS')
 
 @command
+def installer():
+    """
+    Create an installer for your app
+    """
+    if is_mac():
+        from fbs.installer.mac import create_installer_mac
+        create_installer_mac()
+    else:
+        raise RuntimeError('Unsupported OS')
+
+@command
 def test():
     """
     Execute your automated tests
