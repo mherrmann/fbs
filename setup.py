@@ -10,7 +10,8 @@ from os.path import relpath, join
 from setuptools import setup, find_packages
 
 def _get_package_data(pkg_dir, data_subdir):
-    glob_pattern = join(pkg_dir, data_subdir, '**', '*.*')
+    glob_parts = pkg_dir.split('/') + [data_subdir, '**', '*.*']
+    glob_pattern = join(*glob_parts)
     return [
         relpath(file_path, pkg_dir)
         for file_path in glob(glob_pattern, recursive=True)
@@ -28,7 +29,10 @@ setup(
     url='https://github.com/mherrmann/fbs',
     packages=find_packages(),
     package_data={
-        'fbs': _get_package_data('fbs', 'default_settings')
+        'fbs': _get_package_data('fbs', 'default_settings'),
+        'fbs.installer.mac': _get_package_data(
+            'fbs/installer/mac', 'yoursway-create-dmg'
+        )
     },
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
