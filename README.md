@@ -32,11 +32,14 @@ The best place to get started is the
 
 ## Licensing
 This project is licensed under the GPL. In simple terms, this means you can use
-it for free in open source projects that are also licensed under the GPL. On the
-other hand, if you do not want to open source your code (such as when you are
-working on a proprietary app), then you need to obtain a commercial license. The
-price for this license is currently 99 Euros. To purchase a license, click
-[here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JG23NJLUMPYS8).
+it for free in open source projects that are also licensed under the GPL. If on
+the other hand you want to use the project for a proprietary app where you don't
+want to open source the code, then you need a commercial license. The price for
+one developer is 49 Euros. It includes one year of updates. To obtain a license,
+click
+[here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TTN55LCMK2AUJ).
+
+The license price will increase to EUR 99 on February 11.
 
 ## Project updates
 To stay updated on the evolution of the project, please subscribe
