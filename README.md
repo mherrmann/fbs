@@ -39,6 +39,9 @@ one developer is 79 Euros until Feb 11, 2018. It includes one year of updates.
 To obtain a license, click
 [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NH2ANDDS48KXA).
 
-## Project updates
-To stay updated on the evolution of the project, please subscribe
+## Current Status
+It's currently possible to package apps on Windows, Mac and Linux. Installers
+can be created for Windows and Mac. The next steps are to let you create an
+installer for Ubuntu (Linux), then code signing, then automatic updates. To stay
+updated as these features are open sourced, please subscribe
 [here](http://eepurl.com/ddgpnf).
