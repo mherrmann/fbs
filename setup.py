@@ -5,7 +5,7 @@ https://github.com/mherrmann/fbs
 """
 
 from glob import glob
-from os.path import relpath, join
+from os.path import relpath, join, isdir
 
 from setuptools import setup, find_packages
 
@@ -15,6 +15,8 @@ def _get_package_data(pkg_dir, data_subdir):
     return [
         relpath(file_path, pkg_dir)
         for file_path in glob(glob_pattern, recursive=True)
+        # Exclude directories to avoid errors when installing via pip on Ubuntu:
+        if not isdir(file_path)
     ]
 
 description = 'Easily create cross-platform desktop applications with PyQt'
