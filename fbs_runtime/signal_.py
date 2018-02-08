@@ -58,6 +58,6 @@ class SignalWakeupHandler(QAbstractSocket):
             signal.set_wakeup_fd(self.old_fd)
     def _readSignal(self):
         # Read the written byte.
-        # Note: readyRead is blocked from occuring again until readData()
+        # Note: readyRead is blocked from occurring again until readData()
         # was called, so call it, even if you don't need the value.
         _ = self.readData(1)
