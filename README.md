@@ -35,8 +35,8 @@ This project is licensed under the GPL. In simple terms, this means you can use
 it for free in open source projects that are also licensed under the GPL. If on
 the other hand you want to use the project for a proprietary app where you don't
 want to open source the code, then you need a commercial license. The price for
-one developer is EUR 79 if you purchase before Feb 11, 2018, EUR 99 after. One
-year of updates is included. To obtain a license, click
+one developer is currently EUR 99. One year of updates is included. To obtain a
+license, click
 [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NH2ANDDS48KXA).
 
 ## Current Status
