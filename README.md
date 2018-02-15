@@ -22,9 +22,9 @@ bindings are available for other languages. A popular choice for Python is
 
 This project addresses the above problems for applications written with PyQt.
 It open sources code that was originally written for the cross-platform file
-manager [fman](https://fman.io). By packaging field-tested solutions in one
-cohesive package, this project lets you create cross-platform desktop apps in
-minutes, not months.
+manager [fman](https://fman.io?s=fbs). By packaging field-tested solutions in
+one cohesive package, this project lets you create cross-platform desktop apps
+in minutes, not months.
 
 ## Getting started
 The best place to get started is the
