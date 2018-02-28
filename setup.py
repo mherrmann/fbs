@@ -34,8 +34,7 @@ setup(
         'fbs': _get_package_data('fbs', 'default_settings'),
         'fbs.installer.mac': _get_package_data(
             'fbs/installer/mac', 'yoursway-create-dmg'
-        ),
-        'fbs.installer.windows': ['Setup.nsi']
+        )
     },
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
