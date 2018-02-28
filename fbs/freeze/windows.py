@@ -31,8 +31,12 @@ def _restore_corrupted_python_dlls():
         'python%s%s.dll' % (sys.version_info.major, sys.version_info.minor)
     )
     for dll_name in python_dlls:
-        remove(path('${freeze_dir}/' + dll_name))
-        copy(_find_on_path(dll_name), path('${freeze_dir}'))
+        try:
+            remove(path('${freeze_dir}/' + dll_name))
+        except FileNotFoundError:
+            pass
+        else:
+            copy(_find_on_path(dll_name), path('${freeze_dir}'))
 
 def _add_missing_dlls():
     for dll_name in (
