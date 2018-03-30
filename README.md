@@ -44,4 +44,4 @@ It's currently possible to package apps on Windows, Mac and Linux. Installers
 can be created for Windows and Mac. The next steps are to let you create an
 installer for Ubuntu (Linux), then code signing, then automatic updates. To stay
 updated as these features are open sourced, please subscribe
-[here](http://eepurl.com/ddgpnf).
+[here](https://emailoctopus.com/lists/5061ca0f-33e0-11e8-a3c9-06b79b628af2/forms/subscribe).
