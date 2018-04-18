@@ -6,7 +6,9 @@ from os.path import exists
 from shutil import copy, rmtree
 from subprocess import run
 
-def freeze_mac():
+def freeze_mac(extra_pyinstaller_args=None):
+    if extra_pyinstaller_args is None:
+        extra_pyinstaller_args = []
     if not exists(path('target/Icon.icns')):
         _generate_iconset()
         run(['iconutil', '-c', 'icns', path('target/Icon.iconset')], check=True)
@@ -19,7 +21,7 @@ def freeze_mac():
         pyinstaller_args.extend([
             '--osx-bundle-identifier', bundle_identifier
         ])
-    run_pyinstaller(extra_args=pyinstaller_args)
+    run_pyinstaller(extra_args=pyinstaller_args + extra_pyinstaller_args)
     _remove_unwanted_pyinstaller_files()
     _fix_sparkle_delta_updates()
     generate_resources(

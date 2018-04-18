@@ -12,11 +12,11 @@ import sys
 def freeze_windows(extra_pyinstaller_args=None):
     if extra_pyinstaller_args is None:
         extra_pyinstaller_args = []
-    args = [
+    pyinstaller_args = [
         '--windowed',
         '--icon', path('src/main/icons/Icon.ico')
-    ] + extra_pyinstaller_args
-    run_pyinstaller(extra_args=args)
+    ]
+    run_pyinstaller(extra_args=pyinstaller_args + extra_pyinstaller_args)
     _restore_corrupted_python_dlls()
     generate_resources(dest_dir=path('${freeze_dir}'))
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))

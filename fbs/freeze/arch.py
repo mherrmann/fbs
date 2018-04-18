@@ -1,7 +1,7 @@
 from fbs.freeze.linux import freeze_linux, remove_shared_libraries
 
-def freeze_arch():
-    freeze_linux()
+def freeze_arch(extra_pyinstaller_args=None):
+    freeze_linux(extra_pyinstaller_args)
     # Our apps normally ship with eg. libQt5Core.so.5. This loads other .so
     # files, if present, from /usr/lib. If those libraries are Qt libraries of a
     # different Qt version, errors occur.
