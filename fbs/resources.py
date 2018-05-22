@@ -24,7 +24,7 @@ def generate_resources():
             copy_with_filtering(dir_, resources_dest_dir, **kwargs)
         frozen_resources_dir = dir_ + '-frozen'
         if exists(frozen_resources_dir):
-            copy_with_filtering(dir_, freeze_dir, **kwargs)
+            copy_with_filtering(frozen_resources_dir, freeze_dir, **kwargs)
 
 def copy_with_filtering(
     src_dir_or_file, dest_dir, replacements=None, files_to_filter=None,
