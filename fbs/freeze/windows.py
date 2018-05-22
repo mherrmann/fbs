@@ -18,7 +18,7 @@ def freeze_windows(extra_pyinstaller_args=None):
     ]
     run_pyinstaller(extra_args=pyinstaller_args + extra_pyinstaller_args)
     _restore_corrupted_python_dlls()
-    generate_resources(dest_dir=path('${freeze_dir}'))
+    generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
     _add_missing_dlls()
 

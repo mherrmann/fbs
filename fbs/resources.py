@@ -1,4 +1,5 @@
 from fbs import platform, path, SETTINGS
+from fbs.platform import is_mac
 from glob import glob
 from os import makedirs
 from os.path import exists, dirname, isfile, join, basename, relpath, splitext
@@ -7,24 +8,23 @@ from shutil import copy, copymode
 
 import os
 
-def generate_resources(dest_dir=None, dest_dir_for_base=None, exclude=None):
-    if dest_dir is None:
-        # Set this default here instead of in the function definition
-        # (`def generate_resources(dest_dir=path(...) ...)`) because we can't
-        # call path(...) at the module level.
-        dest_dir = path('target/resources')
-    if dest_dir_for_base is None:
-        dest_dir_for_base = dest_dir
-    if exclude is None:
-        exclude = []
-    resources_to_filter = SETTINGS['resources_to_filter']
-    kwargs = {'exclude': exclude, 'files_to_filter': resources_to_filter}
-    copy_with_filtering(
-        path('src/main/resources/base'), dest_dir_for_base, **kwargs
+def generate_resources():
+    freeze_dir = path('${freeze_dir}')
+    if is_mac():
+        resources_dest_dir = join(freeze_dir, 'Contents', 'Resources')
+    else:
+        resources_dest_dir = freeze_dir
+    kwargs = {'files_to_filter': SETTINGS['resources_to_filter']}
+    resource_dirs = (
+        path('src/main/resources/base'),
+        path('src/main/resources/' + platform.name().lower())
     )
-    os_resources_dir = path('src/main/resources/' + platform.name().lower())
-    if exists(os_resources_dir):
-        copy_with_filtering(os_resources_dir, dest_dir, **kwargs)
+    for dir_ in resource_dirs:
+        if exists(dir_):
+            copy_with_filtering(dir_, resources_dest_dir, **kwargs)
+        frozen_resources_dir = dir_ + '-frozen'
+        if exists(frozen_resources_dir):
+            copy_with_filtering(dir_, freeze_dir, **kwargs)
 
 def copy_with_filtering(
     src_dir_or_file, dest_dir, replacements=None, files_to_filter=None,

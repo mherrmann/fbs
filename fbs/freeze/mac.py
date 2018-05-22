@@ -24,10 +24,7 @@ def freeze_mac(extra_pyinstaller_args=None):
     run_pyinstaller(extra_args=pyinstaller_args + extra_pyinstaller_args)
     _remove_unwanted_pyinstaller_files()
     _fix_sparkle_delta_updates()
-    generate_resources(
-        dest_dir=path('${freeze_dir}'),
-        dest_dir_for_base=path('${freeze_dir}/Contents/Resources')
-    )
+    generate_resources()
 
 def _generate_iconset():
     makedirs(path('target/Icon.iconset'), exist_ok=True)

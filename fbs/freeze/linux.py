@@ -7,7 +7,7 @@ from shutil import copy
 
 def freeze_linux(extra_pyinstaller_args=None):
     run_pyinstaller(extra_pyinstaller_args)
-    generate_resources(dest_dir=path('${freeze_dir}'))
+    generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
     # For some reason, PyInstaller packages libstdc++.so.6 even though it is
     # available on most Linux distributions. If we include it and run our app on
