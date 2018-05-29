@@ -25,10 +25,10 @@ setup(
     version='0.1.4-SNAPSHOT',
     description=description,
     long_description=
-        description + '\n\nHome page: https://github.com/mherrmann/fbs',
+        description + '\n\nHome page: https://build-system.fman.io',
     author='Michael Herrmann',
     author_email='michael+removethisifyouarehuman@herrmann.io',
-    url='https://github.com/mherrmann/fbs',
+    url='https://build-system.fman.io',
     packages=find_packages(),
     package_data={
         'fbs': _get_package_data('fbs', 'default_settings'),
