@@ -24,7 +24,7 @@ def run():
     subprocess.run([sys.executable, SETTINGS['main_module']], env=env)
 
 @command
-def freeze():
+def freeze(extra_pyinstaller_args=None):
     """
     Compile your application to a standalone executable
     """
@@ -32,17 +32,17 @@ def freeze():
     # fbs <-> fbs.freeze.X:
     if is_windows():
         from fbs.freeze.windows import freeze_windows
-        freeze_windows()
+        freeze_windows(extra_pyinstaller_args)
     elif is_mac():
         from fbs.freeze.mac import freeze_mac
-        freeze_mac()
+        freeze_mac(extra_pyinstaller_args)
     elif is_linux():
         if is_arch_linux():
             from fbs.freeze.arch import freeze_arch
-            freeze_arch()
+            freeze_arch(extra_pyinstaller_args)
         else:
             from fbs.freeze.linux import freeze_linux
-            freeze_linux()
+            freeze_linux(extra_pyinstaller_args)
     else:
         raise RuntimeError('Unsupported OS')
 
