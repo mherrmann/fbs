@@ -20,12 +20,10 @@ def name():
     raise RuntimeError('Unknown operating system.')
 
 def is_gnome_based():
-    # If you update this, also update the same fn in the Core module!
     curr_desktop = os.environ.get('XDG_CURRENT_DESKTOP', '').lower()
     return curr_desktop in ('unity', 'gnome', 'x-cinnamon')
 
 def is_kde_based():
-    # If you update this, also update the same fn in the Core module!
     curr_desktop = os.environ.get('XDG_CURRENT_DESKTOP', '').lower()
     if curr_desktop == 'kde':
         return True
