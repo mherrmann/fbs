@@ -1,5 +1,5 @@
 from fbs_runtime import system
-from fbs_runtime.signal_ import SignalWakeupHandler
+from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.system import is_windows, is_mac
 from functools import lru_cache
 from os.path import join, exists, pardir, dirname, realpath
