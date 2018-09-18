@@ -1,3 +1,9 @@
+"""
+This module contains all of fbs's built-in commands. They are invoked when you
+run `python -m fbs <command>` on the command line. But you are also free to
+import them in your Python build script and execute them there.
+"""
+
 from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux

@@ -6,6 +6,12 @@ import fbs
 import sys
 
 def main(project_dir=None):
+    """
+    This function is executed when you run `python -m fbs ...` on the command
+    line. You can call this function from your own build script to run fbs as if
+    it were called via the above command. For an example, see:
+        https://build-system.fman.io/manual/#custom-commands
+    """
     if project_dir is None:
         project_dir = getcwd()
     fbs.init(project_dir)
@@ -19,6 +25,10 @@ def main(project_dir=None):
         parser.print_help()
 
 def command(f):
+    """
+    Use this as a decorator to define custom fbs commands. For an example, see:
+        https://build-system.fman.io/manual/#custom-commands
+    """
     _COMMANDS[f.__name__] = f
     return f
 

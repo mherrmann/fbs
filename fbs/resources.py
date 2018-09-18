@@ -9,6 +9,12 @@ from shutil import copy, copymode
 import os
 
 def generate_resources():
+    """
+    Copy the data files from src/main/resources to the target/ directory.
+    Automatically filters files mentioned in the setting resources_to_filter:
+    Placeholders such as ${app_name} are automatically replaced by the
+    corresponding setting in files on that list.
+    """
     freeze_dir = path('${freeze_dir}')
     if is_mac():
         resources_dest_dir = join(freeze_dir, 'Contents', 'Resources')
@@ -30,6 +36,10 @@ def copy_with_filtering(
     src_dir_or_file, dest_dir, replacements=None, files_to_filter=None,
     exclude=None, placeholder='${%s}'
 ):
+    """
+    Copy the given file or directory to the given destination, optionally
+    applying filtering.
+    """
     if replacements is None:
         replacements = SETTINGS
     if files_to_filter is None:
@@ -46,6 +56,10 @@ def copy_with_filtering(
             copy(src, dest)
 
 def get_icons():
+    """
+    Return a list [(size_in_pixels, path)] of available app icons for the
+    current platform.
+    """
     result = {}
     for icons_dir in (
         'src/main/icons/base', 'src/main/icons/' + platform.name().lower()

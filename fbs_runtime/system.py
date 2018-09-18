@@ -2,12 +2,21 @@ import os
 import sys
 
 def is_windows():
+    """
+    Return True if the current OS is Windows, False otherwise.
+    """
     return sys.platform in ('win32', 'cygwin')
 
 def is_mac():
+    """
+    Return True if the current OS is macOS, False otherwise.
+    """
     return sys.platform == 'darwin'
 
 def is_linux():
+    """
+    Return True if the current OS is Linux, False otherwise.
+    """
     return sys.platform.startswith('linux')
 
 def name():
