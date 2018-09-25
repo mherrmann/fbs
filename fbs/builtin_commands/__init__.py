@@ -7,14 +7,46 @@ import them in your Python build script and execute them there.
 from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
-from os import listdir, remove, unlink
-from os.path import join, isfile, isdir, islink
+from fbs.resources import copy_with_filtering
+from os import listdir, remove, unlink, mkdir
+from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
 import os
 import subprocess
 import sys
+
+@command
+def startproject():
+    """
+    Start a new fbs project in the current directory
+    """
+    if exists('src'):
+        print('The src/ directory already exists. Aborting.')
+        return
+    app_name = _prompt_for_nonempty_value('App name (eg. MyApp): ')
+    author = _prompt_for_nonempty_value('App author (eg. Joe Developer): ')
+    mac_bundle_identifier = _prompt_for_nonempty_value(
+        'Mac bundle identifier (eg. com.joe.myapp): '
+    )
+    mkdir('src')
+    template_dir = join(dirname(__file__), 'project_template')
+    settings_file = lambda name: \
+        join(template_dir, 'src', 'build', 'settings', name)
+    copy_with_filtering(
+        template_dir, '.', {
+            'app_name': app_name,
+            'author': author,
+            'mac_bundle_identifier': mac_bundle_identifier
+        },
+        files_to_filter=[settings_file('base.json'), settings_file('mac.json')]
+    )
+    print(
+        "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
+        "installed, then you can now do:\n\n"
+        "    python -m fbs run\n"
+    )
 
 @command
 def run():
@@ -115,3 +147,9 @@ def clean():
                 remove(fpath)
             elif islink(fpath):
                 unlink(fpath)
+
+def _prompt_for_nonempty_value(message):
+    result = ''
+    while not result:
+        result = input(message)
+    return result

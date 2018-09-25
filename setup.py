@@ -22,7 +22,7 @@ def _get_package_data(pkg_dir, data_subdir):
 description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
     name='fbs',
-    version='0.1.6-SNAPSHOT',
+    version='0.1.6',
     description=description,
     long_description=
         description + '\n\nHome page: https://build-system.fman.io',
@@ -32,6 +32,8 @@ setup(
     packages=find_packages(),
     package_data={
         'fbs': _get_package_data('fbs', 'default_settings'),
+        'fbs.builtin_commands':
+            _get_package_data('fbs/builtin_commands', 'project_template'),
         'fbs.installer.mac': _get_package_data(
             'fbs/installer/mac', 'yoursway-create-dmg'
         )
