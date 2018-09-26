@@ -9,14 +9,16 @@ import os
 import struct
 import sys
 
-def freeze_windows(extra_pyinstaller_args=None):
+def freeze_windows(extra_pyinstaller_args=None, debug=False):
     if extra_pyinstaller_args is None:
         extra_pyinstaller_args = []
-    pyinstaller_args = [
-        '--windowed',
-        '--icon', path('src/main/icons/Icon.ico')
-    ]
-    run_pyinstaller(extra_args=pyinstaller_args + extra_pyinstaller_args)
+    pyinstaller_args = []
+    if not debug:
+        # The --windowed flag below prevents us from seeing any console output.
+        # We therefore only add it when we're not debugging.
+        pyinstaller_args.append('--windowed')
+    pyinstaller_args.extend(['--icon', path('src/main/icons/Icon.ico')])
+    run_pyinstaller(pyinstaller_args + extra_pyinstaller_args, debug)
     _restore_corrupted_python_dlls()
     generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))

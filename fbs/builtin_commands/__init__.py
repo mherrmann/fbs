@@ -62,7 +62,7 @@ def run():
     subprocess.run([sys.executable, SETTINGS['main_module']], env=env)
 
 @command
-def freeze():
+def freeze(debug=False):
     """
     Compile your application to a standalone executable
     """
@@ -70,17 +70,17 @@ def freeze():
     # fbs <-> fbs.freeze.X:
     if is_windows():
         from fbs.freeze.windows import freeze_windows
-        freeze_windows()
+        freeze_windows(debug=debug)
     elif is_mac():
         from fbs.freeze.mac import freeze_mac
-        freeze_mac()
+        freeze_mac(debug=debug)
     elif is_linux():
         if is_arch_linux():
             from fbs.freeze.arch import freeze_arch
-            freeze_arch()
+            freeze_arch(debug=debug)
         else:
             from fbs.freeze.linux import freeze_linux
-            freeze_linux()
+            freeze_linux(debug=debug)
     else:
         raise RuntimeError('Unsupported OS')
 
