@@ -12,6 +12,30 @@
 !include LogicLib.nsh
 
 Function .onInit
+  ReadRegStr $R0 HKLM \
+  "Software\Microsoft\Windows\CurrentVersion\Uninstall\%{app_name}" \
+  "UninstallString"
+  StrCmp $R0 "" done
+
+  MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
+  "%{app_name} is already installed. $\n$\nClick `OK` to remove the \
+  previous version or `Cancel` to cancel this upgrade." \
+  IDOK uninst
+  Abort
+
+  ;Run the uninstaller
+  uninst:
+    ClearErrors
+    Exec $R0
+
+    IfErrors no_remove_uninstaller done
+      ;You can either use Delete /REBOOTOK in the uninstaller or add some code
+      ;here to remove the uninstaller. Use a registry key to check
+      ;whether the user has chosen to uninstall. If you are using an uninstaller
+      ;components page, make sure all sections are uninstalled.
+    no_remove_uninstaller:
+  done:
+
   !insertmacro MULTIUSER_INIT
   ;Do not use InstallDir at all so we can detect empty $InstDir!
   ${If} $InstDir == "" ; /D not used
