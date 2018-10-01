@@ -1,5 +1,5 @@
 from fbs import path, SETTINGS
-from os import replace
+from os import replace, remove
 from os.path import join, dirname, exists
 from subprocess import run
 
@@ -23,3 +23,6 @@ def create_installer_mac():
         if dest_existed:
             replace(dest_bu, dest)
         raise
+    else:
+        if dest_existed:
+            remove(dest_bu)
