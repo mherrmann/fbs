@@ -27,8 +27,8 @@ def startproject():
         return
     app_name = _prompt_for_nonempty_value('App name (eg. MyApp): ')
     author = _prompt_for_nonempty_value('App author (eg. Joe Developer): ')
-    mac_bundle_identifier = _prompt_for_nonempty_value(
-        'Mac bundle identifier (eg. com.joe.myapp): '
+    mac_bundle_identifier = input(
+        'Mac bundle identifier (optional, eg. com.joe.myapp): '
     )
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')

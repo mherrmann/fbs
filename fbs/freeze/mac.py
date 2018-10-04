@@ -16,7 +16,7 @@ def freeze_mac(extra_pyinstaller_args=None, debug=False):
         '--windowed',
         '--icon', path('target/Icon.icns')
     ]
-    bundle_identifier = SETTINGS.get('mac_bundle_identifier', '')
+    bundle_identifier = SETTINGS['mac_bundle_identifier']
     if bundle_identifier:
         pyinstaller_args.extend([
             '--osx-bundle-identifier', bundle_identifier
