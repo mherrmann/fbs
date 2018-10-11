@@ -7,11 +7,12 @@ def run_pyinstaller(extra_args=None, debug=False):
     if extra_args is None:
         extra_args = []
     app_name = SETTINGS['app_name']
+    log_level = 'DEBUG' if debug else 'WARN'
     cmdline = [
         'pyinstaller',
         '--name', app_name,
         '--noupx',
-        '--log-level', 'WARN'
+        '--log-level', log_level
     ] + extra_args + [
         '--distpath', path('target'),
         '--specpath', path('target/PyInstaller'),
