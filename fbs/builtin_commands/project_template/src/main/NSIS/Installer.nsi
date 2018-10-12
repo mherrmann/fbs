@@ -68,10 +68,14 @@ FunctionEnd
 
 !macro uninstallMacro un
   Function ${un}customUninstall
-  RMDir /r "$InstDir"
-  Delete "$SMPROGRAMS\%{app_name}.lnk"
-  DeleteRegKey /ifempty SHCTX "Software\%{app_name}"
-  DeleteRegKey SHCTX "${UNINST_KEY}"
+    ReadRegStr $R0 HKLM \
+    "Software\Microsoft\Windows\CurrentVersion\Uninstall\%{app_name}" \
+    "InstallPath"
+    RMDir /r "$R0"
+
+    Delete "$SMPROGRAMS\%{app_name}.lnk"
+    DeleteRegKey /ifempty SHCTX "Software\%{app_name}"
+    DeleteRegKey SHCTX "${UNINST_KEY}"
   FunctionEnd
 !macroend
 
@@ -90,6 +94,7 @@ Section
   WriteRegStr SHCTX "Software\%{app_name}" "" $InstDir
   WriteUninstaller "$InstDir\uninstall.exe"
   CreateShortCut "$SMPROGRAMS\%{app_name}.lnk" "$InstDir\%{app_name}.exe"
+  WriteRegStr SHCTX "${UNINST_KEY}" "InstallPath" "$InstDir"
   WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "%{app_name}"
   WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" \
     "$\"$InstDir\uninstall.exe$\" /$MultiUser.InstallMode"
