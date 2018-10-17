@@ -25,10 +25,12 @@ def startproject():
     if exists('src'):
         print('The src/ directory already exists. Aborting.')
         return
-    app_name = _prompt_for_nonempty_value('App name (eg. MyApp): ')
-    author = _prompt_for_nonempty_value('App author (eg. Joe Developer): ')
-    mac_bundle_identifier = input(
-        'Mac bundle identifier (optional, eg. com.joe.myapp): '
+    app_name = _prompt_for_value('App name (eg. MyApp): ')
+    author = _prompt_for_value('Author (eg. Joe Developer): ')
+    version = \
+        _prompt_for_value('Initial version (default 0.0.1): ', default='0.0.1')
+    mac_bundle_identifier = _prompt_for_value(
+        'Mac bundle identifier (optional, eg. com.joe.myapp): ', optional=True
     )
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
@@ -38,13 +40,14 @@ def startproject():
         template_dir, '.', {
             'app_name': app_name,
             'author': author,
+            'version': version,
             'mac_bundle_identifier': mac_bundle_identifier
         },
         files_to_filter=[settings_file('base.json'), settings_file('mac.json')]
     )
     print(
         "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
-        "installed, then you can now do:\n\n"
+        "installed, you can now do:\n\n"
         "    python -m fbs run\n"
     )
 
@@ -148,8 +151,9 @@ def clean():
             elif islink(fpath):
                 unlink(fpath)
 
-def _prompt_for_nonempty_value(message):
-    result = ''
-    while not result:
-        result = input(message)
+def _prompt_for_value(message, optional=False, default=''):
+    result = input(message).strip() or default
+    if not optional:
+        while not result:
+            result = input(message).strip()
     return result
