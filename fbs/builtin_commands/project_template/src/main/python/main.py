@@ -6,7 +6,7 @@ import sys
 class AppContext(ApplicationContext):           # 1. Subclass ApplicationContext
     def run(self):                              # 2. Implement run()
         window = QMainWindow()
-        window.setWindowTitle('Hello World!')
+        window.setWindowTitle("${app_name}")
         window.resize(250, 150)
         window.show()
         return self.app.exec_()                 # 3. End run() with this line

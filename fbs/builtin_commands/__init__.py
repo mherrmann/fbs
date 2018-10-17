@@ -8,6 +8,7 @@ from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux
 from fbs.resources import copy_with_filtering
+from getpass import getuser
 from os import listdir, remove, unlink, mkdir
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
@@ -25,25 +26,37 @@ def startproject():
     if exists('src'):
         print('The src/ directory already exists. Aborting.')
         return
-    app_name = _prompt_for_value('App name (eg. MyApp): ')
-    author = _prompt_for_value('Author (eg. Joe Developer): ')
-    version = \
-        _prompt_for_value('Initial version (default 0.0.1): ', default='0.0.1')
-    mac_bundle_identifier = _prompt_for_value(
-        'Mac bundle identifier (optional, eg. com.joe.myapp): ', optional=True
-    )
+    try:
+        app = _prompt_for_value('App name [MyApp] : ', default='MyApp')
+        user = getuser().title()
+        author = _prompt_for_value('Author [%s] : ' % user, default=user)
+        version = \
+            _prompt_for_value('Initial version [0.0.1] : ', default='0.0.1')
+        eg_bundle_id = 'com.%s.%s' % (
+            author.lower().split()[0], ''.join(app.lower().split())
+        )
+        mac_bundle_identifier = _prompt_for_value(
+            'Mac bundle identifier (eg. %s, optional) : ' % eg_bundle_id,
+            optional=True
+        )
+    except KeyboardInterrupt:
+        print('')
+        return
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
-    settings_file = lambda name: \
-        join(template_dir, 'src', 'build', 'settings', name)
+    pth = lambda relpath: join(template_dir, *relpath.split('/'))
     copy_with_filtering(
         template_dir, '.', {
-            'app_name': app_name,
+            'app_name': app,
             'author': author,
             'version': version,
             'mac_bundle_identifier': mac_bundle_identifier
         },
-        files_to_filter=[settings_file('base.json'), settings_file('mac.json')]
+        files_to_filter=[
+            pth('src/build/settings/base.json'),
+            pth('src/build/settings/mac.json'),
+            pth('src/main/python/main.py')
+        ]
     )
     print(
         "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
@@ -152,7 +165,10 @@ def clean():
                 unlink(fpath)
 
 def _prompt_for_value(message, optional=False, default=''):
-    result = input(message).strip() or default
+    result = input(message).strip()
+    if not result and default:
+        print(default)
+        return default
     if not optional:
         while not result:
             result = input(message).strip()
