@@ -27,6 +27,7 @@ def startproject():
         return
     app_name = _prompt_for_nonempty_value('App name (eg. MyApp): ')
     author = _prompt_for_nonempty_value('App author (eg. Joe Developer): ')
+    version = _prompt_for_nonempty_value('App initial version (eg. 1.0): ')
     mac_bundle_identifier = input(
         'Mac bundle identifier (optional, eg. com.joe.myapp): '
     )
@@ -38,6 +39,7 @@ def startproject():
         template_dir, '.', {
             'app_name': app_name,
             'author': author,
+            'version': version,
             'mac_bundle_identifier': mac_bundle_identifier
         },
         files_to_filter=[settings_file('base.json'), settings_file('mac.json')]
