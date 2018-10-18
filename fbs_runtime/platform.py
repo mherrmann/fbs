@@ -20,6 +20,10 @@ def is_linux():
     return sys.platform.startswith('linux')
 
 def name():
+    """
+    Returns 'Windows', 'Mac' or 'Linux', depending on the current OS. If the OS
+    can't be determined, a RuntimeError is raised.
+    """
     if is_windows():
         return 'Windows'
     if is_mac():
