@@ -29,7 +29,7 @@ setup(
     author='Michael Herrmann',
     author_email='michael+removethisifyouarehuman@herrmann.io',
     url='https://build-system.fman.io',
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests', 'tests.*')),
     package_data={
         'fbs': _get_package_data('fbs', 'default_settings'),
         'fbs.builtin_commands':
@@ -55,5 +55,6 @@ setup(
     ],
     license='GPLv3 or later',
     keywords='PyQt',
-    platforms=['MacOS', 'Windows', 'Debian']
+    platforms=['MacOS', 'Windows', 'Debian'],
+    test_suite='tests'
 )

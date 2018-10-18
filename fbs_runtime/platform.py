@@ -1,3 +1,5 @@
+from fbs_runtime import _state
+
 import os
 import sys
 
@@ -5,50 +7,72 @@ def is_windows():
     """
     Return True if the current OS is Windows, False otherwise.
     """
-    return sys.platform in ('win32', 'cygwin')
+    return name() == 'Windows'
 
 def is_mac():
     """
     Return True if the current OS is macOS, False otherwise.
     """
-    return sys.platform == 'darwin'
+    return name() == 'Mac'
 
 def is_linux():
     """
     Return True if the current OS is Linux, False otherwise.
     """
-    return sys.platform.startswith('linux')
+    return name() == 'Linux'
 
 def name():
     """
     Returns 'Windows', 'Mac' or 'Linux', depending on the current OS. If the OS
     can't be determined, a RuntimeError is raised.
     """
-    if is_windows():
+    if _state.PLATFORM_NAME is None:
+        _state.PLATFORM_NAME = _get_name()
+    return _state.PLATFORM_NAME
+
+def _get_name():
+    if sys.platform in ('win32', 'cygwin'):
         return 'Windows'
-    if is_mac():
+    if sys.platform == 'darwin':
         return 'Mac'
-    if is_linux():
+    if sys.platform.startswith('linux'):
         return 'Linux'
     raise RuntimeError('Unknown operating system.')
 
 def is_ubuntu():
     try:
-        return _get_os_release_name().startswith('Ubuntu')
+        return linux_distribution() == 'Ubuntu'
     except FileNotFoundError:
         return False
 
 def is_arch_linux():
     try:
-        return _get_os_release_name().startswith('Arch Linux')
+        return linux_distribution() == 'Arch'
     except FileNotFoundError:
         return False
 
 def is_fedora():
     try:
-        return _get_os_release_name().startswith('Fedora')
+        return linux_distribution() == 'Fedora'
     except FileNotFoundError:
         return False
+
+def linux_distribution():
+    if _state.LINUX_DISTRIBUTION is None:
+        _state.LINUX_DISTRIBUTION = _get_linux_distribution()
+    return _state.LINUX_DISTRIBUTION
+
+def _get_linux_distribution():
+    if not is_linux():
+        return ''
+    try:
+        os_release = _get_os_release_name()
+    except OSError:
+        pass
+    else:
+        if os_release:
+            return os_release.split(maxsplit=1)[0]
+    return '<unknown>'
 
 def is_gnome_based():
     curr_desktop = os.environ.get('XDG_CURRENT_DESKTOP', '').lower()

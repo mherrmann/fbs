@@ -1,4 +1,5 @@
 from argparse import ArgumentParser
+from fbs._state import COMMANDS
 from inspect import getfullargspec
 from os import getcwd
 from os.path import basename, splitext
@@ -31,10 +32,8 @@ def command(f):
     Use this as a decorator to define custom fbs commands. For an example, see:
         https://build-system.fman.io/manual/#custom-commands
     """
-    _COMMANDS[f.__name__] = f
+    COMMANDS[f.__name__] = f
     return f
-
-_COMMANDS = {}
 
 def _get_cmdline_parser():
     # Were we invoked with `python -m fbs`?
@@ -45,7 +44,7 @@ def _get_cmdline_parser():
         prog = None
     parser = ArgumentParser(prog=prog, description='fbs')
     subparsers = parser.add_subparsers()
-    for cmd_name, cmd_fn in _COMMANDS.items():
+    for cmd_name, cmd_fn in COMMANDS.items():
         error_msg = 'Error in command %r: Only optional, boolean arguments '\
                     'are supported.' % cmd_name
         cmd_parser = subparsers.add_parser(cmd_name, help=cmd_fn.__doc__)

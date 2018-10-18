@@ -1,5 +1,5 @@
 from fbs import path, SETTINGS
-from fbs_runtime import platform
+from fbs._state import LOADED_PROFILES
 from fbs_runtime.platform import is_mac
 from glob import glob
 from os import makedirs
@@ -22,10 +22,9 @@ def generate_resources():
     else:
         resources_dest_dir = freeze_dir
     kwargs = {'files_to_filter': SETTINGS['resources_to_filter']}
-    resource_dirs = (
-        path('src/main/resources/base'),
-        path('src/main/resources/' + platform.name().lower())
-    )
+    resource_dirs = [
+        path('src/main/resources/' + profile) for profile in LOADED_PROFILES
+    ]
     for dir_ in resource_dirs:
         if exists(dir_):
             copy_with_filtering(dir_, resources_dest_dir, **kwargs)
@@ -62,9 +61,8 @@ def get_icons():
     current platform.
     """
     result = {}
-    for icons_dir in (
-        'src/main/icons/base', 'src/main/icons/' + platform.name().lower()
-    ):
+    for profile in LOADED_PROFILES:
+        icons_dir = 'src/main/icons/' + profile
         for icon_path in glob(path(icons_dir + '/*.png')):
             size = int(splitext(basename(icon_path))[0])
             result[size] = icon_path
@@ -102,7 +100,7 @@ def _copy_with_filtering(
 
 class _paths:
     def __init__(self, paths):
-        self._paths = [Path(p).resolve() for p in paths]
+        self._paths = [Path(path(p)).resolve() for p in paths]
     def __contains__(self, item):
         item = Path(item).resolve()
         for p in self._paths:

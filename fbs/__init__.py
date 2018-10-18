@@ -1,13 +1,15 @@
+from fbs import _state
+from fbs._state import LOADED_PROFILES
 from fbs_runtime import platform
 from os.path import normpath, join, isabs, dirname, exists, abspath
 
 import json
 
 """
-fbs populates this dictionary with the current build settings. A typical example
-is SETTINGS['app_name'], which you define in src/build/settings/base.json.
+fbs populates SETTINGS with the current build settings. A typical example is
+SETTINGS['app_name'], which you define in src/build/settings/base.json.
 """
-SETTINGS = {}
+SETTINGS = _state.SETTINGS
 
 def init(project_dir):
     """
@@ -26,17 +28,15 @@ def activate_profile(profile_name):
     Or in custom build scripts during a release, where release.json contains the
     production server URL instead of a staging server.
     """
-    _LOADED_PROFILES.append(profile_name)
+    LOADED_PROFILES.append(profile_name)
     default_settings = join(dirname(__file__), 'default_settings')
     project_settings = path('src/build/settings')
     json_paths = [
         join(dir_path, profile + '.json')
         for dir_path in (default_settings, project_settings)
-        for profile in _LOADED_PROFILES
+        for profile in LOADED_PROFILES
     ]
     SETTINGS.update(_load_settings(p for p in json_paths if exists(p)))
-
-_LOADED_PROFILES = []
 
 def path(path_str):
     """

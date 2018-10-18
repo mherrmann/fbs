@@ -1,4 +1,4 @@
-from fbs_runtime import platform
+from fbs_runtime import platform, _state
 from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
@@ -90,11 +90,13 @@ def is_frozen():
     """
     return getattr(sys, 'frozen', False)
 
-@lru_cache()
 def get_application_context(DevelopmentAppCtxtCls, FrozenAppCtxtCls=None):
     if FrozenAppCtxtCls is None:
         FrozenAppCtxtCls = DevelopmentAppCtxtCls
-    return FrozenAppCtxtCls() if is_frozen() else DevelopmentAppCtxtCls()
+    if _state.APPLICATION_CONTEXT is None:
+        _state.APPLICATION_CONTEXT = \
+            FrozenAppCtxtCls() if is_frozen() else DevelopmentAppCtxtCls()
+    return _state.APPLICATION_CONTEXT
 
 class _ResourceLocator:
     def __init__(self, resource_dirs):
