@@ -1,6 +1,6 @@
-from fbs_runtime import system
+from fbs_runtime import platform
 from fbs_runtime._signal import SignalWakeupHandler
-from fbs_runtime.system import is_windows, is_mac
+from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
 from os.path import join, exists, pardir, dirname, realpath
 from pathlib import PurePath
@@ -114,7 +114,7 @@ class _DevelopmentResourceLocator(_ResourceLocator):
         project_dir = self._get_project_base_dir(appctxt_cls)
         resources_dir = join(project_dir, 'src', 'main', 'resources')
         resource_dirs = [
-            join(resources_dir, system.name().lower()),
+            join(resources_dir, platform.name().lower()),
             join(resources_dir, 'base'),
             join(project_dir, 'src', 'main', 'icons')
         ]

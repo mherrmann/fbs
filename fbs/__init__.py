@@ -1,4 +1,4 @@
-from fbs import platform
+from fbs_runtime import platform
 from os.path import normpath, join, isabs, dirname, exists, abspath
 
 import json

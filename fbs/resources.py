@@ -1,5 +1,6 @@
-from fbs import platform, path, SETTINGS
-from fbs.platform import is_mac
+from fbs import path, SETTINGS
+from fbs_runtime import platform
+from fbs_runtime.platform import is_mac
 from glob import glob
 from os import makedirs
 from os.path import exists, dirname, isfile, join, basename, relpath, splitext

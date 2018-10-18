@@ -1,5 +1,5 @@
 from fbs import path, SETTINGS
-from fbs.platform import is_mac
+from fbs_runtime.platform import is_mac
 from os import rename
 from subprocess import run
 
