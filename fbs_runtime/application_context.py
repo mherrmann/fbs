@@ -92,7 +92,6 @@ def is_frozen():
 
 @lru_cache()
 def get_application_context(DevelopmentAppCtxtCls, FrozenAppCtxtCls=None):
-
     if FrozenAppCtxtCls is None:
         FrozenAppCtxtCls = DevelopmentAppCtxtCls
     return FrozenAppCtxtCls() if is_frozen() else DevelopmentAppCtxtCls()
