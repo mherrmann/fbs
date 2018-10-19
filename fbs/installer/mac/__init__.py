@@ -5,7 +5,7 @@ from subprocess import run
 
 def create_installer_mac():
     app_name = SETTINGS['app_name']
-    dest = path('target/${app_name}.dmg')
+    dest = path('target/${installer}')
     dest_existed = exists(dest)
     if dest_existed:
         dest_bu = dest + '.bu'

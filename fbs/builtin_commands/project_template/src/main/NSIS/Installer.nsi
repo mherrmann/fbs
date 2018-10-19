@@ -31,7 +31,7 @@ FunctionEnd
 ;General
 
   Name "%{app_name}"
-  OutFile "..\%{app_name}Setup.exe"
+  OutFile "..\%{installer}"
 
 ;--------------------------------
 ;Interface Settings

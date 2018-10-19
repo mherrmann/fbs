@@ -1,4 +1,4 @@
-from fbs import path, SETTINGS
+from fbs import path
 from fbs.resources import copy_with_filtering
 from os.path import join
 from subprocess import run
@@ -8,10 +8,6 @@ def create_installer_windows():
     copy_with_filtering(
         nsis_dir,
         path('target/NSIS'),
-        replacements={
-            'app_name': SETTINGS['app_name'],
-            'author': SETTINGS['author']
-        },
         files_to_filter=[join(nsis_dir, 'Installer.nsi')],
         placeholder='%%{%s}'
     )

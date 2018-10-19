@@ -7,9 +7,10 @@ import them in your Python build script and execute them there.
 from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
-from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux
+from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
+    is_ubuntu
 from getpass import getuser
-from os import listdir, remove, unlink, mkdir
+from os import listdir, remove, unlink, mkdir, rename
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
@@ -57,6 +58,11 @@ def startproject():
             pth('src/build/settings/mac.json'),
             pth('src/main/python/main.py')
         ]
+    )
+    desktopfile_dir = 'src/main/resources/linux-global/usr/share/applications'
+    rename(
+        desktopfile_dir + '/${app_name}.desktop',
+        desktopfile_dir + '/%s.desktop' % app
     )
     print(
         "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
@@ -111,6 +117,9 @@ def installer():
     elif is_mac():
         from fbs.installer.mac import create_installer_mac
         create_installer_mac()
+    elif is_ubuntu():
+        from fbs.installer.ubuntu import create_installer_ubuntu
+        create_installer_ubuntu()
     else:
         raise RuntimeError('Unsupported OS')
 
