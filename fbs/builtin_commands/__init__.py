@@ -81,7 +81,7 @@ def run():
     if old_pythonpath:
         pythonpath += os.pathsep + old_pythonpath
     env['PYTHONPATH'] = pythonpath
-    subprocess.run([sys.executable, SETTINGS['main_module']], env=env)
+    subprocess.run([sys.executable, path(SETTINGS['main_module'])], env=env)
 
 @command
 def freeze(debug=False):

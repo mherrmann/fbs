@@ -17,7 +17,7 @@ def run_pyinstaller(extra_args=None, debug=False):
         '--distpath', path('target'),
         '--specpath', path('target/PyInstaller'),
         '--workpath', path('target/PyInstaller'),
-        SETTINGS['main_module']
+        path(SETTINGS['main_module'])
     ]
     if debug:
         cmdline.append('--debug')
