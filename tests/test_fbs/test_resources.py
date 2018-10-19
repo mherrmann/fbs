@@ -5,5 +5,6 @@ from tests.test_fbs import FbsTest
 
 class GenerateResourcesTest(FbsTest):
     def test_generate_resources(self):
+        self.init_fbs('Mac')
         generate_resources()
         self.assertTrue(exists(path('${freeze_dir}/Contents/Info.plist')))

@@ -20,8 +20,9 @@ class FbsTest(TestCase):
         # Save fbs's state:
         self._fbs_state_before = fbs_state.get()
         self._runtime_state_before = runtime_state.get()
-        # Init fbs as if we were on Mac:
-        runtime_state.restore('Mac', None, None)
+    def init_fbs(self, platform_name=None):
+        if platform_name is not None:
+            runtime_state.restore(platform_name, None, None)
         fbs.init(self._project_dir)
     def tearDown(self):
         runtime_state.restore(*self._runtime_state_before)
