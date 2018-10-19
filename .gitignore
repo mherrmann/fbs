@@ -100,3 +100,5 @@ ENV/
 .mypy_cache/
 
 .idea/
+
+src/
