@@ -1,0 +1,2 @@
+PyQt5==5.9.2
+PyInstaller==3.3.1
