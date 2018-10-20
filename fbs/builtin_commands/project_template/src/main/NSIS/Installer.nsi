@@ -65,7 +65,26 @@ FunctionEnd
 
 !define UNINST_KEY \
   "Software\Microsoft\Windows\CurrentVersion\Uninstall\%{app_name}"
+
+!macro uninstallMacro un
+  Function ${un}customUninstall
+  RMDir /r "$InstDir"
+  Delete "$SMPROGRAMS\%{app_name}.lnk"
+  DeleteRegKey /ifempty SHCTX "Software\%{app_name}"
+  DeleteRegKey SHCTX "${UNINST_KEY}"
+  FunctionEnd
+!macroend
+
+; Insert function as an installer and uninstaller function.
+!insertmacro uninstallMacro ""
+!insertmacro uninstallMacro "un."
+
+
 Section
+  ; Uninstall
+  Call customUninstall
+
+  ; Install
   SetOutPath "$InstDir"
   File /r "..\%{app_name}\*"
   WriteRegStr SHCTX "Software\%{app_name}" "" $InstDir
@@ -87,12 +106,7 @@ SectionEnd
 ;Uninstaller Section
 
 Section "Uninstall"
-
-  RMDir /r "$InstDir"
-  Delete "$SMPROGRAMS\%{app_name}.lnk"
-  DeleteRegKey /ifempty SHCTX "Software\%{app_name}"
-  DeleteRegKey SHCTX "${UNINST_KEY}"
-
+  Call un.customUninstall
 SectionEnd
 
 Function LaunchLink
