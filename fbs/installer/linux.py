@@ -1,6 +1,7 @@
 from fbs import path, SETTINGS
 from fbs._state import LOADED_PROFILES
 from fbs.resources import copy_with_filtering, get_icons
+from fbs_runtime.platform import is_arch_linux
 from os import makedirs, remove
 from os.path import join, dirname, exists
 from shutil import copy, rmtree, copytree
@@ -39,6 +40,19 @@ def run_fpm(output_type):
         '-t', output_type,
         '-p', dest
     ]
+    if SETTINGS['description']:
+        args.extend(['--description', SETTINGS['description']])
+    if SETTINGS['author_email']:
+        args.extend([
+            '-m', '%s <%s>' % (SETTINGS['author'], SETTINGS['author_email'])
+        ])
+    if SETTINGS['url']:
+        args.extend(['--url', SETTINGS['url']])
+    for dependency in SETTINGS['depends']:
+        args.extend(['-d', dependency])
+    if is_arch_linux():
+        for opt_dependency in SETTINGS['depends_opt']:
+            args.extend(['--pacman-optional-depends', opt_dependency])
     try:
         run(args, check=True)
     except FileNotFoundError:

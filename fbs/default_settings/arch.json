@@ -1,0 +1,4 @@
+{
+    "installer": "${app_name}.pkg.tar.xz",
+    "depends_opt": []
+}

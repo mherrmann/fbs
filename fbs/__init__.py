@@ -1,7 +1,7 @@
 from fbs import _state
 from fbs._state import LOADED_PROFILES
 from fbs_runtime import platform
-from fbs_runtime.platform import is_ubuntu
+from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
 from os.path import normpath, join, isabs, dirname, exists, abspath
 
 import json
@@ -19,8 +19,13 @@ def init(project_dir):
     SETTINGS['project_dir'] = abspath(project_dir)
     activate_profile('base')
     activate_profile(platform.name().lower())
-    if is_ubuntu():
-        activate_profile('ubuntu')
+    if is_linux():
+        if is_ubuntu():
+            activate_profile('ubuntu')
+        elif is_arch_linux():
+            activate_profile('arch')
+        elif is_fedora():
+            activate_profile('fedora')
 
 def activate_profile(profile_name):
     """

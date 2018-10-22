@@ -8,7 +8,7 @@ from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
 from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
-    is_ubuntu
+    is_ubuntu, is_fedora
 from getpass import getuser
 from os import listdir, remove, unlink, mkdir, rename
 from os.path import join, isfile, isdir, islink, dirname, exists
@@ -117,9 +117,18 @@ def installer():
     elif is_mac():
         from fbs.installer.mac import create_installer_mac
         create_installer_mac()
-    elif is_ubuntu():
-        from fbs.installer.ubuntu import create_installer_ubuntu
-        create_installer_ubuntu()
+    elif is_linux():
+        if is_ubuntu():
+            from fbs.installer.ubuntu import create_installer_ubuntu
+            create_installer_ubuntu()
+        elif is_arch_linux():
+            from fbs.installer.arch import create_installer_arch
+            create_installer_arch()
+        elif is_fedora():
+            from fbs.installer.fedora import create_installer_fedora
+            create_installer_fedora()
+        else:
+            raise RuntimeError('Unsupported Linux distribution')
     else:
         raise RuntimeError('Unsupported OS')
 

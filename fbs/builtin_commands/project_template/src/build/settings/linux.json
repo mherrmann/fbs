@@ -2,5 +2,8 @@
     "resources_to_filter": [
         "src/main/resources/linux-global/usr/share/applications/${app_name}.desktop"
     ],
-    "categories": "Utility;"
+    "categories": "Utility;",
+    "description": "",
+	"author_email": "",
+	"url": ""
 }
