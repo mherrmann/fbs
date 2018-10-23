@@ -1,4 +1,5 @@
 {
     "installer": "${app_name}.pkg.tar.xz",
+    "depends": ["qt5-base"],
     "depends_opt": []
 }
