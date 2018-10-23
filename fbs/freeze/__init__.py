@@ -8,19 +8,23 @@ def run_pyinstaller(extra_args=None, debug=False):
         extra_args = []
     app_name = SETTINGS['app_name']
     log_level = 'DEBUG' if debug else 'WARN'
-    cmdline = [
+    args = [
         'pyinstaller',
         '--name', app_name,
         '--noupx',
         '--log-level', log_level
-    ] + extra_args + [
+    ]
+    for hidden_import in SETTINGS['hidden_imports']:
+        args.extend(['--hidden-import', hidden_import])
+    args.extend(extra_args)
+    args.extend([
         '--distpath', path('target'),
         '--specpath', path('target/PyInstaller'),
         '--workpath', path('target/PyInstaller'),
         path(SETTINGS['main_module'])
-    ]
+    ])
     if debug:
-        cmdline.append('--debug')
-    run(cmdline, check=True)
+        args.append('--debug')
+    run(args, check=True)
     output_dir = path('target/' + app_name + ('.app' if is_mac() else ''))
     rename(output_dir, path('${freeze_dir}'))
