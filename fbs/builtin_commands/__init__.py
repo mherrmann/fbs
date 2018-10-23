@@ -97,9 +97,15 @@ def freeze(debug=False):
         from fbs.freeze.mac import freeze_mac
         freeze_mac(debug=debug)
     elif is_linux():
-        if is_arch_linux():
+        if is_ubuntu():
+            from fbs.freeze.ubuntu import freeze_ubuntu
+            freeze_ubuntu(debug=debug)
+        elif is_arch_linux():
             from fbs.freeze.arch import freeze_arch
             freeze_arch(debug=debug)
+        elif is_fedora():
+            from fbs.freeze.fedora import freeze_fedora
+            freeze_fedora(debug=debug)
         else:
             from fbs.freeze.linux import freeze_linux
             freeze_linux(debug=debug)
