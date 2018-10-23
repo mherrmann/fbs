@@ -41,8 +41,7 @@ license, click
 [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NH2ANDDS48KXA).
 
 ## Current Status
-It's currently possible to package apps on Windows, Mac and Linux. Installers
-can be created for Windows, Mac and Ubuntu. The next steps are to let you create
-installers on Arch Linux and Fedora, then code signing, then automatic updates.
-To stay updated as these features are open sourced, please subscribe
+It's currently possible to package and create installers on Windows, Mac and 
+Ubuntu, Fedora and Arch Linux. The next steps are code signing and automatic 
+updates. To stay updated as these features are open sourced, please subscribe
 [here](https://emailoctopus.com/lists/5061ca0f-33e0-11e8-a3c9-06b79b628af2/forms/subscribe).
