@@ -1,9 +1,9 @@
 {
-	"categories": "Utility;",
+    "categories": "Utility;",
     "description": "",
     "author_email": "",
     "url": "",
-	"depends": [],
+    "depends": [],
     "resources_to_filter": [
         "src/installer/linux/usr/share/applications/AppName.desktop"
     ]
