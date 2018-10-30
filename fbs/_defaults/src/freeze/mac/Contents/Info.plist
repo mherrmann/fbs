@@ -24,6 +24,6 @@
     <string>${app_name}</string>
     <!-- Enable Retina support on OS X: -->
     <key>NSPrincipalClass</key>
-    9<string>NSApplication</string>
+    <string>NSApplication</string>
 </dict>
 </plist>
