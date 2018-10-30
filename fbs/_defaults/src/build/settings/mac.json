@@ -1,0 +1,8 @@
+{
+    "freeze_dir": "target/${app_name}.app",
+    "mac_bundle_identifier": "",
+    "installer": "${app_name}.dmg",
+    "resources_to_filter": [
+        "src/freeze/mac/Contents/Info.plist"
+    ]
+}

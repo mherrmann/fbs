@@ -1,9 +1,9 @@
-from fbs import _state
+from fbs import _state, _defaults
 from fbs._settings import load_settings, expand_placeholders
 from fbs._state import LOADED_PROFILES
 from fbs_runtime import platform
 from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
-from os.path import normpath, join, isabs, dirname, exists, abspath
+from os.path import normpath, join, exists, abspath
 
 """
 fbs populates SETTINGS with the current build settings. A typical example is
@@ -36,12 +36,10 @@ def activate_profile(profile_name):
     production server URL instead of a staging server.
     """
     LOADED_PROFILES.append(profile_name)
-    default_settings = join(dirname(__file__), 'default_settings')
-    project_settings = path('src/build/settings')
     json_paths = [
-        join(dir_path, profile + '.json')
-        for dir_path in (default_settings, project_settings)
+        path_fn('src/build/settings/%s.json' % profile)
         for profile in LOADED_PROFILES
+        for path_fn in (_defaults.path, path)
     ]
     SETTINGS.update(load_settings(p for p in json_paths if exists(p)))
 
@@ -53,8 +51,6 @@ def path(path_str):
     settings. For example: path('${freeze_dir}/foo').
     """
     path_str = expand_placeholders(path_str, SETTINGS)
-    if isabs(path_str):
-        return path_str
     try:
         project_dir = SETTINGS['project_dir']
     except KeyError:

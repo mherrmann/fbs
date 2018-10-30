@@ -10,7 +10,7 @@ from fbs.resources import copy_with_filtering
 from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
 from getpass import getuser
-from os import listdir, remove, unlink, mkdir, rename
+from os import listdir, remove, unlink, mkdir
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
@@ -58,11 +58,6 @@ def startproject():
             pth('src/build/settings/mac.json'),
             pth('src/main/python/main.py')
         ]
-    )
-    desktopfile_dir = 'src/main/resources/linux-global/usr/share/applications'
-    rename(
-        desktopfile_dir + '/${app_name}.desktop',
-        desktopfile_dir + '/%s.desktop' % app
     )
     print(
         "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"

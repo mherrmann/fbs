@@ -1,8 +1,8 @@
 from fbs import path, SETTINGS
-from fbs._state import LOADED_PROFILES
-from fbs.resources import copy_with_filtering, get_icons
+from fbs.installer import _generate_installer_resources
+from fbs.resources import get_icons
 from fbs_runtime.platform import is_arch_linux
-from os import makedirs, remove
+from os import makedirs, remove, rename
 from os.path import join, dirname, exists
 from shutil import copy, rmtree, copytree
 from subprocess import run
@@ -11,7 +11,13 @@ def generate_installer_files():
     if exists(path('target/installer')):
         rmtree(path('target/installer'))
     copytree(path('${freeze_dir}'), path('target/installer/opt/${app_name}'))
-    _generate_global_resources()
+    _generate_installer_resources()
+    # Special handling of the .desktop file: Replace AppName by actual name.
+    apps_dir = path('target/installer/usr/share/applications')
+    rename(
+        join(apps_dir, 'AppName.desktop'),
+        join(apps_dir, SETTINGS['app_name'] + '.desktop')
+    )
     _generate_icons()
 
 def run_fpm(output_type):
@@ -61,14 +67,6 @@ def run_fpm(output_type):
             "instructions at "
             "https://fpm.readthedocs.io/en/latest/installing.html."
         ) from None
-
-def _generate_global_resources():
-    for profile in LOADED_PROFILES:
-        source_dir = 'src/main/resources/%s-global' % profile
-        copy_with_filtering(
-            path(source_dir), path('target/installer'),
-            files_to_filter=SETTINGS['resources_to_filter']
-        )
 
 def _generate_icons():
     dest_root = path('target/installer/usr/share/icons/hicolor')

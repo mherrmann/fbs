@@ -1,6 +1,3 @@
 {
-    "mac_bundle_identifier": "${mac_bundle_identifier}",
-    "resources_to_filter": [
-        "src/main/resources/mac-frozen/Contents/Info.plist"
-    ]
+    "mac_bundle_identifier": "${mac_bundle_identifier}"
 }

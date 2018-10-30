@@ -7,6 +7,7 @@ import fbs
 import fbs.builtin_commands
 import fbs._state as fbs_state
 import fbs_runtime._state as runtime_state
+import json
 
 class FbsTest(TestCase):
     def setUp(self):
@@ -17,6 +18,7 @@ class FbsTest(TestCase):
         project_template = \
             join(dirname(fbs.builtin_commands.__file__), 'project_template')
         copytree(project_template, self._project_dir)
+        self._update_base_settings({'app_name': 'MyApp'})
         # Save fbs's state:
         self._fbs_state_before = fbs_state.get()
         self._runtime_state_before = runtime_state.get()
@@ -29,3 +31,11 @@ class FbsTest(TestCase):
         fbs_state.restore(*self._fbs_state_before)
         self._tmp_dir.cleanup()
         super().tearDown()
+    def _update_base_settings(self, dict_):
+        base_json = \
+            join(self._project_dir, 'src', 'build', 'settings', 'base.json')
+        with open(base_json) as f:
+            settings = json.load(f)
+        settings.update(dict_)
+        with open(base_json, 'w') as f:
+            json.dump(settings, f)

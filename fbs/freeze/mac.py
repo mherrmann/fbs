@@ -1,6 +1,6 @@
 from fbs import path, SETTINGS
-from fbs.freeze import run_pyinstaller
-from fbs.resources import generate_resources, get_icons
+from fbs.freeze import _generate_resources, run_pyinstaller
+from fbs.resources import get_icons
 from os import makedirs, unlink, rename, symlink
 from os.path import exists
 from shutil import copy, rmtree
@@ -24,7 +24,7 @@ def freeze_mac(extra_pyinstaller_args=None, debug=False):
     run_pyinstaller(pyinstaller_args + extra_pyinstaller_args, debug)
     _remove_unwanted_pyinstaller_files()
     _fix_sparkle_delta_updates()
-    generate_resources()
+    _generate_resources()
 
 def _generate_iconset():
     makedirs(path('target/Icon.iconset'), exist_ok=True)

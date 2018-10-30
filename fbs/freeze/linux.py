@@ -1,13 +1,12 @@
 from fbs import path
-from fbs.freeze import run_pyinstaller
-from fbs.resources import generate_resources
+from fbs.freeze import _generate_resources, run_pyinstaller
 from glob import glob
 from os import remove
 from shutil import copy
 
 def freeze_linux(extra_pyinstaller_args=None, debug=False):
     run_pyinstaller(extra_pyinstaller_args, debug)
-    generate_resources()
+    _generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
     # For some reason, PyInstaller packages libstdc++.so.6 even though it is
     # available on most Linux distributions. If we include it and run our app on

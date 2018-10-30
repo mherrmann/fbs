@@ -1,6 +1,5 @@
 from fbs import path
-from fbs.freeze import run_pyinstaller
-from fbs.resources import generate_resources
+from fbs.freeze import run_pyinstaller, _generate_resources
 from os import remove
 from os.path import join, exists
 from shutil import copy
@@ -20,7 +19,7 @@ def freeze_windows(extra_pyinstaller_args=None, debug=False):
     pyinstaller_args.extend(['--icon', path('src/main/icons/Icon.ico')])
     run_pyinstaller(pyinstaller_args + extra_pyinstaller_args, debug)
     _restore_corrupted_python_dlls()
-    generate_resources()
+    _generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
     _add_missing_dlls()
 
