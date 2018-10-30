@@ -1,7 +1,7 @@
 from fbs import path, SETTINGS
 from os import replace, remove
 from os.path import join, dirname, exists
-from subprocess import run
+from subprocess import check_call, DEVNULL
 
 def create_installer_mac():
     app_name = SETTINGS['app_name']
@@ -11,14 +11,14 @@ def create_installer_mac():
         dest_bu = dest + '.bu'
         replace(dest, dest_bu)
     try:
-        run([
+        check_call([
             join(dirname(__file__), 'yoursway-create-dmg', 'create-dmg'),
             '--volname', app_name,
             '--app-drop-link', '170', '10',
             '--icon', app_name + '.app', '0', '10',
             dest,
             path('${freeze_dir}')
-        ], check=True)
+        ], stdout=DEVNULL)
     except:
         if dest_existed:
             replace(dest_bu, dest)
