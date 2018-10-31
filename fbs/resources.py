@@ -76,7 +76,15 @@ def _copy_with_filtering(
 
 class _paths:
     def __init__(self, paths):
-        self._paths = [Path(p).resolve() for p in paths]
+        self._paths = []
+        # _defaults includes "resources_to_filter" - eg. Installer.nsi. If these
+        # files don't also exist in the "user's" src/ directory, then
+        # Path(p).resolve() raises FileNotFoundError. Handle this:
+        for p in paths:
+            try:
+                self._paths.append(Path(p).resolve())
+            except FileNotFoundError:
+                pass
     def __contains__(self, item):
         item = Path(item).resolve()
         for p in self._paths:
