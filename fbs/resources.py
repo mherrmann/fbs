@@ -82,7 +82,7 @@ class _paths:
         # Path(p).resolve() raises FileNotFoundError. Handle this:
         for p in paths:
             try:
-                self._paths.append(Path(p).resolve())
+                self._paths.append(self._resolve_strict(Path(p)))
             except FileNotFoundError:
                 pass
     def __contains__(self, item):
@@ -91,6 +91,12 @@ class _paths:
             if p.samefile(item) or p in item.parents:
                 return True
         return False
+    def _resolve_strict(self, path_):
+        try:
+            return path_.resolve(strict=True)
+        except TypeError:
+            # Python < 3.6:
+            return path_.resolve()
 
 def _copy(path_fn, src, dst): # Used by several other internal fbs modules
     src = path_fn(src)
