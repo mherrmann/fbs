@@ -38,8 +38,8 @@ def activate_profile(profile_name):
     LOADED_PROFILES.append(profile_name)
     json_paths = [
         path_fn('src/build/settings/%s.json' % profile)
-        for profile in LOADED_PROFILES
         for path_fn in (_defaults.path, path)
+        for profile in LOADED_PROFILES
     ]
     SETTINGS.update(load_settings(p for p in json_paths if exists(p)))
 
