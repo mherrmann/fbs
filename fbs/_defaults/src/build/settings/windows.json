@@ -1,3 +1,6 @@
 {
-    "installer": "${app_name}Setup.exe"
+    "installer": "${app_name}Setup.exe",
+    "resources_to_filter": [
+        "src/installer/windows/Installer.nsi"
+    ]
 }

@@ -4,8 +4,6 @@
         "src/unittest/python",
         "src/integrationtest/python"
     ],
-    "resources_to_filter": [
-        "src/installer/windows/Installer.nsi"
-    ],
+    "resources_to_filter": [],
     "hidden_imports": []
 }
