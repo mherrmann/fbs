@@ -5,6 +5,7 @@ from os import getcwd
 from os.path import basename, splitext
 
 import fbs
+import logging
 import sys
 
 def main(project_dir=None):
@@ -16,6 +17,7 @@ def main(project_dir=None):
     """
     if project_dir is None:
         project_dir = getcwd()
+    _init_logging()
     fbs.init(project_dir)
     # Load built-in commands:
     from fbs import builtin_commands
@@ -34,6 +36,17 @@ def command(f):
     """
     COMMANDS[f.__name__] = f
     return f
+
+def _init_logging():
+    # Redirect INFO or lower to stdout, WARNING or higher to stderr:
+    stdout = logging.StreamHandler(sys.stdout)
+    stdout.setLevel(logging.DEBUG)
+    stdout.addFilter(lambda record: record.levelno <= logging.INFO)
+    stderr = logging.StreamHandler(sys.stderr)
+    stderr.setLevel(logging.WARNING)
+    logging.basicConfig(
+        level=logging.INFO, format='%(message)s', handlers=(stdout, stderr)
+    )
 
 def _get_cmdline_parser():
     # Were we invoked with `python -m fbs`?

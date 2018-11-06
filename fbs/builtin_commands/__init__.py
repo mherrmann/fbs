@@ -15,9 +15,12 @@ from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
+import logging
 import os
 import subprocess
 import sys
+
+_LOG = logging.getLogger(__name__)
 
 @command
 def startproject():
@@ -25,7 +28,7 @@ def startproject():
     Start a new fbs project in the current directory
     """
     if exists('src'):
-        print('The src/ directory already exists. Aborting.')
+        _LOG.warning('The src/ directory already exists. Aborting.')
         return
     try:
         app = _prompt_for_value('App name [MyApp] : ', default='MyApp')
@@ -59,7 +62,7 @@ def startproject():
             pth('src/main/python/main.py')
         ]
     )
-    print(
+    _LOG.info(
         "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
         "installed, you can now do:\n\n"
         "    python -m fbs run\n"
@@ -157,7 +160,7 @@ def test():
     if has_tests:
         TextTestRunner().run(suite)
     else:
-        print(
+        _LOG.warning(
             'No tests found. You can add them to:\n * '+
             '\n * '.join(test_dirs)
         )
