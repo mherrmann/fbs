@@ -1,8 +1,10 @@
 from argparse import ArgumentParser
 from fbs._state import COMMANDS
 from inspect import getfullargspec
+from logging import StreamHandler
 from os import getcwd
 from os.path import basename, splitext
+from textwrap import wrap
 
 import fbs
 import logging
@@ -39,14 +41,29 @@ def command(f):
 
 def _init_logging():
     # Redirect INFO or lower to stdout, WARNING or higher to stderr:
-    stdout = logging.StreamHandler(sys.stdout)
+    stdout = _WrappingStreamHandler(sys.stdout)
     stdout.setLevel(logging.DEBUG)
     stdout.addFilter(lambda record: record.levelno <= logging.INFO)
+    # Don't wrap stderr because it may contain stack traces:
     stderr = logging.StreamHandler(sys.stderr)
     stderr.setLevel(logging.WARNING)
     logging.basicConfig(
         level=logging.INFO, format='%(message)s', handlers=(stdout, stderr)
     )
+
+class _WrappingStreamHandler(StreamHandler):
+    def __init__(self, stream=None, line_length=70):
+        super().__init__(stream)
+        self._line_length = line_length
+    def format(self, record):
+        result = super().format(record)
+        lines = result.split(self.terminator)
+        new_lines = []
+        for line in lines:
+            new_lines.extend(
+                wrap(line, self._line_length, replace_whitespace=False)
+            )
+        return self.terminator.join(new_lines)
 
 def _get_cmdline_parser():
     # Were we invoked with `python -m fbs`?

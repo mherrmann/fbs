@@ -12,7 +12,6 @@ from getpass import getuser
 from os import listdir, remove, unlink, mkdir
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
-from textwrap import wrap
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
 import logging
@@ -64,9 +63,9 @@ def startproject():
         ]
     )
     _LOG.info(
-        "Created the src/ directory. If you have PyQt5 installed,\n"
-        "you can now do:\n\n"
-        "    python -m fbs run\n"
+        "Created the src/ directory. If you have PyQt5 installed, you can now "
+        "do:\n"
+        "    python -m fbs run"
     )
 
 @command
@@ -115,10 +114,10 @@ def freeze(debug=False):
                 freeze_linux(debug=debug)
         else:
             raise RuntimeError('Unsupported OS')
-    _LOG.info(_wrap_lines(
-        "Done. You can now run `%s`. " % executable,
-        "If that doesn't work, see https://build-system.fman.io/troubleshooting."
-    ))
+    _LOG.info(
+        "Done. You can now run `%s`. If that doesn't work, see "
+        "https://build-system.fman.io/troubleshooting.", executable
+    )
 
 @command
 def installer():
@@ -126,7 +125,7 @@ def installer():
     Create an installer for your app
     """
     out_file = 'target/' + SETTINGS['installer']
-    msg = 'Created %s.' % out_file
+    msg_parts = ['Created %s.' % out_file]
     if is_windows():
         from fbs.installer.windows import create_installer_windows
         create_installer_windows()
@@ -137,7 +136,7 @@ def installer():
         app_name = SETTINGS['app_name']
         if is_ubuntu():
             from fbs.installer.ubuntu import create_installer_ubuntu
-            # create_installer_ubuntu()
+            create_installer_ubuntu()
             install_cmd = 'sudo dpkg -i ' + out_file
             remove_cmd = 'sudo dpkg --purge ' + app_name
         elif is_arch_linux():
@@ -152,19 +151,16 @@ def installer():
             remove_cmd = 'sudo dnf remove ' + app_name
         else:
             raise RuntimeError('Unsupported Linux distribution')
-        lines = wrap(
-            msg + ' You can for instance install it via the following command:'
+        msg_parts.append(
+            'You can for instance install it via the following command:\n'
+            '    %s\n'
+            'This places it in /opt/%s. To uninstall it again, you can use:\n'
+            '    %s'
+            % (install_cmd, app_name, remove_cmd)
         )
-        lines.append('    ' + install_cmd)
-        lines.extend(wrap(
-            'This places it in /opt/%s. To uninstall it again, you can use:'
-            % app_name
-        ))
-        lines.append('    ' + remove_cmd)
-        msg = '\n'.join(lines)
     else:
         raise RuntimeError('Unsupported OS')
-    _LOG.info(msg)
+    _LOG.info(' '.join(msg_parts))
 
 @command
 def test():
@@ -225,7 +221,3 @@ def _prompt_for_value(message, optional=False, default=''):
         while not result:
             result = input(message).strip()
     return result
-
-def _wrap_lines(lead, remainder):
-    width = max(len(lead) + 1, 70)
-    return '\n'.join(wrap(lead + remainder, width, break_on_hyphens=False))
