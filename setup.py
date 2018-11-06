@@ -22,7 +22,7 @@ def _get_package_data(pkg_dir, data_subdir):
 description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
     name='fbs',
-    version='0.3.8-SNAPSHOT',
+    version='0.3.8',
     description=description,
     long_description=
         description + '\n\nHome page: https://build-system.fman.io',
