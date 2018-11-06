@@ -15,7 +15,8 @@ def run_pyinstaller(extra_args=None, debug=False):
         'pyinstaller',
         '--name', app_name,
         '--noupx',
-        '--log-level', log_level
+        '--log-level', log_level,
+        '--noconfirm'
     ]
     for hidden_import in SETTINGS['hidden_imports']:
         args.extend(['--hidden-import', hidden_import])

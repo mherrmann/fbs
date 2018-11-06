@@ -86,10 +86,6 @@ def freeze(debug=False):
     """
     Compile your application to a standalone executable
     """
-    try:
-        rmtree(path('${freeze_dir}'))
-    except FileNotFoundError:
-        pass
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
