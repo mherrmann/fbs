@@ -5,7 +5,7 @@ from fbs_runtime.platform import is_arch_linux
 from os import makedirs, remove, rename
 from os.path import join, dirname, exists
 from shutil import copy, rmtree, copytree
-from subprocess import run
+from subprocess import run, DEVNULL
 
 def generate_installer_files():
     if exists(path('target/installer')):
@@ -60,7 +60,7 @@ def run_fpm(output_type):
         for opt_dependency in SETTINGS['depends_opt']:
             args.extend(['--pacman-optional-depends', opt_dependency])
     try:
-        run(args, check=True)
+        run(args, check=True, stdout=DEVNULL)
     except FileNotFoundError:
         raise FileNotFoundError(
             "fbs could not find executable 'fpm'. Please install fpm using the "

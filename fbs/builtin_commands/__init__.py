@@ -3,7 +3,6 @@ This module contains all of fbs's built-in commands. They are invoked when you
 run `python -m fbs <command>` on the command line. But you are also free to
 import them in your Python build script and execute them there.
 """
-
 from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
@@ -13,6 +12,7 @@ from getpass import getuser
 from os import listdir, remove, unlink, mkdir
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
+from textwrap import wrap
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
 import logging
@@ -46,6 +46,7 @@ def startproject():
     except KeyboardInterrupt:
         print('')
         return
+    print('')
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
     pth = lambda relpath: join(template_dir, *relpath.split('/'))
@@ -63,8 +64,8 @@ def startproject():
         ]
     )
     _LOG.info(
-        "\nCreated the src/ directory. If you have PyQt5 or PySide2\n"
-        "installed, you can now do:\n\n"
+        "Created the src/ directory. If you have PyQt5 installed,\n"
+        "you can now do:\n\n"
         "    python -m fbs run\n"
     )
 
@@ -87,34 +88,45 @@ def freeze(debug=False):
     Compile your application to a standalone executable
     """
     # Import respective functions late to avoid circular import
-    # fbs <-> fbs.freeze.X:
-    if is_windows():
-        from fbs.freeze.windows import freeze_windows
-        freeze_windows(debug=debug)
-    elif is_mac():
+    # fbs <-> fbs.freeze.X.
+    app_name = SETTINGS['app_name']
+    if is_mac():
         from fbs.freeze.mac import freeze_mac
         freeze_mac(debug=debug)
-    elif is_linux():
-        if is_ubuntu():
-            from fbs.freeze.ubuntu import freeze_ubuntu
-            freeze_ubuntu(debug=debug)
-        elif is_arch_linux():
-            from fbs.freeze.arch import freeze_arch
-            freeze_arch(debug=debug)
-        elif is_fedora():
-            from fbs.freeze.fedora import freeze_fedora
-            freeze_fedora(debug=debug)
-        else:
-            from fbs.freeze.linux import freeze_linux
-            freeze_linux(debug=debug)
+        executable = 'target/%s.app/Contents/MacOS/%s' % (app_name, app_name)
     else:
-        raise RuntimeError('Unsupported OS')
+        executable = 'target/%s/%s' % (app_name, app_name)
+        if is_windows():
+            from fbs.freeze.windows import freeze_windows
+            freeze_windows(debug=debug)
+            executable += '.exe'
+        elif is_linux():
+            if is_ubuntu():
+                from fbs.freeze.ubuntu import freeze_ubuntu
+                freeze_ubuntu(debug=debug)
+            elif is_arch_linux():
+                from fbs.freeze.arch import freeze_arch
+                freeze_arch(debug=debug)
+            elif is_fedora():
+                from fbs.freeze.fedora import freeze_fedora
+                freeze_fedora(debug=debug)
+            else:
+                from fbs.freeze.linux import freeze_linux
+                freeze_linux(debug=debug)
+        else:
+            raise RuntimeError('Unsupported OS')
+    _LOG.info(_wrap_lines(
+        "Done. You can now run `%s`. " % executable,
+        "If that doesn't work, see https://build-system.fman.io/troubleshooting."
+    ))
 
 @command
 def installer():
     """
     Create an installer for your app
     """
+    out_file = 'target/' + SETTINGS['installer']
+    msg = 'Created %s.' % out_file
     if is_windows():
         from fbs.installer.windows import create_installer_windows
         create_installer_windows()
@@ -122,19 +134,37 @@ def installer():
         from fbs.installer.mac import create_installer_mac
         create_installer_mac()
     elif is_linux():
+        app_name = SETTINGS['app_name']
         if is_ubuntu():
             from fbs.installer.ubuntu import create_installer_ubuntu
-            create_installer_ubuntu()
+            # create_installer_ubuntu()
+            install_cmd = 'sudo dpkg -i ' + out_file
+            remove_cmd = 'sudo dpkg --purge ' + app_name
         elif is_arch_linux():
             from fbs.installer.arch import create_installer_arch
             create_installer_arch()
+            install_cmd = 'sudo pacman -U ' + out_file
+            remove_cmd = 'sudo pacman -R ' + app_name
         elif is_fedora():
             from fbs.installer.fedora import create_installer_fedora
             create_installer_fedora()
+            install_cmd = 'sudo dnf install ' + out_file
+            remove_cmd = 'sudo dnf remove ' + app_name
         else:
             raise RuntimeError('Unsupported Linux distribution')
+        lines = wrap(
+            msg + ' You can for instance install it via the following command:'
+        )
+        lines.append('    ' + install_cmd)
+        lines.extend(wrap(
+            'This places it in /opt/%s. To uninstall it again, you can use:'
+            % app_name
+        ))
+        lines.append('    ' + remove_cmd)
+        msg = '\n'.join(lines)
     else:
         raise RuntimeError('Unsupported OS')
+    _LOG.info(msg)
 
 @command
 def test():
@@ -195,3 +225,7 @@ def _prompt_for_value(message, optional=False, default=''):
         while not result:
             result = input(message).strip()
     return result
+
+def _wrap_lines(lead, remainder):
+    width = max(len(lead) + 1, 70)
+    return '\n'.join(wrap(lead + remainder, width, break_on_hyphens=False))
