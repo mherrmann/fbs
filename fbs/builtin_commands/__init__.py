@@ -94,7 +94,7 @@ def freeze(debug=False):
         freeze_mac(debug=debug)
         executable = 'target/%s.app/Contents/MacOS/%s' % (app_name, app_name)
     else:
-        executable = 'target/%s/%s' % (app_name, app_name)
+        executable = join('target', app_name, app_name)
         if is_windows():
             from fbs.freeze.windows import freeze_windows
             freeze_windows(debug=debug)
@@ -124,7 +124,7 @@ def installer():
     """
     Create an installer for your app
     """
-    out_file = 'target/' + SETTINGS['installer']
+    out_file = join('target', SETTINGS['installer'])
     msg_parts = ['Created %s.' % out_file]
     if is_windows():
         from fbs.installer.windows import create_installer_windows
