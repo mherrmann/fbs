@@ -4,6 +4,7 @@ from fbs.resources import _copy
 from fbs_runtime.platform import is_mac
 from os import rename
 from os.path import join
+from pathlib import PurePath
 from subprocess import run
 
 def run_pyinstaller(extra_args=None, debug=False):
@@ -31,7 +32,11 @@ def run_pyinstaller(extra_args=None, debug=False):
         args.append('--debug')
     run(args, check=True)
     output_dir = path('target/' + app_name + ('.app' if is_mac() else ''))
-    rename(output_dir, path('${freeze_dir}'))
+    freeze_dir = path('${freeze_dir}')
+    # In most cases, rename(src, dst) silently "works" when src == dst. But on
+    # some Windows drives, it raises a FileExistsError. So check src != dst:
+    if PurePath(output_dir) != PurePath(freeze_dir):
+        rename(output_dir, freeze_dir)
 
 def _generate_resources():
     """
