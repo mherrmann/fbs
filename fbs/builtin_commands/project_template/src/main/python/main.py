@@ -1,5 +1,5 @@
 from fbs_runtime.application_context import ApplicationContext
-from PyQt5.QtWidgets import QMainWindow
+from ${python_bindings}.QtWidgets import QMainWindow
 
 import sys
 

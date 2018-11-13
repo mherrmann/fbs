@@ -54,7 +54,8 @@ def startproject():
             'app_name': app,
             'author': author,
             'version': version,
-            'mac_bundle_identifier': mac_bundle_identifier
+            'mac_bundle_identifier': mac_bundle_identifier,
+            'python_bindings': _get_python_bindings()
         },
         files_to_filter=[
             pth('src/build/settings/base.json'),
@@ -67,6 +68,19 @@ def startproject():
         "do:\n"
         "    python -m fbs run"
     )
+
+def _get_python_bindings():
+    # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
+    try:
+        import PySide2
+    except ImportError:
+        pass
+    else:
+        try:
+            import PyQt5
+        except ImportError:
+            return 'PySide2'
+    return 'PyQt5'
 
 @command
 def run():
