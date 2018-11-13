@@ -49,13 +49,14 @@ def startproject():
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
     pth = lambda relpath: join(template_dir, *relpath.split('/'))
+    python_bindings = _get_python_bindings()
     copy_with_filtering(
         template_dir, '.', {
             'app_name': app,
             'author': author,
             'version': version,
             'mac_bundle_identifier': mac_bundle_identifier,
-            'python_bindings': _get_python_bindings()
+            'python_bindings': python_bindings
         },
         files_to_filter=[
             pth('src/build/settings/base.json'),
@@ -64,9 +65,8 @@ def startproject():
         ]
     )
     _LOG.info(
-        "Created the src/ directory. If you have PyQt5 installed, you can now "
-        "do:\n"
-        "    python -m fbs run"
+        "Created the src/ directory. If you have %s installed, you can now "
+        "do:\n    python -m fbs run", python_bindings
     )
 
 def _get_python_bindings():
