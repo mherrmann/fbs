@@ -1,5 +1,5 @@
+from fbs.resources import copy_with_filtering
 from os.path import join, dirname
-from shutil import copytree
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
@@ -17,7 +17,11 @@ class FbsTest(TestCase):
         self._project_dir = join(self._tmp_dir.name, 'project')
         project_template = \
             join(dirname(fbs.builtin_commands.__file__), 'project_template')
-        copytree(project_template, self._project_dir)
+        replacements = { 'python_bindings': 'PyQt5' }
+        filter_ = [join(project_template, 'src', 'main', 'python', 'main.py')]
+        copy_with_filtering(
+            project_template, self._project_dir, replacements, filter_
+        )
         self._update_settings('base.json', {'app_name': 'MyApp'})
         # Save fbs's state:
         self._fbs_state_before = fbs_state.get()
