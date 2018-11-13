@@ -11,7 +11,10 @@ def run_pyinstaller(extra_args=None, debug=False):
     if extra_args is None:
         extra_args = []
     app_name = SETTINGS['app_name']
-    log_level = 'DEBUG' if debug else 'WARN'
+    # Would like log level WARN when not debugging. This works fine for
+    # PyInstaller 3.3. However, for 3.4, it gives confusing warnings
+    # "hidden import not found". So use ERROR instead.
+    log_level = 'DEBUG' if debug else 'ERROR'
     args = [
         'pyinstaller',
         '--name', app_name,
