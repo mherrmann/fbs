@@ -24,7 +24,7 @@ def freeze_windows(extra_pyinstaller_args=None, debug=False):
     _add_missing_dlls()
 
 def _restore_corrupted_python_dlls():
-    # PyInstaller < 3.6 somehow corrupts python3*.dll - see:
+    # PyInstaller <= 3.4 somehow corrupts python3*.dll - see:
     # https://github.com/pyinstaller/pyinstaller/issues/2526
     # Restore the uncorrupted original:
     python_dlls = (
