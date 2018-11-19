@@ -1,4 +1,4 @@
-from fbs_runtime import platform, _state
+from fbs_runtime import platform, _state, FbsError
 from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
@@ -128,7 +128,7 @@ class _DevelopmentResourceLocator(_ResourceLocator):
             if parent_names == ['src', 'main', 'python']:
                 return str(p.parents[3])
             p = p.parent
-        raise RuntimeError(
+        raise FbsError(
             'Could not determine project base directory for %s. Is it in '
             'src/main/python?' % appctxt_cls
         )

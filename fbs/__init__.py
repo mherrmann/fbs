@@ -1,7 +1,7 @@
 from fbs import _state, _defaults
 from fbs._settings import load_settings, expand_placeholders
 from fbs._state import LOADED_PROFILES
-from fbs_runtime import platform
+from fbs_runtime import platform, FbsError
 from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
 from os.path import normpath, join, exists, abspath
 
@@ -56,5 +56,5 @@ def path(path_str):
     except KeyError:
         error_message = "Cannot call path(...) until fbs.init(...) has been " \
                         "called."
-        raise RuntimeError(error_message) from None
+        raise FbsError(error_message) from None
     return normpath(join(project_dir, *path_str.split('/')))

@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from fbs._state import COMMANDS
+from fbs_runtime import FbsError
 from inspect import getfullargspec
 from os import getcwd
 from os.path import basename, splitext
@@ -45,17 +46,19 @@ def _get_cmdline_parser():
     parser = ArgumentParser(prog=prog, description='fbs')
     subparsers = parser.add_subparsers()
     for cmd_name, cmd_fn in COMMANDS.items():
-        error_msg = 'Error in command %r: Only optional, boolean arguments '\
-                    'are supported.' % cmd_name
+        error = FbsError(
+            'Error in command %r: Only optional, boolean arguments are '
+            'supported.' % cmd_name
+        )
         cmd_parser = subparsers.add_parser(cmd_name, help=cmd_fn.__doc__)
         argspec = getfullargspec(cmd_fn)
         args = argspec.args or []
         defaults = argspec.defaults or ()
         if len(args) != len(defaults):
-            raise RuntimeError(error_msg)
+            raise error
         for arg, default in zip(args, defaults):
             if not isinstance(default, bool):
-                raise RuntimeError(error_msg)
+                raise error
             cmd_parser.add_argument(
                 '--' + arg, action='store_' + str(not default).lower()
             )

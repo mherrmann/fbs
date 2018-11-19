@@ -6,6 +6,7 @@ import them in your Python build script and execute them there.
 from fbs import path, SETTINGS
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
+from fbs_runtime import FbsError
 from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
 from getpass import getuser
@@ -127,7 +128,7 @@ def freeze(debug=False):
                 from fbs.freeze.linux import freeze_linux
                 freeze_linux(debug=debug)
         else:
-            raise RuntimeError('Unsupported OS')
+            raise FbsError('Unsupported OS')
     _LOG.info(
         "Done. You can now run `%s`. If that doesn't work, see "
         "https://build-system.fman.io/troubleshooting.", executable
@@ -164,7 +165,7 @@ def installer():
             install_cmd = 'sudo dnf install ' + out_file
             remove_cmd = 'sudo dnf remove ' + app_name
         else:
-            raise RuntimeError('Unsupported Linux distribution')
+            raise FbsError('Unsupported Linux distribution')
         msg_parts.append(
             'You can for instance install it via the following command:\n'
             '    %s\n'
@@ -173,7 +174,7 @@ def installer():
             % (install_cmd, app_name, remove_cmd)
         )
     else:
-        raise RuntimeError('Unsupported OS')
+        raise FbsError('Unsupported OS')
     _LOG.info(' '.join(msg_parts))
 
 @command

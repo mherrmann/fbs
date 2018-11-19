@@ -1,4 +1,4 @@
-from fbs_runtime import _state
+from fbs_runtime import _state, FbsError
 
 import os
 import sys
@@ -24,7 +24,7 @@ def is_linux():
 def name():
     """
     Returns 'Windows', 'Mac' or 'Linux', depending on the current OS. If the OS
-    can't be determined, a RuntimeError is raised.
+    can't be determined, FbsError is raised.
     """
     if _state.PLATFORM_NAME is None:
         _state.PLATFORM_NAME = _get_name()
@@ -37,7 +37,7 @@ def _get_name():
         return 'Mac'
     if sys.platform.startswith('linux'):
         return 'Linux'
-    raise RuntimeError('Unknown operating system.')
+    raise FbsError('Unknown operating system.')
 
 def is_ubuntu():
     try:
