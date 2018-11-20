@@ -28,8 +28,7 @@ def startproject():
     Start a new fbs project in the current directory
     """
     if exists('src'):
-        _LOG.warning('The src/ directory already exists. Aborting.')
-        return
+        raise FbsError('The src/ directory already exists. Aborting.')
     try:
         app = _prompt_for_value('App name [MyApp] : ', default='MyApp')
         user = getuser().title()
@@ -70,24 +69,12 @@ def startproject():
         "do:\n    python -m fbs run", python_bindings
     )
 
-def _get_python_bindings():
-    # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
-    try:
-        import PySide2
-    except ImportError:
-        pass
-    else:
-        try:
-            import PyQt5
-        except ImportError:
-            return 'PySide2'
-    return 'PyQt5'
-
 @command
 def run():
     """
     Run your app from source
     """
+    _require_existing_project()
     env = dict(os.environ)
     pythonpath = path('src/main/python')
     old_pythonpath = env.get('PYTHONPATH', '')
@@ -101,6 +88,7 @@ def freeze(debug=False):
     """
     Compile your application to a standalone executable
     """
+    _require_existing_project()
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
@@ -139,6 +127,7 @@ def installer():
     """
     Create an installer for your app
     """
+    _require_existing_project()
     out_file = join('target', SETTINGS['installer'])
     msg_parts = ['Created %s.' % out_file]
     if is_windows():
@@ -182,6 +171,7 @@ def test():
     """
     Execute your automated tests
     """
+    _require_existing_project()
     sys.path.append(path('src/main/python'))
     suite = TestSuite()
     test_dirs = SETTINGS['test_dirs']
@@ -236,3 +226,24 @@ def _prompt_for_value(message, optional=False, default=''):
         while not result:
             result = input(message).strip()
     return result
+
+def _get_python_bindings():
+    # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
+    try:
+        import PySide2
+    except ImportError:
+        pass
+    else:
+        try:
+            import PyQt5
+        except ImportError:
+            return 'PySide2'
+    return 'PyQt5'
+
+def _require_existing_project():
+    if not exists(path('src')):
+        raise FbsError(
+            "Could not find the src/ directory. Are you in the right folder?\n"
+            "If yes, did you already run\n"
+            "    python -m fbs startproject ?"
+        )
