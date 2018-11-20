@@ -39,7 +39,7 @@ setup(
         )
     },
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
     
         'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
@@ -56,6 +56,6 @@ setup(
     ],
     license='GPLv3 or later',
     keywords='PyQt',
-    platforms=['MacOS', 'Windows', 'Debian'],
+    platforms=['MacOS', 'Windows', 'Debian', 'Fedora', 'CentOS'],
     test_suite='tests'
 )
