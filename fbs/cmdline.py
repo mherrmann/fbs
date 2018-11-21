@@ -13,9 +13,9 @@ _LOG = logging.getLogger(__name__)
 
 def main(project_dir=None):
     """
-    This function is executed when you run `python -m fbs ...` on the command
-    line. You can call this function from your own build script to run fbs as if
-    it were called via the above command. For an example, see:
+    This function is executed when you run `fbs ...` on the command line. You
+    can call this function from your own build script to run fbs as if it were
+    called via the above command. For an example, see:
         https://build-system.fman.io/manual/#custom-commands
     """
     if project_dir is None:

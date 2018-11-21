@@ -1,9 +1,20 @@
-from fbs.cmdline import main
 from logging import StreamHandler
 from textwrap import wrap
 
+import fbs.cmdline
 import logging
 import sys
+
+def _main():
+    """
+    Main entry point for the `fbs` command line script.
+
+    We init logging here instead of in fbs.cmdline.main(...) because the latter
+    can be called by projects using fbs, and it's bad practice for libraries to
+    configure logging. See eg. https://stackoverflow.com/a/26087972/1839209.
+    """
+    _init_logging()
+    fbs.cmdline.main()
 
 def _init_logging():
     # Redirect INFO or lower to stdout, WARNING or higher to stderr:
@@ -32,5 +43,4 @@ class _WrappingStreamHandler(StreamHandler):
         return self.terminator.join(new_lines)
 
 if __name__ == '__main__':
-    _init_logging()
-    main()
+    _main()

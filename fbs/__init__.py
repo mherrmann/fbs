@@ -13,7 +13,8 @@ SETTINGS = _state.SETTINGS
 
 def init(project_dir):
     """
-    Call this if you are not invoking `python -m fbs` or fbs.cmdline.main().
+    Call this if you are invoking neither `fbs` on the command line nor
+    fbs.cmdline.main() from Python.
     """
     SETTINGS['project_dir'] = abspath(project_dir)
     activate_profile('base')

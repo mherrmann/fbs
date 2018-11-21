@@ -1,7 +1,7 @@
 """
 This module contains all of fbs's built-in commands. They are invoked when you
-run `python -m fbs <command>` on the command line. But you are also free to
-import them in your Python build script and execute them there.
+run `fbs <command>` on the command line. But you are also free to import them in
+your Python build script and execute them there.
 """
 from fbs import path, SETTINGS
 from fbs.cmdline import command
@@ -66,7 +66,7 @@ def startproject():
     )
     _LOG.info(
         "Created the src/ directory. If you have %s installed, you can now "
-        "do:\n    python -m fbs run", python_bindings
+        "do:\n    fbs run", python_bindings
     )
 
 @command
@@ -245,5 +245,5 @@ def _require_existing_project():
         raise FbsError(
             "Could not find the src/ directory. Are you in the right folder?\n"
             "If yes, did you already run\n"
-            "    python -m fbs startproject ?"
+            "    fbs startproject ?"
         )

@@ -54,6 +54,9 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
+    entry_points={
+        'console_scripts': ['fbs=fbs.__main__:_main']
+    },
     license='GPLv3 or later',
     keywords='PyQt',
     platforms=['MacOS', 'Windows', 'Debian', 'Fedora', 'CentOS'],
