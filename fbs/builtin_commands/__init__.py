@@ -25,7 +25,7 @@ _LOG = logging.getLogger(__name__)
 @command
 def startproject():
     """
-    Start a new fbs project in the current directory
+    Start a new project in the current directory
     """
     if exists('src'):
         raise FbsError('The src/ directory already exists. Aborting.')
@@ -86,7 +86,7 @@ def run():
 @command
 def freeze(debug=False):
     """
-    Compile your application to a standalone executable
+    Compile your code to a standalone executable
     """
     _require_existing_project()
     # Import respective functions late to avoid circular import
