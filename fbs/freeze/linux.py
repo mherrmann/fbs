@@ -4,8 +4,8 @@ from glob import glob
 from os import remove
 from shutil import copy
 
-def freeze_linux(extra_pyinstaller_args=None, debug=False):
-    run_pyinstaller(extra_pyinstaller_args, debug)
+def freeze_linux(debug=False):
+    run_pyinstaller(debug=debug)
     _generate_resources()
     copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
     # For some reason, PyInstaller packages libstdc++.so.6 even though it is

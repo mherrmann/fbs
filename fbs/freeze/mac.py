@@ -6,22 +6,20 @@ from os.path import exists
 from shutil import copy, rmtree
 from subprocess import run
 
-def freeze_mac(extra_pyinstaller_args=None, debug=False):
-    if extra_pyinstaller_args is None:
-        extra_pyinstaller_args = []
+def freeze_mac(debug=False):
     if not exists(path('target/Icon.icns')):
         _generate_iconset()
         run(['iconutil', '-c', 'icns', path('target/Icon.iconset')], check=True)
-    pyinstaller_args = []
+    args = []
     if not (debug or SETTINGS['show_console_window']):
-        pyinstaller_args.append('--windowed')
-    pyinstaller_args.extend(['--icon', path('target/Icon.icns')])
+        args.append('--windowed')
+    args.extend(['--icon', path('target/Icon.icns')])
     bundle_identifier = SETTINGS['mac_bundle_identifier']
     if bundle_identifier:
-        pyinstaller_args.extend([
+        args.extend([
             '--osx-bundle-identifier', bundle_identifier
         ])
-    run_pyinstaller(pyinstaller_args + extra_pyinstaller_args, debug)
+    run_pyinstaller(args, debug)
     _remove_unwanted_pyinstaller_files()
     _fix_sparkle_delta_updates()
     _generate_resources()

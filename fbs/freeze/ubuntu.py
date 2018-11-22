@@ -1,7 +1,7 @@
 from fbs.freeze.linux import freeze_linux, remove_shared_libraries
 
-def freeze_ubuntu(extra_pyinstaller_args=None, debug=False):
-    freeze_linux(extra_pyinstaller_args, debug)
+def freeze_ubuntu(debug=False):
+    freeze_linux(debug)
     # When we build on Ubuntu on 14.04 and run on 17.10, the app fails to start
     # with the following error:
     #
