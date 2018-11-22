@@ -4,6 +4,6 @@
         "src/unittest/python",
         "src/integrationtest/python"
     ],
-    "resources_to_filter": [],
+    "files_to_filter": [],
     "hidden_imports": []
 }

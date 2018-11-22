@@ -44,7 +44,7 @@ def run_pyinstaller(extra_args=None, debug=False):
 def _generate_resources():
     """
     Copy the data files from src/main/resources to ${freeze_dir}.
-    Automatically filters files mentioned in the setting resources_to_filter:
+    Automatically filters files mentioned in the setting files_to_filter:
     Placeholders such as ${app_name} are automatically replaced by the
     corresponding setting in files on that list.
     """

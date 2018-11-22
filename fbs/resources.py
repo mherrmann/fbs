@@ -77,7 +77,7 @@ def _copy_with_filtering(
 class _paths:
     def __init__(self, paths):
         self._paths = []
-        # _defaults includes "resources_to_filter" - eg. Installer.nsi. If these
+        # _defaults includes "files_to_filter" - eg. Installer.nsi. If these
         # files don't also exist in the "user's" src/ directory, then
         # Path(p).resolve() raises FileNotFoundError. Handle this:
         for p in paths:
@@ -101,5 +101,5 @@ class _paths:
 def _copy(path_fn, src, dst): # Used by several other internal fbs modules
     src = path_fn(src)
     if exists(src):
-        filter_ = [path_fn(f) for f in SETTINGS['resources_to_filter']]
+        filter_ = [path_fn(f) for f in SETTINGS['files_to_filter']]
         copy_with_filtering(src, dst, files_to_filter=filter_)

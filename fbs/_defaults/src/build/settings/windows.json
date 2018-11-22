@@ -1,6 +1,6 @@
 {
     "installer": "${app_name}Setup.exe",
-    "resources_to_filter": [
+    "files_to_filter": [
         "src/installer/windows/Installer.nsi"
     ],
     "show_console_window": false

@@ -4,7 +4,7 @@
     "author_email": "",
     "url": "",
     "depends": [],
-    "resources_to_filter": [
+    "files_to_filter": [
         "src/installer/linux/usr/share/applications/AppName.desktop"
     ]
 }
