@@ -4,5 +4,6 @@
     "installer": "${app_name}.dmg",
     "resources_to_filter": [
         "src/freeze/mac/Contents/Info.plist"
-    ]
+    ],
+    "show_console_window": false
 }

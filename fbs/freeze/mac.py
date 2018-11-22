@@ -12,10 +12,10 @@ def freeze_mac(extra_pyinstaller_args=None, debug=False):
     if not exists(path('target/Icon.icns')):
         _generate_iconset()
         run(['iconutil', '-c', 'icns', path('target/Icon.iconset')], check=True)
-    pyinstaller_args = [
-        '--windowed',
-        '--icon', path('target/Icon.icns')
-    ]
+    pyinstaller_args = []
+    if not (debug or SETTINGS['show_console_window']):
+        pyinstaller_args.append('--windowed')
+    pyinstaller_args.extend(['--icon', path('target/Icon.icns')])
     bundle_identifier = SETTINGS['mac_bundle_identifier']
     if bundle_identifier:
         pyinstaller_args.extend([

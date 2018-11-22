@@ -1,4 +1,4 @@
-from fbs import path
+from fbs import path, SETTINGS
 from fbs.freeze import run_pyinstaller, _generate_resources
 from os import remove
 from os.path import join, exists
@@ -12,7 +12,7 @@ def freeze_windows(extra_pyinstaller_args=None, debug=False):
     if extra_pyinstaller_args is None:
         extra_pyinstaller_args = []
     pyinstaller_args = []
-    if not debug:
+    if not (debug or SETTINGS['show_console_window']):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.
         pyinstaller_args.append('--windowed')
