@@ -48,7 +48,7 @@ def startproject():
     print('')
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
-    pth = lambda relpath: join(template_dir, *relpath.split('/'))
+    template_path = lambda relpath: join(template_dir, *relpath.split('/'))
     python_bindings = _get_python_bindings()
     copy_with_filtering(
         template_dir, '.', {
@@ -59,9 +59,9 @@ def startproject():
             'python_bindings': python_bindings
         },
         files_to_filter=[
-            pth('src/build/settings/base.json'),
-            pth('src/build/settings/mac.json'),
-            pth('src/main/python/main.py')
+            template_path('src/build/settings/base.json'),
+            template_path('src/build/settings/mac.json'),
+            template_path('src/main/python/main.py')
         ]
     )
     _LOG.info(
