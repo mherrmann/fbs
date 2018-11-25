@@ -1,0 +1,4 @@
+-r linux.txt
+# PyQt5==5.11 currently gives an error when we deploy and run the frozen app:
+#     No module named 'PyQt5.sip'
+PyQt5<5.11

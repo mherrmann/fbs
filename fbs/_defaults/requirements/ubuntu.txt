@@ -1,0 +1,2 @@
+-r linux.txt
+PyQt5==5.9.2

@@ -24,6 +24,7 @@ def main(project_dir=None):
         fbs.init(project_dir)
         # Load built-in commands:
         from fbs import builtin_commands
+        from fbs.builtin_commands import docker
         fn, args = _parse_cmdline()
         fn(*args)
     except FbsError as e:
@@ -43,7 +44,11 @@ def _parse_cmdline():
     parser = _get_cmdline_parser()
     args = parser.parse_args()
     if hasattr(args, 'fn'):
-        fn_args = (getattr(args, arg, default) for arg, default in args.args)
+        fn_args = []
+        for arg in args.args[:1-len(args.defaults)]:
+            fn_args.append(getattr(args, arg))
+        for arg, default in zip(args.args[-len(args.defaults):], args.defaults):
+            fn_args.append(getattr(args, arg, default))
         return args.fn, fn_args
     return parser.print_help, ()
 
@@ -56,20 +61,23 @@ def _get_cmdline_parser():
         prog = None
     parser = ArgumentParser(prog=prog, description='fbs')
     subparsers = parser.add_subparsers()
-    msg_on_error = \
-        'Error in command %r: Only optional, boolean arguments are supported.'
     for cmd_name, cmd_fn in COMMANDS.items():
         cmd_parser = subparsers.add_parser(cmd_name, help=cmd_fn.__doc__)
         argspec = getfullargspec(cmd_fn)
         args = argspec.args or []
         defaults = argspec.defaults or ()
-        if len(args) != len(defaults):
-            raise FbsError(msg_on_error % cmd_name)
-        for arg, default in zip(args, defaults):
+        args_without_defaults = args[:1-len(defaults)]
+        args_with_defaults = args[-len(defaults):]
+        for arg in args_without_defaults:
+            cmd_parser.add_argument(arg)
+        for arg, default in zip(args_with_defaults, defaults):
             if not isinstance(default, bool):
-                raise FbsError(msg_on_error % cmd_name)
+                raise FbsError(
+                    'Error in command %r: Only booleans are currently '
+                    'supported as optional arguments.' % cmd_name
+                )
             cmd_parser.add_argument(
                 '--' + arg, action='store_' + str(not default).lower()
             )
-        cmd_parser.set_defaults(fn=cmd_fn, args=zip(args, defaults))
+        cmd_parser.set_defaults(fn=cmd_fn, args=args, defaults=defaults)
     return parser

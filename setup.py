@@ -22,6 +22,7 @@ def _get_package_data(pkg_dir, data_subdir):
 description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
     name='fbs',
+    # Also update fbs/_defaults/requirements/base.txt when you change this:
     version='0.4.6-SNAPSHOT',
     description=description,
     long_description=
@@ -38,6 +39,8 @@ setup(
             'fbs/installer/mac', 'yoursway-create-dmg'
         )
     },
+    # Also update requirements.txt when you change this:
+    install_requires=['gitignore_parser==0.0.3'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

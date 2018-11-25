@@ -1,0 +1,3 @@
+# Because Fedora is also based on Gnome, we can typically use the same
+# requirements as Ubuntu:
+-r ubuntu.txt
