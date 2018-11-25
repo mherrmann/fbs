@@ -103,3 +103,5 @@ def _copy(path_fn, src, dst): # Used by several other internal fbs modules
     if exists(src):
         filter_ = [path_fn(f) for f in SETTINGS['files_to_filter']]
         copy_with_filtering(src, dst, files_to_filter=filter_)
+        return True
+    return False

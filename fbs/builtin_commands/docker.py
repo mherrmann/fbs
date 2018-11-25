@@ -20,10 +20,14 @@ def build_docker(name):
     if exists(build_dir):
         rmtree(build_dir)
     src_dir = 'src/build/docker/' + name
+    src_dir_exists = False
     for path_fn in _defaults.path, path:
-        _copy(path_fn, src_dir, build_dir)
+        src_dir_exists = _copy(path_fn, src_dir, build_dir) or src_dir_exists
+    if not src_dir_exists:
+        raise FbsError('Could not find %s. Aborting.' % src_dir)
+    build_files = SETTINGS['docker_images'].get(name, {}).get('build_files', [])
     for path_fn in _defaults.path, path:
-        for p in _get_settings(name).get('build_files', []):
+        for p in build_files:
             _copy(path_fn, p, build_dir)
     _run_docker(
         ['build', '--pull', '-t', _get_docker_id(name), build_dir], check=True
