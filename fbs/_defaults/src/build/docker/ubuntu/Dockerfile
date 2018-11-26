@@ -13,10 +13,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install software-properties-common -y
 # Add missing file libGL.so.1 for PyQt5.QtGui:
 RUN apt-get install libgl1-mesa-glx -y
 
-# This installs libgtk-3.so.0, which PyInstaller places in our frozen directory.
-# Without this .so file, running the frozen app produces a segmentation fault.
-RUN apt-get install libgtk-3-0 -y
-
 # fpm:
 RUN apt-get install ruby ruby-dev build-essential -y && \
     gem install --no-ri --no-rdoc fpm
