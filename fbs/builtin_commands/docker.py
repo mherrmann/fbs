@@ -1,20 +1,23 @@
 from fbs import path, SETTINGS, _defaults
 from fbs.cmdline import command
 from fbs.resources import _copy
+from fbs_runtime import FbsError
 from gitignore_parser import parse_gitignore
 from os import listdir
 from os.path import exists
 from shutil import rmtree
 from subprocess import run
 
-from fbs_runtime import FbsError
+import logging
 
-__all__ = ['build_docker', 'run_docker']
+__all__ = ['build_vm', 'run_vm']
+
+_LOG = logging.getLogger(__name__)
 
 @command
-def build_docker(name):
+def build_vm(name):
     """
-    Build a Docker image. Eg.: build_docker arch
+    Build a virtual machine. Eg.: build_vm ubuntu
     """
     build_dir = path('target/%s-docker-image' % name)
     if exists(build_dir):
@@ -34,14 +37,19 @@ def build_docker(name):
     )
 
 @command
-def run_docker(name):
+def run_vm(name):
     """
-    Run a Docker image. Eg.: run_docker arch
+    Run a virtual machine. Eg.: run_vm ubuntu
     """
     args = ['run', '-it']
     for item in _get_docker_mounts(name).items():
         args.extend(['-v', '%s:%s' % item])
     args.append(_get_docker_id(name))
+    _LOG.info(
+        'You are now in a Docker container running %s. Use the normal commands '
+        '`fbs freeze` etc. to build your app for this platform.',
+        name.title()
+    )
     _run_docker(args)
 
 def _run_docker(args, check=False):
