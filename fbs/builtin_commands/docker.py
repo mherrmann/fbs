@@ -22,12 +22,18 @@ def build_vm(name):
     build_dir = path('target/%s-docker-image' % name)
     if exists(build_dir):
         rmtree(build_dir)
-    src_dir = 'src/build/docker/' + name
-    src_dir_exists = False
+    src_root = 'src/build/docker'
+    available_vms = set(listdir(_defaults.path(src_root)))
+    if exists(path(src_root)):
+        available_vms.update(listdir(path(src_root)))
+    if name not in available_vms:
+        raise FbsError(
+            'Could not find %s. Available VMs are:%s' %
+            (name, ''.join(['\n * ' + vm for vm in available_vms]))
+        )
+    src_dir = src_root + '/' + name
     for path_fn in _defaults.path, path:
-        src_dir_exists = _copy(path_fn, src_dir, build_dir) or src_dir_exists
-    if not src_dir_exists:
-        raise FbsError('Could not find %s. Aborting.' % src_dir)
+        _copy(path_fn, src_dir, build_dir)
     build_files = SETTINGS['docker_images'].get(name, {}).get('build_files', [])
     for path_fn in _defaults.path, path:
         for p in build_files:
