@@ -38,7 +38,7 @@ class _WrappingStreamHandler(StreamHandler):
         new_lines = []
         for line in lines:
             new_lines.extend(
-                wrap(line, self._line_length, replace_whitespace=False)
+                wrap(line, self._line_length, replace_whitespace=False) or ['']
             )
         return self.terminator.join(new_lines)
 

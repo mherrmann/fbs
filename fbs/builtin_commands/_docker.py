@@ -54,9 +54,12 @@ def runvm(name):
         args.extend(['-v', '%s:%s' % item])
     args.append(_get_docker_id(name))
     _LOG.info(
-        'You are now in a Docker container running %s. To build your app for '
-        'this platform, use the normal commands `fbs freeze` etc. Once you are '
-        'done, type `exit`. The produced binaries will be in target/%s.',
+        "You are now in a Docker container running %s. To build your app for "
+        "this platform, use the normal commands `fbs freeze` etc.\n\n"
+        "Note that you can't launch GUIs here. So eg. `fbs run` won't work.\n\n"
+        "Another caveat is that target/ is special here: It symlinks to your "
+        "usual target/%s/. So when you are done and type `exit` to leave this "
+        "container, you can find the produced binaries there.",
         name.title(), name
     )
     _run_docker(args)
