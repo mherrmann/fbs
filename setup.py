@@ -23,7 +23,7 @@ description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
     name='fbs',
     # Also update fbs/_defaults/requirements/base.txt when you change this:
-    version='0.4.6',
+    version='0.4.7-SNAPSHOT',
     description=description,
     long_description=
         description + '\n\nHome page: https://build-system.fman.io',
