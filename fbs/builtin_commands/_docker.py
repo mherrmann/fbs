@@ -6,7 +6,7 @@ from gitignore_parser import parse_gitignore
 from os import listdir
 from os.path import exists
 from shutil import rmtree
-from subprocess import run
+from subprocess import run, DEVNULL
 
 import logging
 
@@ -39,8 +39,10 @@ def build_vm(name):
         for p in build_files:
             _copy(path_fn, p, build_dir)
     _run_docker(
-        ['build', '--pull', '-t', _get_docker_id(name), build_dir], check=True
+        ['build', '--pull', '-t', _get_docker_id(name), build_dir], check=True,
+        stdout=DEVNULL
     )
+    _LOG.info('Done. You can now execute:\n    fbs run_vm ' + name)
 
 @command
 def run_vm(name):
@@ -59,9 +61,9 @@ def run_vm(name):
     )
     _run_docker(args)
 
-def _run_docker(args, check=False):
+def _run_docker(args, **kwargs):
     try:
-        run(['docker'] + args, check=check)
+        run(['docker'] + args, **kwargs)
     except FileNotFoundError:
         raise FbsError(
             'fbs could not find Docker. Is it installed and on your PATH?'
