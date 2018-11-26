@@ -10,14 +10,14 @@ from subprocess import run, DEVNULL
 
 import logging
 
-__all__ = ['build_vm', 'run_vm']
+__all__ = ['buildvm', 'runvm']
 
 _LOG = logging.getLogger(__name__)
 
 @command
-def build_vm(name):
+def buildvm(name):
     """
-    Build a virtual machine. Eg.: build_vm ubuntu
+    Build a virtual machine. Eg.: buildvm ubuntu
     """
     build_dir = path('target/%s-docker-image' % name)
     if exists(build_dir):
@@ -42,12 +42,12 @@ def build_vm(name):
         ['build', '--pull', '-t', _get_docker_id(name), build_dir], check=True,
         stdout=DEVNULL
     )
-    _LOG.info('Done. You can now execute:\n    fbs run_vm ' + name)
+    _LOG.info('Done. You can now execute:\n    fbs runvm ' + name)
 
 @command
-def run_vm(name):
+def runvm(name):
     """
-    Run a virtual machine. Eg.: run_vm ubuntu
+    Run a virtual machine. Eg.: runvm ubuntu
     """
     args = ['run', '-it']
     for item in _get_docker_mounts(name).items():
