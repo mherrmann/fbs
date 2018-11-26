@@ -52,9 +52,10 @@ def run_vm(name):
         args.extend(['-v', '%s:%s' % item])
     args.append(_get_docker_id(name))
     _LOG.info(
-        'You are now in a Docker container running %s. Use the normal commands '
-        '`fbs freeze` etc. to build your app for this platform.',
-        name.title()
+        'You are now in a Docker container running %s. To build your app for '
+        'this platform, use the normal commands `fbs freeze` etc. Once you are '
+        'done, type `exit`. The produced binaries will be in target/%s.',
+        name.title(), name
     )
     _run_docker(args)
 
