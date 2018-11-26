@@ -57,7 +57,7 @@ def runvm(name):
         "You are now in a Docker container running %s. To build your app for "
         "this platform, use the normal commands `fbs freeze` etc.\n\n"
         "Note that you can't launch GUIs here. So eg. `fbs run` won't work.\n\n"
-        "Another caveat is that target/ is special here: It symlinks to your "
+        "Another caveat is that target/ here is special: It symlinks to your "
         "usual target/%s/. So when you are done and type `exit` to leave this "
         "container, you can find the produced binaries there.",
         name.title(), name
