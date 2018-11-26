@@ -79,7 +79,7 @@ def _get_docker_mounts(name):
     gitignore = path('.gitignore')
     if not exists(gitignore):
         gitignore = _defaults.path('.gitignore')
-    is_in_gitignore = parse_gitignore(gitignore)
+    is_in_gitignore = parse_gitignore(gitignore, base_dir=path('.'))
     for file_name in listdir(path('.')):
         if is_in_gitignore(path(file_name)):
             continue
