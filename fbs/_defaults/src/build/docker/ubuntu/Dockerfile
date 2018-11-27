@@ -19,13 +19,12 @@ RUN apt-get install libgl1-mesa-glx -y
 RUN apt-get install ruby ruby-dev build-essential -y && \
     gem install --no-ri --no-rdoc fpm
 
-ADD .bashrc /root/.bashrc
-
 WORKDIR /root/${app_name}
 
-ADD *.txt /tmp/requirements/
-
 # Set up virtual environment:
+ADD *.txt /tmp/requirements/
 RUN python3.6 -m venv venv && \
-    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
-    rm -rf /tmp/requirements/
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
+RUN rm -rf /tmp/requirements/
+
+ADD .bashrc /root/.bashrc

@@ -15,13 +15,12 @@ RUN pacman -S --noconfirm ruby ruby-rdoc && \
     gem update && \
     gem install --no-ri --no-rdoc fpm
 
-ADD .bashrc /root/.bashrc
-
 WORKDIR /root/${app_name}
 
-ADD *.txt /tmp/requirements/
-
 # Set up virtual environment:
+ADD *.txt /tmp/requirements/
 RUN python -m venv venv && \
-    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
-    rm -rf /tmp/requirements/
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
+RUN rm -rf /tmp/requirements/
+
+ADD .bashrc /root/.bashrc

@@ -13,15 +13,14 @@ RUN dnf install -y libstdc++ freetype binutils
 RUN dnf install -y ruby-devel gcc make rpm-build libffi-devel && \
     gem install --no-ri --no-rdoc fpm
 
-ADD .bashrc /root
-
 WORKDIR /root/${app_name}
 
-ADD *.txt /tmp/requirements/
-
 # Set up virtual environment:
+ADD *.txt /tmp/requirements/
 RUN python3.6 -m venv venv && \
-    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
-    rm -rf /tmp/requirements/
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
+RUN rm -rf /tmp/requirements/
+
+ADD .bashrc /root
 
 ENTRYPOINT ["/bin/bash"]
