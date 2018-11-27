@@ -1,6 +1,8 @@
 # Build on an old Fedora version on purpose, to maximize compatibility:
 FROM fedora:25
 
+ARG requirements
+
 # Python 3.6:
 RUN dnf install -y python36
 
@@ -15,11 +17,11 @@ ADD .bashrc /root
 
 WORKDIR /root/${app_name}
 
-ADD base.txt linux.txt ubuntu.txt fedora.txt /tmp/requirements/
+ADD *.txt /tmp/requirements/
 
 # Set up virtual environment:
 RUN python3.6 -m venv venv && \
-    venv/bin/python -m pip install -r /tmp/requirements/fedora.txt && \
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
     rm -rf /tmp/requirements/
 
 ENTRYPOINT ["/bin/bash"]

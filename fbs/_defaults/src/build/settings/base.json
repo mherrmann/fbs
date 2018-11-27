@@ -12,13 +12,22 @@
     "hidden_imports": [],
     "docker_images": {
         "ubuntu": {
-            "build_files": ["requirements/"]
+            "build_files": ["requirements/"],
+            "build_args": {
+                "requirements": "ubuntu.txt"
+            }
         },
         "arch": {
-            "build_files": ["requirements/"]
+            "build_files": ["requirements/"],
+            "build_args": {
+                "requirements": "arch.txt"
+            }
         },
         "fedora": {
-            "build_files": ["requirements/"]
+            "build_files": ["requirements/"],
+            "build_args": {
+                "requirements": "fedora.txt"
+            }
         }
     }
 }

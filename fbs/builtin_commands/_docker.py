@@ -6,7 +6,7 @@ from gitignore_parser import parse_gitignore
 from os import listdir
 from os.path import exists
 from shutil import rmtree
-from subprocess import run, DEVNULL
+from subprocess import run, CalledProcessError, PIPE
 
 import logging
 
@@ -34,14 +34,17 @@ def buildvm(name):
     src_dir = src_root + '/' + name
     for path_fn in _defaults.path, path:
         _copy(path_fn, src_dir, build_dir)
-    build_files = SETTINGS['docker_images'].get(name, {}).get('build_files', [])
+    settings = SETTINGS['docker_images'].get(name, {})
     for path_fn in _defaults.path, path:
-        for p in build_files:
+        for p in settings.get('build_files', []):
             _copy(path_fn, p, build_dir)
-    _run_docker(
-        ['build', '--pull', '-t', _get_docker_id(name), build_dir], check=True,
-        stdout=DEVNULL
-    )
+    args = ['build', '--pull', '-t', _get_docker_id(name), build_dir]
+    for arg, value in settings.get('build_args', {}).items():
+        args.extend(['--build-arg', '%s=%s' % (arg, value)])
+    try:
+        _run_docker(args, check=True, stdout=PIPE, universal_newlines=True)
+    except CalledProcessError as e:
+        raise FbsError(e.stdout)
     _LOG.info('Done. You can now execute:\n    fbs runvm ' + name)
 
 @command

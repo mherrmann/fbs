@@ -1,6 +1,8 @@
 # Build on an old Ubuntu version on purpose, to maximize compatibility:
 FROM ubuntu:14.04
 
+ARG requirements
+
 RUN apt-get update && \
     apt-get upgrade -y
 
@@ -21,9 +23,9 @@ ADD .bashrc /root/.bashrc
 
 WORKDIR /root/${app_name}
 
-ADD base.txt linux.txt ubuntu.txt /tmp/requirements/
+ADD *.txt /tmp/requirements/
 
 # Set up virtual environment:
 RUN python3.6 -m venv venv && \
-    venv/bin/python -m pip install -r /tmp/requirements/ubuntu.txt && \
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
     rm -rf /tmp/requirements/

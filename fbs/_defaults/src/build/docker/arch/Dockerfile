@@ -1,6 +1,8 @@
 # Build on an old Arch version on purpose, to maximize compatibility:
 FROM base/devel:2018.04.01
 
+ARG requirements
+
 RUN echo 'Server=https://archive.archlinux.org/repos/2018/04/01/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
     pacman -Syy
 
@@ -17,9 +19,9 @@ ADD .bashrc /root/.bashrc
 
 WORKDIR /root/${app_name}
 
-ADD base.txt linux.txt arch.txt /tmp/requirements/
+ADD *.txt /tmp/requirements/
 
 # Set up virtual environment:
 RUN python -m venv venv && \
-    venv/bin/python -m pip install -r /tmp/requirements/arch.txt && \
+    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}" && \
     rm -rf /tmp/requirements/
