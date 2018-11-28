@@ -25,6 +25,7 @@ def main(project_dir=None):
         # Load built-in commands:
         from fbs import builtin_commands
         from fbs.builtin_commands import _docker
+        from fbs.builtin_commands import _gpg
         fn, args = _parse_cmdline()
         fn(*args)
     except FbsError as e:

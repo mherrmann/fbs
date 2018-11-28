@@ -69,7 +69,7 @@ def runvm(name):
 
 def _run_docker(args, **kwargs):
     try:
-        run(['docker'] + args, **kwargs)
+        return run(['docker'] + args, **kwargs)
     except FileNotFoundError:
         raise FbsError(
             'fbs could not find Docker. Is it installed and on your PATH?'

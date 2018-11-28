@@ -32,9 +32,11 @@ setup(
     url='https://build-system.fman.io',
     packages=find_packages(exclude=('tests', 'tests.*')),
     package_data={
+        'fbs._defaults': _get_package_data('fbs/_defaults', 'src'),
         'fbs.builtin_commands':
             _get_package_data('fbs/builtin_commands', 'project_template'),
-        'fbs._defaults': _get_package_data('fbs/_defaults', 'src'),
+        'fbs.builtin_commands._gpg':
+            ['Dockerfile', 'genkey.sh', 'gpg-agent.conf'],
         'fbs.installer.mac': _get_package_data(
             'fbs/installer/mac', 'yoursway-create-dmg'
         )

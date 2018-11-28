@@ -4,6 +4,8 @@ run `fbs <command>` on the command line. But you are also free to import them in
 your Python build script and execute them there.
 """
 from fbs import path, SETTINGS
+from fbs.builtin_commands._util import prompt_for_value, \
+    require_existing_project
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
 from fbs_runtime import FbsError
@@ -30,16 +32,15 @@ def startproject():
     if exists('src'):
         raise FbsError('The src/ directory already exists. Aborting.')
     try:
-        app = _prompt_for_value('App name [MyApp] : ', default='MyApp')
+        app = prompt_for_value('App name', default='MyApp')
         user = getuser().title()
-        author = _prompt_for_value('Author [%s] : ' % user, default=user)
-        version = \
-            _prompt_for_value('Initial version [0.0.1] : ', default='0.0.1')
+        author = prompt_for_value('Author', default=user)
+        version = prompt_for_value('Initial version', default='0.0.1')
         eg_bundle_id = 'com.%s.%s' % (
             author.lower().split()[0], ''.join(app.lower().split())
         )
-        mac_bundle_identifier = _prompt_for_value(
-            'Mac bundle identifier (eg. %s, optional) : ' % eg_bundle_id,
+        mac_bundle_identifier = prompt_for_value(
+            'Mac bundle identifier (eg. %s, optional)' % eg_bundle_id,
             optional=True
         )
     except KeyboardInterrupt:
@@ -74,7 +75,7 @@ def run():
     """
     Run your app from source
     """
-    _require_existing_project()
+    require_existing_project()
     env = dict(os.environ)
     pythonpath = path('src/main/python')
     old_pythonpath = env.get('PYTHONPATH', '')
@@ -88,7 +89,7 @@ def freeze(debug=False):
     """
     Compile your code to a standalone executable
     """
-    _require_existing_project()
+    require_existing_project()
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
@@ -127,7 +128,7 @@ def installer():
     """
     Create an installer for your app
     """
-    _require_existing_project()
+    require_existing_project()
     out_file = join('target', SETTINGS['installer'])
     msg_parts = ['Created %s.' % out_file]
     if is_windows():
@@ -171,7 +172,7 @@ def test():
     """
     Execute your automated tests
     """
-    _require_existing_project()
+    require_existing_project()
     sys.path.append(path('src/main/python'))
     suite = TestSuite()
     test_dirs = SETTINGS['test_dirs']
@@ -217,16 +218,6 @@ def clean():
             elif islink(fpath):
                 unlink(fpath)
 
-def _prompt_for_value(message, optional=False, default=''):
-    result = input(message).strip()
-    if not result and default:
-        print(default)
-        return default
-    if not optional:
-        while not result:
-            result = input(message).strip()
-    return result
-
 def _get_python_bindings():
     # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
     try:
@@ -239,11 +230,3 @@ def _get_python_bindings():
         except ImportError:
             return 'PySide2'
     return 'PyQt5'
-
-def _require_existing_project():
-    if not exists(path('src')):
-        raise FbsError(
-            "Could not find the src/ directory. Are you in the right folder?\n"
-            "If yes, did you already run\n"
-            "    fbs startproject ?"
-        )
