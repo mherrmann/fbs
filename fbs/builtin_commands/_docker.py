@@ -1,4 +1,5 @@
 from fbs import path, SETTINGS, _defaults
+from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs_runtime import FbsError
@@ -19,6 +20,7 @@ def buildvm(name):
     """
     Build a virtual machine. Eg.: buildvm ubuntu
     """
+    require_existing_project()
     build_dir = path('target/%s-docker-image' % name)
     if exists(build_dir):
         rmtree(build_dir)
