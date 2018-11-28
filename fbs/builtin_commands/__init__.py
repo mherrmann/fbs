@@ -12,6 +12,7 @@ from fbs_runtime import FbsError
 from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
 from getpass import getuser
+from importlib.util import find_spec
 from os import listdir, remove, unlink, mkdir
 from os.path import join, isfile, isdir, islink, dirname, exists
 from shutil import rmtree
@@ -76,6 +77,11 @@ def run():
     Run your app from source
     """
     require_existing_project()
+    if not _has_module('PyQt5') and not _has_module('PySide2'):
+        raise FbsError(
+            "Couldn't find PyQt5 or PySide2. Maybe you need to:\n"
+            "    pip install PyQt5==5.9.2"
+        )
     env = dict(os.environ)
     pythonpath = path('src/main/python')
     old_pythonpath = env.get('PYTHONPATH', '')
@@ -90,6 +96,11 @@ def freeze(debug=False):
     Compile your code to a standalone executable
     """
     require_existing_project()
+    if not _has_module('PyInstaller'):
+        raise FbsError(
+            "Could not find PyInstaller. Maybe you need to:\n"
+            "    pip install PyInstaller==3.4"
+        )
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
@@ -220,13 +231,10 @@ def clean():
 
 def _get_python_bindings():
     # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
-    try:
-        import PySide2
-    except ImportError:
-        pass
-    else:
-        try:
-            import PyQt5
-        except ImportError:
+    if not _has_module('PyQt5'):
+        if _has_module('PySide2'):
             return 'PySide2'
     return 'PyQt5'
+
+def _has_module(name):
+    return bool(find_spec(name))
