@@ -18,7 +18,7 @@
             }
         },
         "arch": {
-            "build_files": ["requirements/"],
+            "build_files": ["requirements/", "src/sign/linux/"],
             "build_args": {
                 "requirements": "arch.txt"
             }

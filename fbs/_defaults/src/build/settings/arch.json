@@ -1,5 +1,6 @@
 {
     "installer": "${app_name}.pkg.tar.xz",
     "depends": ["qt5-base"],
-    "depends_opt": []
+    "depends_opt": [],
+    "gpg_preset_passphrase": "/usr/lib/gnupg/gpg-preset-passphrase"
 }

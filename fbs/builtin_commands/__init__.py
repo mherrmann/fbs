@@ -179,6 +179,18 @@ def installer():
     _LOG.info(' '.join(msg_parts))
 
 @command
+def sign_installer():
+    """
+    Sign installer, so the user's OS trusts it
+    """
+    require_existing_project()
+    if is_arch_linux():
+        from fbs.sign_installer.arch import sign_installer_arch
+        sign_installer_arch()
+    else:
+        raise FbsError('This command is not supported on this platform.')
+
+@command
 def repo():
     """
     Generate files for automatic updates
@@ -190,7 +202,7 @@ def repo():
         _LOG.info(
             'Done. You can test the repository with the following commands:\n'
             '    echo "deb [arch=amd64] file://%s stable main" '
-                      '| sudo tee /etc/apt/sources.list.d/%s.list\n'
+                '| sudo tee /etc/apt/sources.list.d/%s.list\n'
             '    sudo apt-key add %s\n'
             '    sudo apt-get update\n'
             '    sudo apt-get install %s\n'
@@ -202,6 +214,27 @@ def repo():
             path('target/repo'), pkg_name,
             path('src/sign/linux/public-key.gpg'), pkg_name, pkg_name,
             SETTINGS['gpg_key'], pkg_name,
+            extra={'wrap': False}
+        )
+    elif is_arch_linux():
+        from fbs.repo.arch import create_repo_arch
+        create_repo_arch()
+        pkg_name = SETTINGS['app_name'].lower()
+        _LOG.info(
+            "Done. You can test the repository with the following commands:\n"
+            "    sudo cp /etc/pacman.conf /etc/pacman.conf.bu\n"
+            "    echo -e '\\n[%s]\\nServer = file://%s' "
+                "| sudo tee -a /etc/pacman.conf\n"
+            "    sudo pacman-key --add %s\n"
+            "    sudo pacman-key --lsign-key %s\n"
+            "    sudo pacman -Syu %s\n"
+            "To revert these changes:\n"
+            "    sudo pacman -R %s\n"
+            "    sudo pacman-key --delete %s\n"
+            "    sudo mv /etc/pacman.conf.bu /etc/pacman.conf",
+            SETTINGS['app_name'], path('target/repo'),
+            path('src/sign/linux/public-key.gpg'), SETTINGS['gpg_key'],
+            pkg_name, pkg_name, SETTINGS['gpg_key'],
             extra={'wrap': False}
         )
     else:
