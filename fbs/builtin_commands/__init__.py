@@ -197,6 +197,12 @@ def repo():
     """
     if is_ubuntu():
         from fbs.repo.ubuntu import create_repo_ubuntu
+        if not SETTINGS['description']:
+            _LOG.info(
+                'Hint: Your app\'s "description" is empty. Consider setting it '
+                'in src/build/settings/linux.json.'
+            )
+            _LOG.info('Creating repository...')
         create_repo_ubuntu()
         pkg_name = SETTINGS['app_name'].lower()
         _LOG.info(
