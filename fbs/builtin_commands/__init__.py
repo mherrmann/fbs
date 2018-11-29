@@ -179,6 +179,35 @@ def installer():
     _LOG.info(' '.join(msg_parts))
 
 @command
+def repo():
+    """
+    Generate files for automatic updates
+    """
+    if is_ubuntu():
+        from fbs.repo.ubuntu import create_repo_ubuntu
+        create_repo_ubuntu()
+        pkg_name = SETTINGS['app_name'].lower()
+        _LOG.info(
+            'Done. You can test the repository with the following commands:\n'
+            '    echo "deb [arch=amd64] file://%s stable main" '
+                      '| sudo tee /etc/apt/sources.list.d/%s.list\n'
+            '    sudo apt-key add %s\n'
+            '    sudo apt-get update\n'
+            '    sudo apt-get install %s\n'
+            'To revert these changes:\n'
+            '    sudo dpkg --purge %s\n'
+            '    sudo apt-key del %s\n'
+            '    sudo rm /etc/apt/sources.list.d/%s.list\n'
+            '    sudo apt-get update',
+            path('target/repo'), pkg_name,
+            path('src/sign/linux/public-key.gpg'), pkg_name, pkg_name,
+            SETTINGS['gpg_key'], pkg_name,
+            extra={'wrap': False}
+        )
+    else:
+        raise FbsError('This command is not supported on this platform.')
+
+@command
 def test():
     """
     Execute your automated tests

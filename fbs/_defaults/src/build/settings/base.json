@@ -12,7 +12,7 @@
     "hidden_imports": [],
     "docker_images": {
         "ubuntu": {
-            "build_files": ["requirements/"],
+            "build_files": ["requirements/", "src/sign/linux/"],
             "build_args": {
                 "requirements": "ubuntu.txt"
             }

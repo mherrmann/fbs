@@ -1,3 +1,4 @@
 {
-    "installer": "${app_name}.deb"
+    "installer": "${app_name}.deb",
+    "gpg_preset_passphrase": "/usr/lib/gnupg2/gpg-preset-passphrase"
 }

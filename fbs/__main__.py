@@ -34,6 +34,10 @@ class _WrappingStreamHandler(StreamHandler):
         self._line_length = line_length
     def format(self, record):
         result = super().format(record)
+        if not getattr(record, 'wrap', True):
+            # Make it possible to prevent wrapping. Eg.:
+            #     _LOG.info('Message', extra={'wrap': False})
+            return result
         lines = result.split(self.terminator)
         new_lines = []
         for line in lines:
