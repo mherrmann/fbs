@@ -32,7 +32,8 @@ setup(
     url='https://build-system.fman.io',
     packages=find_packages(exclude=('tests', 'tests.*')),
     package_data={
-        'fbs._defaults': _get_package_data('fbs/_defaults', 'src'),
+        'fbs._defaults': _get_package_data('fbs/_defaults', 'requirements') +
+                         _get_package_data('fbs/_defaults', 'src'),
         'fbs.builtin_commands':
             _get_package_data('fbs/builtin_commands', 'project_template'),
         'fbs.builtin_commands._gpg':

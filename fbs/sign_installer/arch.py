@@ -14,7 +14,7 @@ def sign_installer_arch():
     # Prevent GPG from prompting us for the passphrase when signing:
     preset_gpg_passphrase()
     check_call(
-        ['gpg', '--batch', '--yes', '-u', '0x%s!' % SETTINGS['gpg_key'],
+        ['gpg', '--batch', '--yes', '-u', SETTINGS['gpg_key'],
         '--output', installer + '.sig', '--detach-sig', installer],
         stdout=DEVNULL
     )
