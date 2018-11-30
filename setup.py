@@ -4,20 +4,18 @@ See:
 https://github.com/mherrmann/fbs
 """
 
-from glob import glob
-from os.path import relpath, join, isdir
-
+from os.path import relpath, join
 from setuptools import setup, find_packages
 
+import os
+
 def _get_package_data(pkg_dir, data_subdir):
-    glob_parts = pkg_dir.split('/') + [data_subdir, '**', '*']
-    glob_pattern = join(*glob_parts)
-    return [
-        relpath(file_path, pkg_dir)
-        for file_path in glob(glob_pattern, recursive=True)
-        # Exclude directories to avoid errors when installing via pip on Ubuntu:
-        if not isdir(file_path)
-    ]
+    result = []
+    for dirpath, _, filenames in os.walk(join(pkg_dir, data_subdir)):
+        for filename in filenames:
+            filepath = join(dirpath, filename)
+            result.append(relpath(filepath, pkg_dir))
+    return result
 
 description = 'Easily create cross-platform desktop applications with PyQt'
 setup(
