@@ -1,3 +1,6 @@
 {
-    "installer": "${app_name}.rpm"
+    "installer": "${app_name}.rpm",
+    "gpg_preset_passphrase": "/usr/libexec/gpg-preset-passphrase",
+    "repo_url": "file://${project_dir}/target/repo",
+    "gpgkey_url": "file://${project_dir}/src/sign/linux/public-key.gpg"
 }

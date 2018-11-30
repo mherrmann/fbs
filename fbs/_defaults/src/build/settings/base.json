@@ -7,7 +7,8 @@
     "files_to_filter": [
         "src/build/docker/ubuntu/.bashrc", "src/build/docker/ubuntu/Dockerfile",
         "src/build/docker/arch/.bashrc", "src/build/docker/arch/Dockerfile",
-        "src/build/docker/fedora/.bashrc", "src/build/docker/fedora/Dockerfile"
+        "src/build/docker/fedora/.bashrc", "src/build/docker/fedora/Dockerfile",
+        "src/build/docker/fedora/.rpmmacros"
     ],
     "hidden_imports": [],
     "docker_images": {
@@ -24,7 +25,7 @@
             }
         },
         "fedora": {
-            "build_files": ["requirements/"],
+            "build_files": ["requirements/", "src/sign/linux/"],
             "build_args": {
                 "requirements": "fedora.txt"
             }

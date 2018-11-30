@@ -1,0 +1,6 @@
+[${app_name}]
+name=${app_name}
+baseurl=${repo_url}
+enabled=1
+gpgcheck=1
+gpgkey=${gpgkey_url}

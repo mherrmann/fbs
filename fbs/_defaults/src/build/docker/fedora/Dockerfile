@@ -23,4 +23,16 @@ RUN rm -rf /tmp/requirements/
 
 ADD .bashrc /root
 
+ADD gpg-agent.conf /root/.gnupg/gpg-agent.conf
+RUN chmod -R 600 /root/.gnupg
+ADD private-key.gpg public-key.gpg /tmp/
+RUN dnf install -y gpg rpm-sign && \
+    gpg -q --batch --yes --passphrase ${gpg_pass} --import /tmp/private-key.gpg /tmp/public-key.gpg && \
+    rpm --import /tmp/public-key.gpg && \
+    rm /tmp/private-key.gpg /tmp/public-key.gpg
+
+ADD .rpmmacros /root
+
+RUN dnf install -y createrepo_c
+
 ENTRYPOINT ["/bin/bash"]

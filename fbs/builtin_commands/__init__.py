@@ -187,6 +187,9 @@ def sign_installer():
     if is_arch_linux():
         from fbs.sign_installer.arch import sign_installer_arch
         sign_installer_arch()
+    elif is_fedora():
+        from fbs.sign_installer.fedora import sign_installer_fedora
+        sign_installer_fedora()
     else:
         raise FbsError('This command is not supported on this platform.')
 
@@ -195,6 +198,9 @@ def repo():
     """
     Generate files for automatic updates
     """
+    app_name = SETTINGS['app_name']
+    pkg_name = app_name.lower()
+    gpg_key = SETTINGS['gpg_key']
     if is_ubuntu():
         from fbs.repo.ubuntu import create_repo_ubuntu
         if not SETTINGS['description']:
@@ -204,7 +210,6 @@ def repo():
             )
             _LOG.info('Creating repository...')
         create_repo_ubuntu()
-        pkg_name = SETTINGS['app_name'].lower()
         _LOG.info(
             'Done. You can test the repository with the following commands:\n'
             '    echo "deb [arch=amd64] file://%s stable main" '
@@ -218,14 +223,13 @@ def repo():
             '    sudo rm /etc/apt/sources.list.d/%s.list\n'
             '    sudo apt-get update',
             path('target/repo'), pkg_name,
-            path('src/sign/linux/public-key.gpg'), pkg_name, pkg_name,
-            SETTINGS['gpg_key'], pkg_name,
+            path('src/sign/linux/public-key.gpg'), pkg_name, pkg_name, gpg_key,
+            pkg_name,
             extra={'wrap': False}
         )
     elif is_arch_linux():
         from fbs.repo.arch import create_repo_arch
         create_repo_arch()
-        pkg_name = SETTINGS['app_name'].lower()
         _LOG.info(
             "Done. You can test the repository with the following commands:\n"
             "    sudo cp /etc/pacman.conf /etc/pacman.conf.bu\n"
@@ -238,9 +242,25 @@ def repo():
             "    sudo pacman -R %s\n"
             "    sudo pacman-key --delete %s\n"
             "    sudo mv /etc/pacman.conf.bu /etc/pacman.conf",
-            SETTINGS['app_name'], path('target/repo'),
-            path('src/sign/linux/public-key.gpg'), SETTINGS['gpg_key'],
-            pkg_name, pkg_name, SETTINGS['gpg_key'],
+            app_name, path('target/repo'),
+            path('src/sign/linux/public-key.gpg'), gpg_key, pkg_name, pkg_name,
+            gpg_key,
+            extra={'wrap': False}
+        )
+    elif is_fedora():
+        from fbs.repo.fedora import create_repo_fedora
+        create_repo_fedora()
+        _LOG.info(
+            "Done. You can test the repository with the following commands:\n"
+            "    sudo rpm -v --import %s\n"
+            "    sudo dnf config-manager --add-repo target/repo/%s.repo\n"
+            "    sudo dnf install %s\n"
+            "To revert these changes:\n"
+            "    sudo dnf remove %s\n"
+            "    sudo rm /etc/yum.repos.d/%s.repo\n"
+            "    sudo rpm --erase gpg-pubkey-%s",
+            path('src/sign/linux/public-key.gpg'), app_name, pkg_name, pkg_name,
+            app_name, gpg_key[-8:].lower(),
             extra={'wrap': False}
         )
     else:

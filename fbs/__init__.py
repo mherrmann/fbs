@@ -42,7 +42,7 @@ def activate_profile(profile_name):
         for path_fn in (_defaults.path, path)
         for profile in LOADED_PROFILES
     ]
-    SETTINGS.update(load_settings(p for p in json_paths if exists(p)))
+    SETTINGS.update(load_settings(filter(exists, json_paths), SETTINGS))
 
 def path(path_str):
     """

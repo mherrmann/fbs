@@ -1,0 +1,4 @@
+%_signature gpg
+%_gpg_path /root/.gnupg
+%_gpg_name ${gpg_name}
+%_gpgbin /usr/bin/gpg

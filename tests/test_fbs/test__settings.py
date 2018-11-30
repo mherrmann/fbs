@@ -78,6 +78,18 @@ class LoadSettingsTest(TestCase):
             {'d': {'x': '${a}'}, 'a': 'b'},
             expect={'d': {'x': 'b'}, 'a': 'b'}
         )
+    def test_existing(self):
+        # fbs.init(...) sets the `project_dir` setting. Test that this setting
+        # is available to further settings in .json files:
+        existing = {'project_dir': '/myproject'}
+        fedora_json = self._dump({
+            'repo_url': 'file://${project_dir}/target/repo'
+        })
+        expected = {
+            'repo_url': 'file:///myproject/target/repo',
+            'project_dir': '/myproject'
+        }
+        self.assertEqual(expected, load_settings([fedora_json], existing))
     def _check(self, *objs, expect=None):
         if expect is None:
             expect, = objs
