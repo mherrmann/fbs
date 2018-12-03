@@ -201,7 +201,15 @@ def repo():
     require_existing_project()
     app_name = SETTINGS['app_name']
     pkg_name = app_name.lower()
-    gpg_key = SETTINGS['gpg_key']
+    try:
+        gpg_key = SETTINGS['gpg_key']
+    except KeyError:
+        raise FbsError(
+            'GPG key for code signing is not configured. You might want to '
+            'either\n'
+            '    1) run `fbs gengpgkey` or\n'
+            '    2) Set "gpg_key" and "gpg_pass" in src/build/settings/.'
+        )
     if is_ubuntu():
         from fbs.repo.ubuntu import create_repo_ubuntu
         if not SETTINGS['description']:
