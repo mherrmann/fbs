@@ -213,7 +213,7 @@ def repo():
             'GPG key for code signing is not configured. You might want to '
             'either\n'
             '    1) run `fbs gengpgkey` or\n'
-            '    2) Set "gpg_key" and "gpg_pass" in src/build/settings/.'
+            '    2) set "gpg_key" and "gpg_pass" in src/build/settings/.'
         )
     if is_ubuntu():
         from fbs.repo.ubuntu import create_repo_ubuntu
