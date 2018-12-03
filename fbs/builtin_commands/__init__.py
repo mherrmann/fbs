@@ -198,6 +198,7 @@ def repo():
     """
     Generate files for automatic updates
     """
+    require_existing_project()
     app_name = SETTINGS['app_name']
     pkg_name = app_name.lower()
     gpg_key = SETTINGS['gpg_key']
