@@ -217,7 +217,6 @@ def repo():
                 'Hint: Your app\'s "description" is empty. Consider setting it '
                 'in src/build/settings/linux.json.'
             )
-            _LOG.info('Creating repository...')
         create_repo_ubuntu()
         _LOG.info(
             'Done. You can test the repository with the following commands:\n'
