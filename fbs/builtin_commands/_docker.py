@@ -57,8 +57,17 @@ def runvm(name):
     args = ['run', '-it']
     for item in _get_docker_mounts(name).items():
         args.extend(['-v', '%s:%s' % item])
-    args.append(_get_docker_id(name))
-    _run_docker(args)
+    docker_id = _get_docker_id(name)
+    args.append(docker_id)
+    try:
+        _run_docker(args, stderr=PIPE, universal_newlines=True, check=True)
+    except CalledProcessError as e:
+        if 'Unable to find image' in e.stderr:
+            raise FbsError(
+                'Docker could not find image %s. You may want to run:\n'
+                '    fbs buildvm %s' % (docker_id, name)
+            )
+        raise
 
 def _run_docker(args, **kwargs):
     try:
