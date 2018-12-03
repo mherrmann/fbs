@@ -140,6 +140,11 @@ def installer():
     Create an installer for your app
     """
     require_existing_project()
+    if not exists(path('${freeze_dir}')):
+        raise FbsError(
+            'It seems your app has not yet been frozen. Please run:\n'
+            '    fbs freeze'
+        )
     out_file = join('target', SETTINGS['installer'])
     msg_parts = ['Created %s.' % out_file]
     if is_windows():
