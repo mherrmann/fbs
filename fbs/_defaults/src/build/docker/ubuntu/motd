@@ -1,0 +1,8 @@
+You are now in a Docker container running Ubuntu. To build your app
+for this platform, use the normal commands `fbs freeze` etc.
+
+Note that you can't launch GUIs here. So eg. `fbs run` won't work.
+
+Another caveat is that target/ here is special: It symlinks to your
+usual target/ubuntu/. So when you are done and type `exit` to leave
+this container, you can find the produced binaries there.

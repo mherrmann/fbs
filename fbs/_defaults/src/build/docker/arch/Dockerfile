@@ -23,6 +23,9 @@ RUN python -m venv venv && \
     venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
 RUN rm -rf /tmp/requirements/
 
+# Welcome message, displayed by ~/.bashrc:
+ADD motd /etc/motd
+
 ADD .bashrc /root/.bashrc
 
 # Import GPG key for code signing the installer:
