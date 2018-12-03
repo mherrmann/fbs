@@ -1,4 +1,5 @@
 from fbs import SETTINGS
+from fbs_runtime import FbsError
 from subprocess import run, DEVNULL, check_call, check_output, PIPE, \
     CalledProcessError
 
@@ -31,6 +32,12 @@ def _get_keygrip(pubkey_id):
     except CalledProcessError as e:
         if 'invalid option "--with-keygrip"' in e.stderr:
             raise GpgDoesNotSupportKeygrip() from None
+        elif 'No secret key' in e.stderr:
+            raise FbsError(
+                "GPG could not read your key for code signing. Perhaps you "
+                "don't want\nto run this command here, but after:\n"
+                "    fbs runvm {ubuntu|fedora|arch}"
+            )
         raise
     pure_signing_subkey = _find_keygrip(output, 'S')
     if pure_signing_subkey:
