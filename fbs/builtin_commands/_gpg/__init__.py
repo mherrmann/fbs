@@ -6,6 +6,7 @@ from fbs.cmdline import command
 from fbs_runtime import FbsError
 from os import makedirs
 from os.path import dirname, exists
+from pathlib import Path
 from subprocess import DEVNULL, PIPE
 
 import json
@@ -18,6 +19,7 @@ _DEST_DIR = 'src/sign/linux'
 _PUBKEY_NAME = 'public-key.gpg'
 _PRIVKEY_NAME = 'private-key.gpg'
 _BASE_JSON = 'src/build/settings/base.json'
+_SECRET_JSON = 'src/build/settings/secret.json'
 
 @command
 def gengpgkey():
@@ -56,21 +58,13 @@ def gengpgkey():
                     '-----END PGP PRIVATE KEY BLOCK-----\n')
     makedirs(path(_DEST_DIR), exist_ok=True)
     pubkey_dest = _DEST_DIR + '/' + _PUBKEY_NAME
-    with open(path(pubkey_dest), 'w') as f:
-        f.write(pubkey)
-    privkey_dest = _DEST_DIR + '/' + _PRIVKEY_NAME
-    with open(path(privkey_dest), 'w') as f:
-        f.write(privkey)
-    with open(path(_BASE_JSON)) as f:
-        base_contents = f.read()
-    new_base_contents = _extend_json(base_contents, {
-        'gpg_key': key, 'gpg_name': name, 'gpg_pass': passphrase
-    })
-    with open(path(_BASE_JSON), 'w') as f:
-        f.write(new_base_contents)
+    Path(path(pubkey_dest)).write_text(pubkey)
+    Path(path(_DEST_DIR + '/' + _PRIVKEY_NAME)).write_text(privkey)
+    _extend_json(path(_BASE_JSON), { 'gpg_key': key, 'gpg_name': name })
+    _extend_json(path(_SECRET_JSON), { 'gpg_pass': passphrase })
     _LOG.info(
-        'Done. Created %s and ...%s. Also updated %s with the values you '
-        'entered.', pubkey_dest, _PRIVKEY_NAME, _BASE_JSON
+        'Done. Created %s and ...%s. Also updated %s and ...secret.json with '
+        'the values you provided.', pubkey_dest, _PRIVKEY_NAME, _BASE_JSON
     )
 
 def _init_docker():
@@ -87,14 +81,31 @@ def _snip(str_, preamble, postamble, include_bounds=True):
         end += len(postamble)
     return str_[start:end]
 
-def _extend_json(f_contents, dict_):
+def _extend_json(f_path, dict_):
+    f = Path(f_path)
+    try:
+        contents = f.read_text()
+    except FileNotFoundError:
+        indent = _get_indent(_split_json(Path(path(_BASE_JSON)).read_text())[1])
+        new_contents = json.dumps(dict_, indent=indent)
+    else:
+        new_contents = _extend_json_str(contents, dict_)
+    f.write_text(new_contents)
+
+def _extend_json_str(json_str, dict_):
     if not dict_:
-        return f_contents
-    start = f_contents.index('{')
-    end = f_contents.rindex('}', start + 1)
-    body = f_contents[start:end]
-    match = re.search('\n(\\s+)', body)
-    indent = match.group(1) if match else ''
+        return json_str
+    start, body, end = _split_json(json_str)
+    indent = _get_indent(body)
     append = json.dumps(dict_, indent=indent)[1:-1]
     new_body = body.rstrip() + ',' + append
-    return f_contents[:start] + new_body + f_contents[end:]
+    return start + new_body + end
+
+def _split_json(f_contents):
+    start = f_contents.index('{')
+    end = f_contents.rindex('}', start + 1)
+    return f_contents[:start], f_contents[start:end], f_contents[end:]
+
+def _get_indent(json_body):
+    match = re.search('\n(\\s+)', json_body)
+    return match.group(1) if match else ''

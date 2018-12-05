@@ -18,6 +18,11 @@ def init(project_dir):
     """
     SETTINGS['project_dir'] = abspath(project_dir)
     activate_profile('base')
+    # The "secret" profile lets the user store sensitive settings such as
+    # passwords in src/build/settings/secret.json. When using Git, the user can
+    # exploit this by adding secret.json to .gitignore, thus preventing it from
+    # being uploaded to services such as GitHub.
+    activate_profile('secret')
     activate_profile(platform.name().lower())
     if is_linux():
         if is_ubuntu():
