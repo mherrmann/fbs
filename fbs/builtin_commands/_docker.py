@@ -67,7 +67,8 @@ def runvm(name):
                 'Docker could not find image %s. You may want to run:\n'
                 '    fbs buildvm %s' % (docker_id, name)
             )
-        raise
+        elif e.returncode != 255: # Can get 255 for `exit` from the container
+            raise
 
 def _run_docker(args, **kwargs):
     try:
