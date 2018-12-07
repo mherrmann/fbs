@@ -3,7 +3,6 @@ from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs_runtime import FbsError
-from gitignore_parser import parse_gitignore
 from os import listdir
 from os.path import exists
 from shutil import rmtree
@@ -85,12 +84,10 @@ def _get_docker_id(name):
 
 def _get_docker_mounts(name):
     result = {'target/' + name.lower(): 'target'}
-    gitignore = path('.gitignore')
-    if not exists(gitignore):
-        gitignore = _defaults.path('.gitignore')
-    is_in_gitignore = parse_gitignore(gitignore, base_dir=path('.'))
+    # These directories are created inside the container by `buildvm`:
+    ignore = {'target', 'venv'}
     for file_name in listdir(path('.')):
-        if is_in_gitignore(path(file_name)):
+        if file_name in ignore:
             continue
         result[file_name] = file_name
     path_in_docker = lambda p: '/root/%s/%s' % (SETTINGS['app_name'], p)
