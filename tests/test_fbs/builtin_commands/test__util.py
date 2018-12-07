@@ -1,4 +1,4 @@
-from fbs.builtin_commands._gpg import _extend_json_str
+from fbs.builtin_commands._util import _extend_json_str
 from unittest import TestCase
 
 class ExtendJsonStrTest(TestCase):
