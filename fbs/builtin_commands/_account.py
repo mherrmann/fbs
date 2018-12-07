@@ -17,13 +17,9 @@ def register():
     Create an account for uploading your files
     """
     require_existing_project()
-    try:
-        username = prompt_for_value('Username')
-        email = prompt_for_value('Real email')
-        password = prompt_for_value('Password', password=True)
-    except KeyboardInterrupt:
-        print('')
-        return
+    username = prompt_for_value('Username')
+    email = prompt_for_value('Real email')
+    password = prompt_for_value('Password', password=True)
     status, text = _post_json(_API_URL + '/register', {
         'username': username, 'email': email, 'password': password
     })
@@ -40,12 +36,8 @@ def login():
     Save your login credentials to secret.json
     """
     require_existing_project()
-    try:
-        username = prompt_for_value('Username')
-        password = prompt_for_value('Password', password=True)
-    except KeyboardInterrupt:
-        print('')
-        return
+    username = prompt_for_value('Username')
+    password = prompt_for_value('Password', password=True)
     _login(username, password)
 
 def _login(username, password):

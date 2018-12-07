@@ -29,6 +29,9 @@ def main(project_dir=None):
         from fbs.builtin_commands import _account
         fn, args = _parse_cmdline()
         fn(*args)
+    except KeyboardInterrupt:
+        print('')
+        sys.exit(-1)
     except FbsError as e:
         # Don't print a stack trace for FbsErrors, just their message:
         _LOG.error(str(e))

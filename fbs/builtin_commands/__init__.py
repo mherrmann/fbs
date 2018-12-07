@@ -32,22 +32,17 @@ def startproject():
     """
     if exists('src'):
         raise FbsError('The src/ directory already exists. Aborting.')
-    try:
-        app = prompt_for_value('App name', default='MyApp')
-        user = getuser().title()
-        author = prompt_for_value('Author', default=user)
-        version = prompt_for_value('Initial version', default='0.0.1')
-        eg_bundle_id = 'com.%s.%s' % (
-            author.lower().split()[0], ''.join(app.lower().split())
-        )
-        mac_bundle_identifier = prompt_for_value(
-            'Mac bundle identifier (eg. %s, optional)' % eg_bundle_id,
-            optional=True
-        )
-    except KeyboardInterrupt:
-        print('')
-        return
-    print('')
+    app = prompt_for_value('App name', default='MyApp')
+    user = getuser().title()
+    author = prompt_for_value('Author', default=user)
+    version = prompt_for_value('Initial version', default='0.0.1')
+    eg_bundle_id = 'com.%s.%s' % (
+        author.lower().split()[0], ''.join(app.lower().split())
+    )
+    mac_bundle_identifier = prompt_for_value(
+        'Mac bundle identifier (eg. %s, optional)' % eg_bundle_id,
+        optional=True
+    )
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
     template_path = lambda relpath: join(template_dir, *relpath.split('/'))
