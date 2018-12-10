@@ -47,7 +47,8 @@ def activate_profile(profile_name):
         for path_fn in (_defaults.path, path)
         for profile in LOADED_PROFILES
     ]
-    SETTINGS.update(load_settings(filter(exists, json_paths), SETTINGS))
+    base_settings = {'project_dir': SETTINGS['project_dir']}
+    SETTINGS.update(load_settings(filter(exists, json_paths), base_settings))
 
 def path(path_str):
     """

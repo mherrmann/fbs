@@ -1,6 +1,6 @@
 import json
 
-def load_settings(json_paths, existing=None):
+def load_settings(json_paths, base=None):
     """
     Return settings from the given JSON files as a dictionary. This function
     expands placeholders: That is, if a settings file contains
@@ -24,10 +24,10 @@ def load_settings(json_paths, existing=None):
 
         { "hidden_imports": ["a", "b'] }.
     """
-    if existing is None:
+    if base is None:
         result = None
     else:
-        result = dict(existing)
+        result = dict(base)
     for json_path in json_paths:
         with open(json_path, 'r') as f:
             data = json.load(f)
