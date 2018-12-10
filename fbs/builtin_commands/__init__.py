@@ -8,6 +8,7 @@ from fbs.builtin_commands._util import prompt_for_value, \
     require_existing_project
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
+from fbs.upload import _upload_repo
 from fbs_runtime import FbsError
 from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
@@ -261,18 +262,80 @@ def repo():
         _LOG.info(
             "Done. You can test the repository with the following commands:\n"
             "    sudo rpm -v --import %s\n"
-            "    sudo dnf config-manager --add-repo target/repo/%s.repo\n"
+            "    sudo dnf config-manager --add-repo file://%s/target/repo\n"
             "    sudo dnf install %s\n"
             "To revert these changes:\n"
             "    sudo dnf remove %s\n"
-            "    sudo rm /etc/yum.repos.d/%s.repo\n"
+            "    sudo rm /etc/yum.repos.d/*%s*.repo\n"
             "    sudo rpm --erase gpg-pubkey-%s",
-            path('src/sign/linux/public-key.gpg'), app_name, pkg_name, pkg_name,
-            app_name, gpg_key[-8:].lower(),
+            path('src/sign/linux/public-key.gpg'), SETTINGS['project_dir'],
+            pkg_name, pkg_name, app_name, gpg_key[-8:].lower(),
             extra={'wrap': False}
         )
     else:
         raise FbsError('This command is not supported on this platform.')
+
+@command
+def upload():
+    """
+    Upload installer and repository to fbs.sh
+    """
+    require_existing_project()
+    try:
+        username = SETTINGS['fbs_user']
+        password = SETTINGS['fbs_pass']
+    except KeyError as e:
+        raise FbsError(
+            'Could not find setting "%s". You may want to invoke one of the '
+            'following:\n'
+            ' * fbs register\n'
+            ' * fbs login'
+            % (e.args[0],)
+        ) from None
+    _upload_repo(username, password)
+    app_name = SETTINGS['app_name']
+    url = lambda p: 'https://fbs.sh/%s/%s/%s' % (username, app_name, p)
+    message = 'Done! '
+    pkg_name = app_name.lower()
+    installer_url = url(SETTINGS['installer'])
+    if is_linux():
+        message += 'Your users can now install your app via the following ' \
+                   'commands:\n'
+        repo_url = url(SETTINGS['repo_subdir'])
+        if is_ubuntu():
+            commands = [
+                "sudo apt-get install apt-transport-https",
+                "wget -qO - %s | sudo apt-key add -" % url('public-key.gpg'),
+                "echo 'deb [arch=amd64] %s stable main' | " % repo_url +
+                "sudo tee /etc/apt/sources.list.d/%s.list" % pkg_name,
+                "sudo apt-get update",
+                "sudo apt-get install " + pkg_name
+            ]
+        elif is_arch_linux():
+            commands = [
+                "curl -O %s && " % url('public-key.gpg') +
+                "sudo pacman-key --add public-key.gpg && " +
+                "sudo pacman-key --lsign-key %s && " % SETTINGS['gpg_key'] +
+                "rm public-key.gpg",
+                "echo -e '\\n[%s]\\nServer = %s' | sudo tee -a /etc/pacman.conf"
+                % (app_name, repo_url),
+                "sudo pacman -Syu " + pkg_name
+            ]
+        elif is_fedora():
+            commands = [
+                "sudo rpm -v --import " + url('public-key.gpg'),
+                "sudo dnf config-manager --add-repo %s/%s.repo"
+                % (repo_url, app_name),
+                "sudo dnf install " + pkg_name
+            ]
+        else:
+            raise FbsError('This Linux distribution is not supported.')
+        message += '\n'.join('    ' + command for command in commands)
+        message += '\nOr, to install without automatic updates, they can ' \
+                   'also download:\n    ' + installer_url
+    else:
+        message = 'Your users can now download and install %s.' % installer_url
+    _LOG.info(message, extra={'wrap': False})
 
 @command
 def test():

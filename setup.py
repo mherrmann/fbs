@@ -40,6 +40,7 @@ setup(
             'fbs/installer/mac', 'yoursway-create-dmg'
         )
     },
+    install_requires=['boto3'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

@@ -1,6 +1,7 @@
 {
     "installer": "${app_name}.rpm",
     "gpg_preset_passphrase": "/usr/libexec/gpg-preset-passphrase",
-    "repo_url": "file://${project_dir}/target/repo",
-    "gpgkey_url": "file://${project_dir}/src/sign/linux/public-key.gpg"
+    "repo_url": "https://fbs.sh/${fbs_user}/${app_name}/${repo_subdir}",
+    "gpgkey_url": "https://fbs.sh/${fbs_user}/${app_name}/public-key.gpg",
+    "repo_subdir": "rpm"
 }
