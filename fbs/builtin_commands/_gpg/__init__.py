@@ -12,7 +12,7 @@ from subprocess import DEVNULL, PIPE
 import logging
 
 _LOG = logging.getLogger(__name__)
-_DOCKER_IMAGE = 'fbs:gpg_generator'
+_DOCKER_IMAGE = 'fbs/gpg-generator'
 _DEST_DIR = 'src/sign/linux'
 _PUBKEY_NAME = 'public-key.gpg'
 _PRIVKEY_NAME = 'private-key.gpg'
