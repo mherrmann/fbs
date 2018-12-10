@@ -6,7 +6,7 @@ from fbs_runtime import FbsError
 from os import listdir
 from os.path import exists
 from shutil import rmtree
-from subprocess import run, CalledProcessError, PIPE
+from subprocess import run, CalledProcessError, PIPE, DEVNULL
 
 import logging
 
@@ -43,9 +43,17 @@ def buildvm(name):
     for arg, value in settings.get('build_args', {}).items():
         args.extend(['--build-arg', '%s=%s' % (arg, value)])
     try:
-        _run_docker(args, check=True, stdout=PIPE, universal_newlines=True)
+        _run_docker(
+            args, check=True, stdout=DEVNULL, stderr=PIPE,
+            universal_newlines=True
+        )
     except CalledProcessError as e:
-        raise FbsError(e.stdout)
+        if '/private-key.gpg: no such file or directory' in e.stderr:
+            message = 'Could not find private-key.gpg. Maybe you want to ' \
+                      'run:\n    fbs gengpgkey'
+        else:
+            message = e.stderr
+        raise FbsError(message)
     _LOG.info('Done. You can now execute:\n    fbs runvm ' + name)
 
 @command
