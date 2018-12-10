@@ -17,7 +17,7 @@ _LOG = logging.getLogger(__name__)
 @command
 def buildvm(name):
     """
-    Build a virtual machine. Eg.: buildvm ubuntu
+    Build a Linux VM. Eg.: buildvm ubuntu
     """
     require_existing_project()
     build_dir = path('target/%s-docker-image' % name)
@@ -51,7 +51,7 @@ def buildvm(name):
 @command
 def runvm(name):
     """
-    Run a virtual machine. Eg.: runvm ubuntu
+    Run a Linux VM. Eg.: runvm ubuntu
     """
     args = ['run', '-it']
     for item in _get_docker_mounts(name).items():

@@ -20,7 +20,7 @@ _PRIVKEY_NAME = 'private-key.gpg'
 @command
 def gengpgkey():
     """
-    Generate a GPG key for code signing on Linux
+    Generate a GPG key for Linux code signing
     """
     require_existing_project()
     if exists(_DEST_DIR):

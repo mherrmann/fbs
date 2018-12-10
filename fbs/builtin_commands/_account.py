@@ -29,7 +29,7 @@ def register():
 @command
 def login():
     """
-    Save your login credentials to secret.json
+    Save your account details to secret.json
     """
     require_existing_project()
     username = prompt_for_value('Username')
