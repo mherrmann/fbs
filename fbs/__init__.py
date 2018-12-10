@@ -34,11 +34,10 @@ def init(project_dir):
 
 def activate_profile(profile_name):
     """
-    By default, fbs only loads src/build/settings/base.json and .../`os`.json
-    where `os` is one of "mac", "linux" and "windows". This function lets you
-    load other settings on the fly. A common example would be distinguishing
-    between different Linux distributions (eg. ubuntu.json / arch.json).
-    Or in custom build scripts during a release, where release.json contains the
+    By default, fbs only loads some settings. For instance,
+    src/build/settings/base.json and .../`os`.json where `os` is one of "mac",
+    "linux" or "windows". This function lets you load other settings on the fly.
+    A common example would be during a release, where release.json contains the
     production server URL instead of a staging server.
     """
     LOADED_PROFILES.append(profile_name)
