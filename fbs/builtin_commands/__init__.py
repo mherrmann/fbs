@@ -333,9 +333,11 @@ def upload():
         message += '\n'.join('    ' + command for command in commands)
         message += '\nOr, to install without automatic updates, they can ' \
                    'also download:\n    ' + installer_url
+        kwargs = {'wrap': False}
     else:
-        message = 'Your users can now download and install %s.' % installer_url
-    _LOG.info(message, extra={'wrap': False})
+        message += 'Your users can now download and install %s.' % installer_url
+        kwargs = {}
+    _LOG.info(message, **kwargs)
 
 @command
 def test():
