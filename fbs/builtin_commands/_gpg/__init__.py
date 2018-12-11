@@ -1,6 +1,6 @@
 from fbs import path, SETTINGS
 from fbs.builtin_commands._docker import _run_docker
-from fbs.builtin_commands._util import prompt_for_value, extend_json, \
+from fbs.builtin_commands._util import prompt_for_value, update_json, \
     require_existing_project, BASE_JSON, SECRET_JSON
 from fbs.cmdline import command
 from fbs_runtime import FbsError
@@ -56,8 +56,8 @@ def gengpgkey():
     pubkey_dest = _DEST_DIR + '/' + _PUBKEY_NAME
     Path(path(pubkey_dest)).write_text(pubkey)
     Path(path(_DEST_DIR + '/' + _PRIVKEY_NAME)).write_text(privkey)
-    extend_json(path(BASE_JSON), {'gpg_key': key, 'gpg_name': name})
-    extend_json(path(SECRET_JSON), {'gpg_pass': passphrase})
+    update_json(path(BASE_JSON), {'gpg_key': key, 'gpg_name': name})
+    update_json(path(SECRET_JSON), {'gpg_pass': passphrase})
     _LOG.info(
         'Done. Created %s and ...%s. Also updated %s and ...secret.json with '
         'the values you provided.', pubkey_dest, _PRIVKEY_NAME, BASE_JSON

@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from fbs import path
 from fbs_runtime import FbsError
 from getpass import getpass
@@ -33,31 +34,28 @@ def require_existing_project():
             "    fbs startproject ?"
         )
 
-def extend_json(f_path, dict_):
+def update_json(f_path, dict_):
     f = Path(f_path)
     try:
         contents = f.read_text()
     except FileNotFoundError:
-        indent = _get_indent(_split_json(Path(path(BASE_JSON)).read_text())[1])
+        indent = _infer_indent(Path(path(BASE_JSON)).read_text())
         new_contents = json.dumps(dict_, indent=indent)
     else:
-        new_contents = _extend_json_str(contents, dict_)
+        new_contents = _update_json_str(contents, dict_)
     f.write_text(new_contents)
 
-def _extend_json_str(json_str, dict_):
+def _update_json_str(json_str, dict_):
     if not dict_:
         return json_str
-    start, body, end = _split_json(json_str)
-    indent = _get_indent(body)
-    append = json.dumps(dict_, indent=indent)[1:-1]
-    new_body = body.rstrip() + ',' + append
-    return start + new_body + end
+    data = json.loads(json_str, object_pairs_hook=OrderedDict)
+    data.update(dict_)
+    indent = _infer_indent(json_str)
+    return json.dumps(data, indent=indent)
 
-def _split_json(f_contents):
-    start = f_contents.index('{')
-    end = f_contents.rindex('}', start + 1)
-    return f_contents[:start], f_contents[start:end], f_contents[end:]
-
-def _get_indent(json_body):
-    match = re.search('\n(\\s+)', json_body)
-    return match.group(1) if match else ''
+def _infer_indent(json_str):
+    start = json_str.find('{')
+    if start == -1:
+        return None
+    match = re.search('\n(\\s+)', json_str[start:])
+    return match.group(1) if match else None
