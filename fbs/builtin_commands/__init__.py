@@ -299,18 +299,28 @@ def upload():
     if is_linux():
         message += 'Your users can now install your app via the following ' \
                    'commands:\n'
+        format_commands = lambda *cmds: '\n'.join('    ' + c for c in cmds)
         repo_url = url(SETTINGS['repo_subdir'])
         if is_ubuntu():
-            commands = [
+            message += format_commands(
                 "sudo apt-get install apt-transport-https",
                 "wget -qO - %s | sudo apt-key add -" % url('public-key.gpg'),
                 "echo 'deb [arch=amd64] %s stable main' | " % repo_url +
                 "sudo tee /etc/apt/sources.list.d/%s.list" % pkg_name,
                 "sudo apt-get update",
                 "sudo apt-get install " + pkg_name
-            ]
+            )
+            message += '\nIf they already have your app installed, they can ' \
+                       'force an immediate update via:\n'
+            message += format_commands(
+                'sudo apt-get update '
+                '-o Dir::Etc::sourcelist="/etc/apt/sources.list.d/%s.list" '
+                '-o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"'
+                % pkg_name,
+                'sudo apt-get install --only-upgrade ' + pkg_name
+            )
         elif is_arch_linux():
-            commands = [
+            message += format_commands(
                 "curl -O %s && " % url('public-key.gpg') +
                 "sudo pacman-key --add public-key.gpg && " +
                 "sudo pacman-key --lsign-key %s && " % SETTINGS['gpg_key'] +
@@ -318,19 +328,31 @@ def upload():
                 "echo -e '\\n[%s]\\nServer = %s' | sudo tee -a /etc/pacman.conf"
                 % (app_name, repo_url),
                 "sudo pacman -Syu " + pkg_name
-            ]
+            )
+            message += '\nIf they already have your app installed, they can ' \
+                       'force an immediate update via:\n'
+            message += format_commands('sudo pacman -Syu --needed ' + pkg_name)
         elif is_fedora():
-            commands = [
+            message += format_commands(
                 "sudo rpm -v --import " + url('public-key.gpg'),
                 "sudo dnf config-manager --add-repo %s/%s.repo"
                 % (repo_url, app_name),
                 "sudo dnf install " + pkg_name
-            ]
+            )
+            message += "\n(On CentOS, replace 'dnf' by 'yum' and " \
+                       "'dnf config-manager' by 'yum-config-manager'.)"
+            message += '\nIf they already have your app installed, they can ' \
+                       'force an immediate update via:\n'
+            message += \
+                format_commands('sudo dnf upgrade %s --refresh' % pkg_name)
+            message += '\nThis is for Fedora. For CentOS, use:\n'
+            message += format_commands(
+                'sudo yum clean all && sudo yum upgrade ' + pkg_name
+            )
         else:
             raise FbsError('This Linux distribution is not supported.')
-        message += '\n'.join('    ' + command for command in commands)
-        message += '\nOr, to install without automatic updates, they can ' \
-                   'also download:\n    ' + installer_url
+        message += '\nFinally, your users can also install without automatic ' \
+                   'updates by downloading:\n    ' + installer_url
         extra = {'wrap': False}
     else:
         message += 'Your users can now download and install %s.' % installer_url
