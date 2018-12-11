@@ -3,9 +3,9 @@ This module contains all of fbs's built-in commands. They are invoked when you
 run `fbs <command>` on the command line. But you are also free to import them in
 your Python build script and execute them there.
 """
-from fbs import path, SETTINGS
+from fbs import path, SETTINGS, activate_profile
 from fbs.builtin_commands._util import prompt_for_value, \
-    require_existing_project
+    require_existing_project, update_json
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
 from fbs.upload import _upload_repo
@@ -36,7 +36,6 @@ def startproject():
     app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
-    version = prompt_for_value('Initial version', default='0.0.1')
     eg_bundle_id = 'com.%s.%s' % (
         author.lower().split()[0], ''.join(app.lower().split())
     )
@@ -52,7 +51,6 @@ def startproject():
         template_dir, '.', {
             'app_name': app,
             'author': author,
-            'version': version,
             'mac_bundle_identifier': mac_bundle_identifier,
             'python_bindings': python_bindings
         },
@@ -192,7 +190,7 @@ def sign_installer():
         from fbs.sign_installer.fedora import sign_installer_fedora
         sign_installer_fedora()
     else:
-        raise FbsError('This command is not supported on this platform.')
+        _LOG.info('This command is not (yet) supported on this platform.')
 
 @command
 def repo():
@@ -333,11 +331,38 @@ def upload():
         message += '\n'.join('    ' + command for command in commands)
         message += '\nOr, to install without automatic updates, they can ' \
                    'also download:\n    ' + installer_url
-        kwargs = {'wrap': False}
+        extra = {'wrap': False}
     else:
         message += 'Your users can now download and install %s.' % installer_url
-        kwargs = {}
-    _LOG.info(message, **kwargs)
+        extra = None
+    _LOG.info(message, extra=extra)
+
+@command
+def release():
+    """
+    Bump version and run clean,freeze,...,upload
+    """
+    require_existing_project()
+    version = SETTINGS['version']
+    next_version = _get_next_version(version)
+    release_version = prompt_for_value('Release version', default=next_version)
+    activate_profile('release')
+    SETTINGS['version'] = release_version
+    log_level = _LOG.level
+    if log_level == logging.NOTSET:
+        _LOG.setLevel(logging.WARNING)
+    try:
+        clean()
+        freeze()
+        installer()
+        sign_installer()
+        repo()
+    finally:
+        _LOG.setLevel(log_level)
+    upload()
+    base_json = 'src/build/settings/base.json'
+    update_json(path(base_json), { 'version': release_version })
+    _LOG.info('Also, %s was updated with the new version.', base_json)
 
 @command
 def test():
@@ -399,3 +424,8 @@ def _get_python_bindings():
 
 def _has_module(name):
     return bool(find_spec(name))
+
+def _get_next_version(version):
+    version_parts = version.split('.')
+    next_patch = str(int(version_parts[-1]) + 1)
+    return '.'.join(version_parts[:-1]) + '.' + next_patch

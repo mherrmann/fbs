@@ -30,5 +30,6 @@
                 "requirements": "fedora.txt"
             }
         }
-    }
+    },
+    "release": false
 }
