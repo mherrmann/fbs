@@ -44,7 +44,7 @@ def buildvm(name):
         args.extend(['--build-arg', '%s=%s' % (arg, value)])
     try:
         _run_docker(
-            args, check=True, stdout=DEVNULL, stderr=PIPE,
+            args, check=True, stdout=PIPE, stderr=PIPE,
             universal_newlines=True
         )
     except CalledProcessError as e:
@@ -52,7 +52,7 @@ def buildvm(name):
             message = 'Could not find private-key.gpg. Maybe you want to ' \
                       'run:\n    fbs gengpgkey'
         else:
-            message = e.stderr
+            message = e.stdout + '\n' + e.stderr
         raise FbsError(message)
     _LOG.info('Done. You can now execute:\n    fbs runvm ' + name)
 
