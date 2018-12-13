@@ -34,6 +34,9 @@ def startproject():
     if exists('src'):
         raise FbsError('The src/ directory already exists. Aborting.')
     app = prompt_for_value('App name', default='MyApp')
+    while ' ' in app:
+        print('Sorry, spaces in the app name are not yet supported.')
+        app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
     eg_bundle_id = 'com.%s.%s' % (
