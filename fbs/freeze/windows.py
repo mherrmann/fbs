@@ -42,7 +42,15 @@ def _add_missing_dlls():
         'msvcr100.dll', 'msvcr110.dll', 'msvcp110.dll', 'vcruntime140.dll',
         'msvcp140.dll', 'concrt140.dll', 'vccorlib140.dll'
     ):
-        _add_missing_dll(dll_name)
+        try:
+            _add_missing_dll(dll_name)
+        except LookupError:
+            raise FileNotFoundError(
+                "Could not find %s on your PATH. Please install the Visual C++ "
+                "Redistributable for Visual Studio 2012 from:\n    "
+                "https://www.microsoft.com/en-us/download/details.aspx?id=30679"
+                % dll_name
+            ) from None
     for ucrt_dll in ('api-ms-win-crt-multibyte-l1-1-0.dll',):
         try:
             _add_missing_dll(ucrt_dll)
