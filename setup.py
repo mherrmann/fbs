@@ -62,6 +62,6 @@ setup(
     },
     license='GPLv3 or later',
     keywords='PyQt',
-    platforms=['MacOS', 'Windows', 'Debian', 'Fedora', 'CentOS'],
+    platforms=['MacOS', 'Windows', 'Debian', 'Fedora', 'CentOS', 'Arch'],
     test_suite='tests'
 )
