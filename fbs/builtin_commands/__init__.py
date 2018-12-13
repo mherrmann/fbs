@@ -60,9 +60,10 @@ def startproject():
             template_path('src/main/python/main.py')
         ]
     )
+    print('')
     _LOG.info(
         "Created the src/ directory. If you have %s installed, you can now "
-        "do:\n    fbs run", python_bindings
+        "do:\n\n    fbs run", python_bindings
     )
 
 @command
