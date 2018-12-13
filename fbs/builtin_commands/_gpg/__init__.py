@@ -32,6 +32,7 @@ def gengpgkey():
     except KeyboardInterrupt:
         print('')
         return
+    print('')
     _LOG.info('Generating the GPG key. This can take a little...')
     _init_docker()
     args = ['run', '-t']

@@ -16,6 +16,7 @@ def register():
     username = prompt_for_value('Username')
     email = prompt_for_value('Real email')
     password = prompt_for_value('Password', password=True)
+    print('')
     status, text = _server.post_json('register', {
         'username': username, 'email': email, 'password': password
     })
@@ -34,6 +35,7 @@ def login():
     require_existing_project()
     username = prompt_for_value('Username')
     password = prompt_for_value('Password', password=True)
+    print('')
     _login(username, password)
 
 def _login(username, password):
