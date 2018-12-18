@@ -65,7 +65,7 @@ class ApplicationContext:
     def excepthook(self):
         """
         We use a custom excepthook because PyQt5/PySide2 hide some stack trace
-        entries - see the documentation of the `Excepthook` class for details.
+        entries - see the documentation of fbs_runtime.excepthook.Excepthook.
         You can use a different implementation by overwriting this property.
         Just return an object with a .install() method.
         """
