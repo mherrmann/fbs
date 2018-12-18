@@ -1,5 +1,6 @@
 from fbs_runtime import platform, _state, FbsError
 from fbs_runtime._signal import SignalWakeupHandler
+from fbs_runtime.excepthook import Excepthook
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
 from os.path import join, exists, pardir, dirname, realpath
@@ -35,6 +36,7 @@ class ApplicationContext:
         https://build-system.fman.io/manual/#your-python-code
     """
     def __init__(self):
+        self.excepthook.install()
         self._resource_locator = self._create_resource_locator()
         # Many Qt classes require a QApplication to have been instantiated.
         # Do this here, before everything else, to achieve this:
@@ -72,6 +74,9 @@ class ApplicationContext:
         """
         if not is_mac():
             return QIcon(self.get_resource('Icon.ico'))
+    @cached_property
+    def excepthook(self):
+        return Excepthook()
     def get_resource(self, *rel_path):
         """
         Return the absolute path to the data file with the given name or
