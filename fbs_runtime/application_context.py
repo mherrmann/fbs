@@ -37,7 +37,6 @@ class ApplicationContext:
     """
     def __init__(self):
         self.excepthook.install()
-        self._resource_locator = self._create_resource_locator()
         # Many Qt classes require a QApplication to have been instantiated.
         # Do this here, before everything else, to achieve this:
         self.app
@@ -48,16 +47,6 @@ class ApplicationContext:
             self._signal_wakeup_handler.install()
         if self.app_icon:
             self.app.setWindowIcon(self.app_icon)
-    def _create_resource_locator(self):
-        if is_frozen():
-            executable_dir = dirname(sys.executable)
-            if is_mac():
-                resources_dir = join(executable_dir, pardir, 'Resources')
-            else:
-                resources_dir = executable_dir
-            return _ResourceLocator([resources_dir])
-        else:
-            return _DevelopmentResourceLocator(self.__class__)
     @cached_property
     def app(self):
         """
@@ -91,6 +80,17 @@ class ApplicationContext:
         the given name or path exists, a FileNotFoundError is raised.
         """
         return self._resource_locator.locate(*rel_path)
+    @cached_property
+    def _resource_locator(self):
+        if is_frozen():
+            executable_dir = dirname(sys.executable)
+            if is_mac():
+                resources_dir = join(executable_dir, pardir, 'Resources')
+            else:
+                resources_dir = executable_dir
+            return _ResourceLocator([resources_dir])
+        else:
+            return _DevelopmentResourceLocator(self.__class__)
     def run(self):
         raise NotImplementedError()
 
