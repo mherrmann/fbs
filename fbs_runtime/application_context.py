@@ -76,6 +76,12 @@ class ApplicationContext:
             return QIcon(self.get_resource('Icon.ico'))
     @cached_property
     def excepthook(self):
+        """
+        We use a custom excepthook because PyQt5/PySide2 hide some stack trace
+        entries - see the documentation of the `Excepthook` class for details.
+        You can use a different implementation by overwriting this property.
+        Just return an object with a .install() method.
+        """
         return Excepthook()
     def get_resource(self, *rel_path):
         """
