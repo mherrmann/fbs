@@ -1,11 +1,10 @@
 from fbs_runtime import _state
-from fbs_runtime._resource_locator import ResourceLocator, \
-    DevelopmentResourceLocator
+from fbs_runtime._fbs import ResourceLocator, get_resource_dirs_frozen, \
+    get_resource_dirs_source
 from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.excepthook import Excepthook
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
-from os.path import join, pardir, dirname
 
 try:
     from PyQt5.QtGui import QIcon
@@ -81,14 +80,10 @@ class ApplicationContext:
     @cached_property
     def _resource_locator(self):
         if is_frozen():
-            executable_dir = dirname(sys.executable)
-            if is_mac():
-                resources_dir = join(executable_dir, pardir, 'Resources')
-            else:
-                resources_dir = executable_dir
-            return ResourceLocator([resources_dir])
+            resource_dirs = get_resource_dirs_frozen()
         else:
-            return DevelopmentResourceLocator(self.__class__)
+            resource_dirs = get_resource_dirs_source(self.__class__)
+        return ResourceLocator(resource_dirs)
     def run(self):
         raise NotImplementedError()
 
