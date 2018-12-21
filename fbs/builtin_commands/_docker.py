@@ -6,7 +6,7 @@ from fbs_runtime import FbsError
 from os import listdir
 from os.path import exists
 from shutil import rmtree
-from subprocess import run, CalledProcessError, PIPE, DEVNULL
+from subprocess import run, CalledProcessError, PIPE
 
 import logging
 
