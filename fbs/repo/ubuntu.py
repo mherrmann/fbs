@@ -1,6 +1,7 @@
-from fbs import path, _defaults
+from fbs import path
 from fbs._gpg import preset_gpg_passphrase
 from fbs.resources import copy_with_filtering
+from fbs_runtime._source import default_path
 from os import makedirs
 from os.path import exists
 from shutil import rmtree
@@ -17,7 +18,7 @@ def create_repo_ubuntu():
     distr_file = 'src/repo/ubuntu/distributions'
     distr_path = path(distr_file)
     if not exists(distr_path):
-        distr_path = _defaults.path(distr_file)
+        distr_path = default_path(distr_file)
     copy_with_filtering(distr_path, tmp_dir, files_to_filter=[distr_path])
     preset_gpg_passphrase()
     check_call([

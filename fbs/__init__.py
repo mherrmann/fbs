@@ -1,9 +1,10 @@
-from fbs import _state, _defaults
-from fbs._settings import load_settings, expand_placeholders
+from fbs import _state
 from fbs._state import LOADED_PROFILES
-from fbs_runtime import platform, FbsError
-from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
-from os.path import normpath, join, exists, abspath
+from fbs_runtime import FbsError, _source
+from fbs_runtime._fbs import get_core_settings, get_default_profiles
+from fbs_runtime._settings import load_settings, expand_placeholders
+from fbs_runtime._source import get_settings_paths
+from os.path import abspath
 
 """
 fbs populates SETTINGS with the current build settings. A typical example is
@@ -16,8 +17,8 @@ def init(project_dir):
     Call this if you are invoking neither `fbs` on the command line nor
     fbs.cmdline.main() from Python.
     """
-    SETTINGS['project_dir'] = abspath(project_dir)
-    for profile in _get_default_profiles():
+    SETTINGS.update(get_core_settings(abspath(project_dir)))
+    for profile in get_default_profiles():
         activate_profile(profile)
 
 def activate_profile(profile_name):
@@ -29,13 +30,10 @@ def activate_profile(profile_name):
     production server URL instead of a staging server.
     """
     LOADED_PROFILES.append(profile_name)
-    json_paths = [
-        path_fn('src/build/settings/%s.json' % profile)
-        for path_fn in (_defaults.path, path)
-        for profile in LOADED_PROFILES
-    ]
-    base_settings = {'project_dir': SETTINGS['project_dir']}
-    SETTINGS.update(load_settings(filter(exists, json_paths), base_settings))
+    project_dir = SETTINGS['project_dir']
+    json_paths = get_settings_paths(project_dir, LOADED_PROFILES)
+    core_settings = get_core_settings(project_dir)
+    SETTINGS.update(load_settings(json_paths, core_settings))
 
 def path(path_str):
     """
@@ -51,20 +49,4 @@ def path(path_str):
         error_message = "Cannot call path(...) until fbs.init(...) has been " \
                         "called."
         raise FbsError(error_message) from None
-    return normpath(join(project_dir, *path_str.split('/')))
-
-def _get_default_profiles():
-    yield 'base'
-    # The "secret" profile lets the user store sensitive settings such as
-    # passwords in src/build/settings/secret.json. When using Git, the user can
-    # exploit this by adding secret.json to .gitignore, thus preventing it from
-    # being uploaded to services such as GitHub.
-    yield 'secret'
-    yield platform.name().lower()
-    if is_linux():
-        if is_ubuntu():
-            yield 'ubuntu'
-        elif is_arch_linux():
-            yield 'arch'
-        elif is_fedora():
-            yield 'fedora'
+    return _source.path(project_dir, path_str)

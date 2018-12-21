@@ -1,8 +1,9 @@
-from fbs import path, SETTINGS, _defaults
+from fbs import path, SETTINGS
 from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs_runtime import FbsError
+from fbs_runtime._source import default_path
 from os import listdir
 from os.path import exists
 from shutil import rmtree
@@ -24,7 +25,7 @@ def buildvm(name):
     if exists(build_dir):
         rmtree(build_dir)
     src_root = 'src/build/docker'
-    available_vms = set(listdir(_defaults.path(src_root)))
+    available_vms = set(listdir(default_path(src_root)))
     if exists(path(src_root)):
         available_vms.update(listdir(path(src_root)))
     if name not in available_vms:
@@ -33,10 +34,10 @@ def buildvm(name):
             (name, ''.join(['\n * ' + vm for vm in available_vms]))
         )
     src_dir = src_root + '/' + name
-    for path_fn in _defaults.path, path:
+    for path_fn in default_path, path:
         _copy(path_fn, src_dir, build_dir)
     settings = SETTINGS['docker_images'].get(name, {})
-    for path_fn in _defaults.path, path:
+    for path_fn in default_path, path:
         for p in settings.get('build_files', []):
             _copy(path_fn, p, build_dir)
     args = ['build', '--pull', '-t', _get_docker_id(name), build_dir]

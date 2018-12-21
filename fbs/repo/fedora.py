@@ -1,5 +1,6 @@
-from fbs import path, _defaults
+from fbs import path
 from fbs.resources import copy_with_filtering
+from fbs_runtime._source import default_path
 from os import makedirs, rename
 from os.path import exists
 from shutil import rmtree, copy
@@ -14,7 +15,7 @@ def create_repo_fedora():
     repo_file = path('src/repo/fedora/${app_name}.repo')
     use_default = not exists(repo_file)
     if use_default:
-        repo_file = _defaults.path('src/repo/fedora/AppName.repo')
+        repo_file = default_path('src/repo/fedora/AppName.repo')
     copy_with_filtering(
         repo_file, path('target/repo'), files_to_filter=[repo_file]
     )

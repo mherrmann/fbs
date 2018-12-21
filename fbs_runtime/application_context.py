@@ -1,6 +1,5 @@
-from fbs_runtime import _state
-from fbs_runtime._fbs import ResourceLocator, get_resource_dirs_frozen, \
-    get_resource_dirs_source
+from fbs_runtime import _state, _frozen, _source
+from fbs_runtime._resources import ResourceLocator
 from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.excepthook import Excepthook
 from fbs_runtime.platform import is_windows, is_mac
@@ -69,6 +68,15 @@ class ApplicationContext:
         Just return an object with a .install() method.
         """
         return Excepthook()
+    @cached_property
+    def public_settings(self):
+        """
+        This dictionary contains the values of the settings listed in setting
+        "public_settings". Eg. `self.public_settings['version']`.
+        """
+        if is_frozen():
+            return _frozen.load_public_settings()
+        return _source.load_public_settings(self._project_dir)
     def get_resource(self, *rel_path):
         """
         Return the absolute path to the data file with the given name or
@@ -80,10 +88,14 @@ class ApplicationContext:
     @cached_property
     def _resource_locator(self):
         if is_frozen():
-            resource_dirs = get_resource_dirs_frozen()
+            resource_dirs = _frozen.get_resource_dirs()
         else:
-            resource_dirs = get_resource_dirs_source(self.__class__)
+            resource_dirs = _source.get_resource_dirs(self._project_dir)
         return ResourceLocator(resource_dirs)
+    @cached_property
+    def _project_dir(self):
+        assert not is_frozen(), 'Only available when running from source'
+        return _source.get_project_dir(self.__class__)
     def run(self):
         raise NotImplementedError()
 

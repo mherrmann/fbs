@@ -1,47 +1,27 @@
-from fbs_runtime import platform, FbsError
-from fbs_runtime.platform import is_mac
-from os.path import join, exists, realpath, dirname, pardir
-from pathlib import PurePath
+from fbs_runtime import platform
+from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
 
-import errno
-import inspect
-import os
-import sys
+def get_core_settings(project_dir):
+    return {
+        'project_dir': project_dir
+    }
 
-class ResourceLocator:
-    def __init__(self, resource_dirs):
-        self._dirs = resource_dirs
-    def locate(self, *rel_path):
-        for resource_dir in self._dirs:
-            resource_path = join(resource_dir, *rel_path)
-            if exists(resource_path):
-                return realpath(resource_path)
-        raise FileNotFoundError(
-            errno.ENOENT, 'Could not locate resource', os.sep.join(rel_path)
-        )
+def get_default_profiles():
+    result = ['base']
+    # The "secret" profile lets the user store sensitive settings such as
+    # passwords in src/build/settings/secret.json. When using Git, the user can
+    # exploit this by adding secret.json to .gitignore, thus preventing it from
+    # being uploaded to services such as GitHub.
+    result.append('secret')
+    result.append(platform.name().lower())
+    if is_linux():
+        if is_ubuntu():
+            result.append('ubuntu')
+        elif is_arch_linux():
+            result.append('arch')
+        elif is_fedora():
+            result.append('fedora')
+    return result
 
-def get_resource_dirs_frozen():
-    app_dir = dirname(sys.executable)
-    return [join(app_dir, pardir, 'Resources') if is_mac() else app_dir]
-
-def get_resource_dirs_source(appctxt_cls):
-    project_dir = _get_project_base_dir(appctxt_cls)
-    resources_dir = join(project_dir, 'src', 'main', 'resources')
-    return [
-        join(resources_dir, platform.name().lower()),
-        join(resources_dir, 'base'),
-        join(project_dir, 'src', 'main', 'icons')
-    ]
-
-def _get_project_base_dir(appctxt_cls):
-    class_file = inspect.getfile(appctxt_cls)
-    p = PurePath(class_file)
-    while p != p.parent:
-        parent_names = [p.parents[2].name, p.parents[1].name, p.parent.name]
-        if parent_names == ['src', 'main', 'python']:
-            return str(p.parents[3])
-        p = p.parent
-    raise FbsError(
-        'Could not determine project base directory for %s. Is it in '
-        'src/main/python?' % appctxt_cls
-    )
+def get_public_settings(settings):
+    return {k: settings[k] for k in settings['public_settings']}
