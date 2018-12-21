@@ -47,13 +47,13 @@ def is_ubuntu():
 
 def is_arch_linux():
     try:
-        return linux_distribution() == 'Arch'
+        return linux_distribution() == 'Arch Linux'
     except FileNotFoundError:
         return False
 
 def is_fedora():
     try:
-        return linux_distribution() == 'Fedora'
+        return linux_distribution() in ('Fedora', 'CentOS Linux')
     except FileNotFoundError:
         return False
 
@@ -71,7 +71,7 @@ def _get_linux_distribution():
         pass
     else:
         if os_release:
-            return os_release.split(maxsplit=1)[0]
+            return os_release
     return '<unknown>'
 
 def is_gnome_based():
