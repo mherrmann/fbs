@@ -31,7 +31,7 @@ def get_resource_dirs(project_dir):
     result.append(path(project_dir, 'src/main/icons'))
     return result
 
-def load_public_settings(project_dir):
+def load_build_settings(project_dir):
     core_settings = get_core_settings(project_dir)
     profiles = get_default_profiles()
     json_paths = get_settings_paths(project_dir, profiles)

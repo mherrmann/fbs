@@ -69,14 +69,14 @@ class ApplicationContext:
         """
         return Excepthook()
     @cached_property
-    def public_settings(self):
+    def build_settings(self):
         """
         This dictionary contains the values of the settings listed in setting
-        "public_settings". Eg. `self.public_settings['version']`.
+        "public_settings". Eg. `self.build_settings['version']`.
         """
         if is_frozen():
-            return _frozen.load_public_settings()
-        return _source.load_public_settings(self._project_dir)
+            return _frozen.load_build_settings()
+        return _source.load_build_settings(self._project_dir)
     def get_resource(self, *rel_path):
         """
         Return the absolute path to the data file with the given name or

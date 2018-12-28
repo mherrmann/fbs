@@ -60,7 +60,7 @@ class _PyInstallerRuntimehook:
             f.write('\n'.join([
                 'import importlib',
                 'module = importlib.import_module(%r)' % module.__name__,
-                'module.PUBLIC_SETTINGS = %r' % get_public_settings(SETTINGS)
+                'module.BUILD_SETTINGS = %r' % get_public_settings(SETTINGS)
             ]))
         return hook_path
     def __exit__(self, *_):
