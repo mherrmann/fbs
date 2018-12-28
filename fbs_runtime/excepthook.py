@@ -9,7 +9,10 @@ class Excepthook:
         sys.excepthook = self
         self._enable_excepthook_for_threads()
     def __call__(self, exc_type, exc_value, exc_tb):
-        if not isinstance(exc_value, SystemExit):
+        if isinstance(exc_value, SystemExit):
+            # SystemExit shuts down Python. Preserve this:
+            sys.__excepthook__(exc_type, exc_value, exc_tb)
+        else:
             enriched_tb = self._add_missing_frames(exc_tb) if exc_tb else exc_tb
             # Normally, we'd like to use sys.__excepthook__ here. But it doesn't
             # work with our "fake" traceback (see #_add_missing_frames(...)).
