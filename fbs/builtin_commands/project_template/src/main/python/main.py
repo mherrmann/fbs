@@ -6,7 +6,8 @@ import sys
 class AppContext(ApplicationContext):           # 1. Subclass ApplicationContext
     def run(self):                              # 2. Implement run()
         window = QMainWindow()
-        window.setWindowTitle("${app_name}")
+        version = self.build_settings['version']
+        window.setWindowTitle("${app_name} v" + version)
         window.resize(250, 150)
         window.show()
         return self.app.exec_()                 # 3. End run() with this line
