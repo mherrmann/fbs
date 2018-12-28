@@ -5,7 +5,7 @@ when running from source.
 
 from fbs_runtime import FbsError
 from fbs_runtime._fbs import get_default_profiles, get_core_settings, \
-    get_public_settings
+    filter_public_settings
 from fbs_runtime._settings import load_settings
 from os.path import join, normpath, dirname, pardir, exists
 from pathlib import PurePath
@@ -36,7 +36,7 @@ def load_build_settings(project_dir):
     profiles = get_default_profiles()
     json_paths = get_settings_paths(project_dir, profiles)
     all_settings = load_settings(json_paths, core_settings)
-    return get_public_settings(all_settings)
+    return filter_public_settings(all_settings)
 
 def get_settings_paths(project_dir, profiles):
     return list(filter(exists, (

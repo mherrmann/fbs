@@ -1,7 +1,7 @@
 from fbs import path, SETTINGS
 from fbs._state import LOADED_PROFILES
 from fbs.resources import _copy
-from fbs_runtime._fbs import get_public_settings
+from fbs_runtime._fbs import filter_public_settings
 from fbs_runtime._source import default_path
 from fbs_runtime.platform import is_mac
 from os import rename
@@ -60,7 +60,7 @@ class _PyInstallerRuntimehook:
             f.write('\n'.join([
                 'import importlib',
                 'module = importlib.import_module(%r)' % module.__name__,
-                'module.BUILD_SETTINGS = %r' % get_public_settings(SETTINGS)
+                'module.BUILD_SETTINGS = %r' % filter_public_settings(SETTINGS)
             ]))
         return hook_path
     def __exit__(self, *_):

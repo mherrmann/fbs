@@ -23,5 +23,5 @@ def get_default_profiles():
             result.append('fedora')
     return result
 
-def get_public_settings(settings):
+def filter_public_settings(settings):
     return {k: settings[k] for k in settings['public_settings']}
