@@ -63,6 +63,17 @@ Copyright 2013-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
 Used under the terms of the Apache License, Version 2.0. Please see below.
 
+rsa
+=====
+URL: https://stuvel.eu/rsa
+Version: 3.4.2
+
+Imported by fbs's Python code.
+
+Copyright 2011 Sybren A. Stüvel <sybren@stuvel.eu>
+
+Used under the terms of the Apache License, Version 2.0. Please see below.
+
 yoursway-create-dmg
 ===================
 URL: https://github.com/andreyvit/create-dmg
