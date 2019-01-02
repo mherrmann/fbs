@@ -86,6 +86,27 @@ class ApplicationContext:
         """
         return self._resource_locator.locate(*rel_path)
     @cached_property
+    def licensing(self):
+        """
+        This field helps you implement a license key functionality for your
+        application. For more information, see:
+            https://build-system.fman.io/manual#licensing
+        """
+
+        # fbs's licensing implementation incurs a dependency on Python library
+        # `rsa`. We don't want to force all users to install this library.
+        # So we import fbs_runtime.licensing here, instead of at the top of this
+        # file. This lets people who don't use licensing avoid the dependency.
+        from fbs_runtime.licensing import _Licensing
+
+        return _Licensing(self.build_settings['licensing_pubkey'])
+    def run(self):
+        """
+        You should overwrite this method with the steps for starting your app.
+        See eg. fbs's tutorial.
+        """
+        raise NotImplementedError()
+    @cached_property
     def _resource_locator(self):
         if is_frozen():
             resource_dirs = _frozen.get_resource_dirs()
@@ -96,8 +117,6 @@ class ApplicationContext:
     def _project_dir(self):
         assert not is_frozen(), 'Only available when running from source'
         return _source.get_project_dir(self.__class__)
-    def run(self):
-        raise NotImplementedError()
 
 def is_frozen():
     """

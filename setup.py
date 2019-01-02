@@ -40,6 +40,10 @@ setup(
         )
     },
     install_requires=['boto3'],
+    extras_require={
+        # Also update requirements.txt when you change this:
+        'licensing': ['rsa>=3.4.2']
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
