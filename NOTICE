@@ -1,6 +1,6 @@
 fman build system (fbs)
 =======================
-Copyright (c) 2016 - 2018 Michael Herrmann
+Copyright (c) 2016 - 2019 Michael Herrmann
 
 fbs depends on several open source libraries and tools. This file describes
 which open source software is used, and under which terms. To see precisely how
