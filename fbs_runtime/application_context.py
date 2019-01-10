@@ -66,7 +66,7 @@ class ApplicationContext:
         - see the docs in fbs_runtime.excepthook. You can use a different
         implementation by overwriting this property. Just return an object with
         a .install() method. If you would like to simply use Python's default
-        excepthook, return fbs_runtime.excepthook.DefaultPythonExcepthook().
+        excepthook, return fbs_runtime.excepthook.NoCustomExcepthook().
         """
         return FbsExcepthook()
     @cached_property

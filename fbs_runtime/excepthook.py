@@ -12,10 +12,10 @@ class Excepthook:
         """
         raise NotImplementedError()
 
-class DefaultPythonExcepthook(Excepthook):
+class NoCustomExcepthook(Excepthook):
     """
-    Return an instance of this class from your ApplicationContext's .excepthook
-    property if you want to use Python's default sys.excepthook.
+    Return an instance of this class from your ApplicationContext's #excepthook
+    property if you want to leave Python's sys.excepthook untouched.
     """
     def install(self):
         # Simply don't do anything. This leaves Python's excepthook untouched.
