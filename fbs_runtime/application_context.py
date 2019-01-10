@@ -91,7 +91,7 @@ class ApplicationContext:
         """
         This field helps you implement a license key functionality for your
         application. For more information, see:
-            https://build-system.fman.io/manual#licensing
+            https://build-system.fman.io/manual#license-keys
         """
 
         # fbs's licensing implementation incurs a dependency on Python library
