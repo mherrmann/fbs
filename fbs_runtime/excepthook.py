@@ -1,33 +1,101 @@
+"""
+By default, fbs overwrites sys.excepthook for better error reporting:
+
+ 1) Applications based on PyQt5 or PySide2 are missing some stack trace entries
+    in their tracebacks. fbs makes sure they are displayed, for easier
+    debugging. See the function add_missing_qt_frames(...) in this module.
+ 2) Python < 3.8 does not call sys.excepthook for non-main threads. fbs ensures
+    that its own excepthook (and thus eg. the benefits of 1) above) does get
+    called, so you see all errors.
+ 3) fbs lets you define multiple `ExceptionHandler`s - see below. This lets you
+    report errors through several channels. Eg. on the console, or on a hosted
+    error reporting system.
+
+You can customise these mechanisms using the classes and functions in this
+module, and by changing ApplicationContext#exception_handlers and
+...#excepthook.
+"""
+
 from collections import namedtuple
 
 import sys
 import threading
 import traceback
 
-class Excepthook:
-    def install(self):
+class ExceptionHandler:
+    """
+    Extend this class to implement your own exception handler(s). Then, add it
+    to your ApplicationContext#exception_handlers.
+    """
+    def init(self):
+        pass
+    def handle(self, exc_type, exc_value, enriched_tb):
         """
-        Implement this method to specify how the excepthook should be installed.
-        Typically, you'd assign to `sys.excepthook` here.
+        Return True from this method to prevent further ExceptionHandlers from
+        being invoked for this exception.
         """
         raise NotImplementedError()
 
-class NoCustomExcepthook(Excepthook):
+class StderrExceptionHandler(ExceptionHandler):
     """
-    Return an instance of this class from your ApplicationContext's #excepthook
-    property if you want to leave Python's sys.excepthook untouched.
+    Print exceptions to stderr.
     """
-    def install(self):
-        # Simply don't do anything. This leaves Python's excepthook untouched.
-        pass
+    def handle(self, exc_type, exc_value, enriched_tb):
+        # Normally, we'd like to use sys.__excepthook__ here. But it doesn't
+        # work with our "fake" traceback (see add_missing_qt_frames(...)).
+        # The following call avoids this yet produces the same result:
+        traceback.print_exception(exc_type, exc_value, enriched_tb)
 
-class QtExcepthook(Excepthook):
+class _Excepthook:
+    """
+    fbs's excepthook. Forwards exceptions to the given handlers, until one of
+    them returns True. Adds stack trace entries that are normally missing in
+    PyQt5 / PySide2 applications (see add_missing_qt_frames(...)). Also ensures
+    that, unlike in Python normally, it is called for exceptions in all threads.
+    """
+    def __init__(self, handlers):
+        self._handlers = handlers
+    def install(self):
+        for handler in self._handlers:
+            handler.init()
+        sys.excepthook = self
+        enable_excepthook_for_threads()
+    def __call__(self, exc_type, exc_value, exc_tb):
+        if not isinstance(exc_value, SystemExit):
+            enriched_tb = add_missing_qt_frames(exc_tb) if exc_tb else exc_tb
+            for handler in self._handlers:
+                if handler.handle(exc_type, exc_value, enriched_tb):
+                    break
+
+def enable_excepthook_for_threads():
+    """
+    `sys.excepthook` isn't called for exceptions raised in non-main-threads.
+    This workaround fixes this for instances of (non-subclasses of) Thread.
+    See: http://bugs.python.org/issue1230540
+    """
+    init_original = threading.Thread.__init__
+
+    def init(self, *args, **kwargs):
+        init_original(self, *args, **kwargs)
+        run_original = self.run
+
+        def run_with_except_hook(*args2, **kwargs2):
+            try:
+                run_original(*args2, **kwargs2)
+            except Exception:
+                sys.excepthook(*sys.exc_info())
+
+        self.run = run_with_except_hook
+
+    threading.Thread.__init__ = init
+
+def add_missing_qt_frames(tb):
     """
     Let f and h be Python functions and g be a function of Qt. If
         f() -> g() -> h()
     (where "->" means "calls"), and an exception occurs in h(), then the
     traceback does not contain f. This can make debugging very difficult.
-    To fix this, this Excepthook creates a "fake" traceback that contains the
+    To fix this, this method creates a "fake" traceback that contains the
     missing entries.
 
     The code below can be used to reproduce the f() -> g() -> h() problem.
@@ -61,55 +129,12 @@ class QtExcepthook(Excepthook):
         window.show()
         app.exec_()
     """
-
-    def install(self):
-        sys.excepthook = self
-    def __call__(self, exc_type, exc_value, exc_tb):
-        if not isinstance(exc_value, SystemExit):
-            enriched_tb = self._add_missing_frames(exc_tb) if exc_tb else exc_tb
-            self.handle(exc_type, exc_value, enriched_tb)
-    def handle(self, exc_type, exc_value, enriched_tb):
-        # Normally, we'd like to use sys.__excepthook__ here. But it doesn't
-        # work with our "fake" traceback (see #_add_missing_frames(...)).
-        # The following call avoids this yet produces the same result:
-        traceback.print_exception(exc_type, exc_value, enriched_tb)
-    def _add_missing_frames(self, tb):
-        result = _fake_tb(tb.tb_frame, tb.tb_lasti, tb.tb_lineno, tb.tb_next)
-        frame = tb.tb_frame.f_back
-        while frame:
-            result = _fake_tb(frame, frame.f_lasti, frame.f_lineno, result)
-            frame = frame.f_back
-        return result
-
-class FbsExcepthook(QtExcepthook):
-    """
-    The default `Excepthook` used by fbs.
-    """
-    def install(self):
-        super().install()
-        enable_excepthook_for_threads()
-
-def enable_excepthook_for_threads():
-    """
-    `sys.excepthook` isn't called for exceptions raised in non-main-threads.
-    This workaround fixes this for instances of (non-subclasses of) Thread.
-    See: http://bugs.python.org/issue1230540
-    """
-    init_original = threading.Thread.__init__
-
-    def init(self, *args, **kwargs):
-        init_original(self, *args, **kwargs)
-        run_original = self.run
-
-        def run_with_except_hook(*args2, **kwargs2):
-            try:
-                run_original(*args2, **kwargs2)
-            except Exception:
-                sys.excepthook(*sys.exc_info())
-
-        self.run = run_with_except_hook
-
-    threading.Thread.__init__ = init
+    result = _fake_tb(tb.tb_frame, tb.tb_lasti, tb.tb_lineno, tb.tb_next)
+    frame = tb.tb_frame.f_back
+    while frame:
+        result = _fake_tb(frame, frame.f_lasti, frame.f_lineno, result)
+        frame = frame.f_back
+    return result
 
 _fake_tb = \
     namedtuple('fake_tb', ('tb_frame', 'tb_lasti', 'tb_lineno', 'tb_next'))

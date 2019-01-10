@@ -1,7 +1,7 @@
 from fbs_runtime import _state, _frozen, _source
 from fbs_runtime._resources import ResourceLocator
 from fbs_runtime._signal import SignalWakeupHandler
-from fbs_runtime.excepthook import FbsExcepthook
+from fbs_runtime.excepthook import _Excepthook, StderrExceptionHandler
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
 
@@ -32,7 +32,8 @@ class ApplicationContext:
         https://build-system.fman.io/manual/#your-python-code
     """
     def __init__(self):
-        self.excepthook.install()
+        if self.excepthook:
+            self.excepthook.install()
         # Many Qt classes require a QApplication to have been instantiated.
         # Do this here, before everything else, to achieve this:
         self.app
@@ -43,6 +44,12 @@ class ApplicationContext:
             self._signal_wakeup_handler.install()
         if self.app_icon:
             self.app.setWindowIcon(self.app_icon)
+    def run(self):
+        """
+        You should overwrite this method with the steps for starting your app.
+        See eg. fbs's tutorial.
+        """
+        raise NotImplementedError()
     @cached_property
     def app(self):
         """
@@ -51,24 +58,6 @@ class ApplicationContext:
         An example of this is given in the Manual.
         """
         return QApplication(sys.argv)
-    @cached_property
-    def app_icon(self):
-        """
-        The app icon. Not available on Mac because app icons are handled by the
-        OS there.
-        """
-        if not is_mac():
-            return QIcon(self.get_resource('Icon.ico'))
-    @cached_property
-    def excepthook(self):
-        """
-        fbs by default uses a custom excepthook to get all stack trace entries
-        - see the docs in fbs_runtime.excepthook. You can use a different
-        implementation by overwriting this property. Just return an object with
-        a .install() method. If you would like to simply use Python's default
-        excepthook, return fbs_runtime.excepthook.NoCustomExcepthook().
-        """
-        return FbsExcepthook()
     @cached_property
     def build_settings(self):
         """
@@ -87,6 +76,14 @@ class ApplicationContext:
         """
         return self._resource_locator.locate(*rel_path)
     @cached_property
+    def exception_handlers(self):
+        """
+        Return a list of exception handlers that should be invoked when an error
+        occurs. See the documentation of module `fbs_runtime.excepthook` for
+        more information.
+        """
+        return [StderrExceptionHandler()]
+    @cached_property
     def licensing(self):
         """
         This field helps you implement a license key functionality for your
@@ -101,12 +98,22 @@ class ApplicationContext:
         from fbs_runtime.licensing import _Licensing
 
         return _Licensing(self.build_settings['licensing_pubkey'])
-    def run(self):
+    @cached_property
+    def app_icon(self):
         """
-        You should overwrite this method with the steps for starting your app.
-        See eg. fbs's tutorial.
+        The app icon. Not available on Mac because app icons are handled by the
+        OS there.
         """
-        raise NotImplementedError()
+        if not is_mac():
+            return QIcon(self.get_resource('Icon.ico'))
+    @cached_property
+    def excepthook(self):
+        """
+        Overwrite this method to use a custom excepthook. It should be an object
+        with a .install() method, or `None` if you want to completely disable
+        fbs's excepthook implementation.
+        """
+        return _Excepthook(self.exception_handlers)
     @cached_property
     def _resource_locator(self):
         if is_frozen():
