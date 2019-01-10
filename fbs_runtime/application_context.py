@@ -1,7 +1,7 @@
 from fbs_runtime import _state, _frozen, _source
 from fbs_runtime._resources import ResourceLocator
 from fbs_runtime._signal import SignalWakeupHandler
-from fbs_runtime.excepthook import Excepthook
+from fbs_runtime.excepthook import FbsExcepthook
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
 
@@ -62,12 +62,13 @@ class ApplicationContext:
     @cached_property
     def excepthook(self):
         """
-        We use a custom excepthook because PyQt5/PySide2 hide some stack trace
-        entries - see the documentation of fbs_runtime.excepthook.Excepthook.
-        You can use a different implementation by overwriting this property.
-        Just return an object with a .install() method.
+        fbs by default uses a custom excepthook to get all stack trace entries
+        - see the docs in fbs_runtime.excepthook. You can use a different
+        implementation by overwriting this property. Just return an object with
+        a .install() method. If you would like to simply use Python's default
+        excepthook, return fbs_runtime.excepthook.DefaultPythonExcepthook().
         """
-        return Excepthook()
+        return FbsExcepthook()
     @cached_property
     def build_settings(self):
         """
