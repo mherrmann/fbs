@@ -2,8 +2,8 @@
 By default, fbs overwrites sys.excepthook for better error reporting:
 
  1) Applications based on PyQt5 or PySide2 are missing some stack trace entries
-    in their tracebacks. fbs makes sure they are displayed, for easier
-    debugging. See the function add_missing_qt_frames(...) in this module.
+    in their tracebacks (see add_missing_qt_frames(...) below). fbs makes sure
+    they are displayed, for easier debugging.
  2) Python < 3.8 does not call sys.excepthook for non-main threads. fbs ensures
     that its own excepthook (and thus eg. the benefits of 1) above) does get
     called, so you see all errors.
@@ -95,7 +95,7 @@ def add_missing_qt_frames(tb):
         f() -> g() -> h()
     (where "->" means "calls"), and an exception occurs in h(), then the
     traceback does not contain f. This can make debugging very difficult.
-    To fix this, this method creates a "fake" traceback that contains the
+    To fix this, this function creates a "fake" traceback that contains the
     missing entries.
 
     The code below can be used to reproduce the f() -> g() -> h() problem.
