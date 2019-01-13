@@ -11,7 +11,7 @@
         "src/build/docker/fedora/.rpmmacros"
     ],
     "hidden_imports": [],
-    "public_settings": ["app_name", "author", "version"],
+    "public_settings": ["app_name", "author", "version", "environment"],
     "docker_images": {
         "ubuntu": {
             "build_files": ["requirements/", "src/sign/linux/"],
@@ -32,5 +32,6 @@
             }
         }
     },
-    "release": false
+    "release": false,
+    "environment": "local"
 }

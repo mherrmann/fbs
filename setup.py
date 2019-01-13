@@ -42,7 +42,8 @@ setup(
     install_requires=['boto3'],
     extras_require={
         # Also update requirements.txt when you change this:
-        'licensing': ['rsa>=3.4.2']
+        'licensing': ['rsa>=3.4.2'],
+        'sentry': ['sentry-sdk>=0.6.6']
     },
     classifiers=[
         'Development Status :: 4 - Beta',
