@@ -37,7 +37,7 @@ def run_pyinstaller(extra_args=None, debug=False):
         path(SETTINGS['main_module'])
     ])
     if debug:
-        args.append('--debug')
+        args.extend(['--debug', 'all'])
     with _PyInstallerRuntimehook() as hook_path:
         args.extend(['--runtime-hook', hook_path])
         run(args, check=True)
