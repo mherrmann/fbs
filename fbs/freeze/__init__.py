@@ -38,6 +38,10 @@ def run_pyinstaller(extra_args=None, debug=False):
     ])
     if debug:
         args.extend(['--debug', 'all'])
+        if is_mac():
+            # Force generation of an .app bundle. Otherwise, PyInstaller skips
+            # it when --debug is given.
+            args.append('-w')
     with _PyInstallerRuntimehook() as hook_path:
         args.extend(['--runtime-hook', hook_path])
         run(args, check=True)
