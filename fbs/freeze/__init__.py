@@ -33,8 +33,7 @@ def run_pyinstaller(extra_args=None, debug=False):
     args.extend([
         '--distpath', path('target'),
         '--specpath', path('target/PyInstaller'),
-        '--workpath', path('target/PyInstaller'),
-        path(SETTINGS['main_module'])
+        '--workpath', path('target/PyInstaller')
     ])
     if debug:
         args.extend(['--debug', 'all'])
@@ -44,6 +43,7 @@ def run_pyinstaller(extra_args=None, debug=False):
             args.append('-w')
     with _PyInstallerRuntimehook() as hook_path:
         args.extend(['--runtime-hook', hook_path])
+        args.append(path(SETTINGS['main_module']))
         run(args, check=True)
     output_dir = path('target/' + app_name + ('.app' if is_mac() else ''))
     freeze_dir = path('${freeze_dir}')
