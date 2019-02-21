@@ -1,4 +1,5 @@
 from fbs import path, SETTINGS
+from fbs_runtime import FbsError
 from fbs._state import LOADED_PROFILES
 from glob import glob
 from os import makedirs
@@ -6,6 +7,7 @@ from os.path import dirname, isfile, join, basename, relpath, splitext, exists
 from pathlib import Path
 from shutil import copy, copymode
 
+import re
 import os
 
 def copy_with_filtering(
@@ -33,16 +35,20 @@ def copy_with_filtering(
 
 def get_icons():
     """
-    Return a list [(size_in_pixels, path)] of available app icons for the
-    current platform.
+    Return a list [(size, scale, path)] of available app icons for the current
+    platform.
     """
     result = {}
     for profile in LOADED_PROFILES:
         icons_dir = 'src/main/icons/' + profile
         for icon_path in glob(path(icons_dir + '/*.png')):
-            size = int(splitext(basename(icon_path))[0])
-            result[size] = icon_path
-    return list(result.items())
+            name = splitext(basename(icon_path))[0]
+            match = re.match('(\d+)(?:@(\d+)x)?', name)
+            if not match:
+                raise FbsError('Invalid icon name: ' % icon_path)
+            size, scale = int(match.group(1)), int(match.group(2) or '1')
+            result[(size, scale)] = icon_path
+    return [(size, scale, path) for (size, scale), path in result.items()]
 
 def _get_files_to_copy(src_dir_or_file, dest_dir, exclude):
     excludes = _paths(map(path, exclude))

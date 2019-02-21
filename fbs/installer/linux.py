@@ -72,7 +72,7 @@ def _generate_icons():
     dest_root = path('target/installer/usr/share/icons/hicolor')
     makedirs(dest_root)
     icons_fname = '%s.png' % SETTINGS['app_name']
-    for size, icon_path in get_icons():
+    for size, _, icon_path in get_icons():
         icon_dest = join(dest_root, '%dx%d' % (size, size), 'apps', icons_fname)
         makedirs(dirname(icon_dest))
         copy(icon_path, icon_dest)
