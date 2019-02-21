@@ -26,8 +26,11 @@ def freeze_mac(debug=False):
 
 def _generate_iconset():
     makedirs(path('target/Icon.iconset'), exist_ok=True)
-    for size, icon_path in get_icons():
-        dest_name = 'icon_%dx%d.png' % (size, size)
+    for size, scale, icon_path in get_icons():
+        dest_name = 'icon_%dx%d' % (size, size)
+        if scale != 1:
+            dest_name += '@%dx' % scale
+        dest_name += '.png'
         copy(icon_path, path('target/Icon.iconset/' + dest_name))
 
 def _remove_unwanted_pyinstaller_files():
