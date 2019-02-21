@@ -5,7 +5,7 @@ from fbs_runtime._fbs import filter_public_settings
 from fbs_runtime._source import default_path
 from fbs_runtime.platform import is_mac
 from os import rename
-from os.path import join
+from os.path import join, dirname
 from pathlib import PurePath
 from subprocess import run
 from tempfile import TemporaryDirectory
@@ -35,6 +35,7 @@ def run_pyinstaller(extra_args=None, debug=False):
         '--specpath', path('target/PyInstaller'),
         '--workpath', path('target/PyInstaller')
     ])
+    args.extend(['--additional-hooks-dir', join(dirname(__file__), 'hooks')])
     if debug:
         args.extend(['--debug', 'all'])
         if is_mac():
