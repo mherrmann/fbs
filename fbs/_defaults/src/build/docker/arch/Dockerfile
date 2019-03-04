@@ -1,5 +1,5 @@
 # Build on an old Arch version on purpose, to maximize compatibility:
-FROM base/devel:2018.04.01
+FROM fmanbuildsystem/archlinux:2018.04.01
 
 ARG requirements
 
