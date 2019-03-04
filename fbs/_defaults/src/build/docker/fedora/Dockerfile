@@ -1,5 +1,5 @@
 # Build on an old Fedora version on purpose, to maximize compatibility:
-FROM fedora:25
+FROM fmanbuildsystem/fedora:25
 
 ARG requirements
 
