@@ -21,7 +21,7 @@ description = 'Create cross-platform desktop applications with Python and Qt'
 setup(
     name='fbs',
     # Also update fbs/_defaults/requirements/base.txt when you change this:
-    version='0.7.1',
+    version='0.7.2-SNAPSHOT',
     description=description,
     long_description=
         description + '\n\nHome page: https://build-system.fman.io',
