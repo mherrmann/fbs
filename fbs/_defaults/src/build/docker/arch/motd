@@ -4,5 +4,5 @@ for this platform, use the normal commands `fbs freeze` etc.
 Note that you can't launch GUIs here. So eg. `fbs run` won't work.
 
 Another caveat is that target/ here is special: It symlinks to your
-usual target/ubuntu/. So when you are done and type `exit` to leave
+usual target/arch/. So when you are done and type `exit` to leave
 this container, you can find the produced binaries there.
