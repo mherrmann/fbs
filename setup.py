@@ -1,7 +1,7 @@
-"""Easily create cross-platform desktop applications with PyQt
+"""Create cross-platform desktop applications with Python and Qt
 
 See:
-https://github.com/mherrmann/fbs
+https://build-system.fman.io
 """
 
 from os.path import relpath, join
@@ -17,11 +17,11 @@ def _get_package_data(pkg_dir, data_subdir):
             result.append(relpath(filepath, pkg_dir))
     return result
 
-description = 'Easily create cross-platform desktop applications with PyQt'
+description = 'Create cross-platform desktop applications with Python and Qt'
 setup(
     name='fbs',
     # Also update fbs/_defaults/requirements/base.txt when you change this:
-    version='0.7.1-SNAPSHOT',
+    version='0.7.1',
     description=description,
     long_description=
         description + '\n\nHome page: https://build-system.fman.io',
