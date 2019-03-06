@@ -1,5 +1,5 @@
 # Build on an old Ubuntu version on purpose, to maximize compatibility:
-FROM fmanbuildsystem/ubuntu:14.04
+FROM fmanbuildsystem/ubuntu:16.04
 
 ARG requirements
 
