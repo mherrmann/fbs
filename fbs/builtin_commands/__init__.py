@@ -39,6 +39,10 @@ def startproject():
         app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
+    python_bindings = prompt_for_value('Qt bindings (PyQt5 or PySide2)', default='PyQt5')
+    while python_bindings.lower() not in ["pyqt5", "pyside2"]:
+        print('Please select between "PyQt5" or "PySide2" only')
+        python_bindings = prompt_for_value('Qt bindings (PyQt5 or PySide2)', default='PyQt5')
     eg_bundle_id = 'com.%s.%s' % (
         author.lower().split()[0], ''.join(app.lower().split())
     )
@@ -49,7 +53,6 @@ def startproject():
     mkdir('src')
     template_dir = join(dirname(__file__), 'project_template')
     template_path = lambda relpath: join(template_dir, *relpath.split('/'))
-    python_bindings = _get_python_bindings()
     copy_with_filtering(
         template_dir, '.', {
             'app_name': app,
@@ -78,7 +81,8 @@ def run():
     if not _has_module('PyQt5') and not _has_module('PySide2'):
         raise FbsError(
             "Couldn't find PyQt5 or PySide2. Maybe you need to:\n"
-            "    pip install PyQt5==5.9.2"
+            "    pip install PyQt5==5.9.2 or\n"
+            "    pip install PySide2==5.12.2"
         )
     env = dict(os.environ)
     pythonpath = path('src/main/python')
