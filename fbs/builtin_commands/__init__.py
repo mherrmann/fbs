@@ -39,10 +39,10 @@ def startproject():
         app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
-    python_bindings = prompt_for_value('Qt bindings (PyQt5 or PySide2)', default='PyQt5')
-    while python_bindings.lower() not in ["pyqt5", "pyside2"]:
-        print('Please select between "PyQt5" or "PySide2" only')
-        python_bindings = prompt_for_value('Qt bindings (PyQt5 or PySide2)', default='PyQt5')
+    python_bindings = prompt_for_value(
+        'Qt bindings', choices=('PyQt5', 'PySide2'),
+        default=_get_python_bindings()
+    )
     eg_bundle_id = 'com.%s.%s' % (
         author.lower().split()[0], ''.join(app.lower().split())
     )

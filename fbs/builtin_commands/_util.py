@@ -11,10 +11,18 @@ import re
 BASE_JSON = 'src/build/settings/base.json'
 SECRET_JSON = 'src/build/settings/secret.json'
 
-def prompt_for_value(value, optional=False, default='', password=False):
+def prompt_for_value(
+    value, optional=False, default='', password=False, choices=()
+):
     message = value
+    if choices:
+        choices_dict = \
+            OrderedDict((str(i + 1), c) for (i, c) in enumerate(choices))
+        message += ': '
+        message += ' or '.join('%s) %s' % tpl for tpl in choices_dict.items())
     if default:
-        message += ' [%s] ' % default
+        message += ' [%s] ' % \
+                   (choices.index(default) + 1 if choices else default)
     message += ': '
     prompt = getpass if password else input
     result = prompt(message).strip()
@@ -22,9 +30,9 @@ def prompt_for_value(value, optional=False, default='', password=False):
         print(default)
         return default
     if not optional:
-        while not result:
+        while not result or (choices and result not in choices_dict):
             result = prompt(message).strip()
-    return result
+    return choices_dict[result] if choices else result
 
 def require_existing_project():
     if not exists(path('src')):
