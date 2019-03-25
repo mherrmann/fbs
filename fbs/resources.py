@@ -45,7 +45,7 @@ def get_icons():
             name = splitext(basename(icon_path))[0]
             match = re.match('(\d+)(?:@(\d+)x)?', name)
             if not match:
-                raise FbsError('Invalid icon name: ' % icon_path)
+                raise FbsError('Invalid icon name: ' + icon_path)
             size, scale = int(match.group(1)), int(match.group(2) or '1')
             result[(size, scale)] = icon_path
     return [(size, scale, path) for (size, scale), path in result.items()]
