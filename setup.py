@@ -36,7 +36,7 @@ setup(
         'fbs.builtin_commands._gpg':
             ['Dockerfile', 'genkey.sh', 'gpg-agent.conf'],
         'fbs.installer.mac': _get_package_data(
-            'fbs/installer/mac', 'yoursway-create-dmg'
+            'fbs/installer/mac', 'create-dmg'
         )
     },
     install_requires=['boto3'],

@@ -12,7 +12,7 @@ def create_installer_mac():
         replace(dest, dest_bu)
     try:
         check_call([
-            join(dirname(__file__), 'yoursway-create-dmg', 'create-dmg'),
+            join(dirname(__file__), 'create-dmg', 'create-dmg'),
             '--volname', app_name,
             '--app-drop-link', '170', '10',
             '--icon', app_name + '.app', '0', '10',
