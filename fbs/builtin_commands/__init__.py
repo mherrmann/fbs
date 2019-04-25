@@ -39,10 +39,16 @@ def startproject():
         app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
-    python_bindings = prompt_for_value(
-        'Qt bindings', choices=('PyQt5', 'PySide2'),
-        default=_get_python_bindings()
-    )
+    has_pyqt = _has_module('PyQt5')
+    has_pyside = _has_module('PySide2')
+    if has_pyqt and not has_pyside:
+        python_bindings = 'PyQt5'
+    elif not has_pyqt and has_pyside:
+        python_bindings = 'PySide2'
+    else:
+        python_bindings = prompt_for_value(
+            'Qt bindings', choices=('PyQt5', 'PySide2'), default='PyQt5'
+        )
     eg_bundle_id = 'com.%s.%s' % (
         author.lower().split()[0], ''.join(app.lower().split())
     )
@@ -444,13 +450,6 @@ def clean():
                 remove(fpath)
             elif islink(fpath):
                 unlink(fpath)
-
-def _get_python_bindings():
-    # Use PyQt5 by default. Only use PySide2 if it is available and PyQt5 isn't.
-    if not _has_module('PyQt5'):
-        if _has_module('PySide2'):
-            return 'PySide2'
-    return 'PyQt5'
 
 def _has_module(name):
     return bool(find_spec(name))
