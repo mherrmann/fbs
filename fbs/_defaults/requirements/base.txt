@@ -1,2 +1,2 @@
-fbs==0.7.4
+fbs==0.7.5
 PyInstaller==3.4
