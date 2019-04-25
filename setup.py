@@ -39,11 +39,11 @@ setup(
             'fbs/installer/mac', 'create-dmg'
         )
     },
-    install_requires=['boto3'],
     extras_require={
         # Also update requirements.txt when you change this:
         'licensing': ['rsa>=3.4.2'],
-        'sentry': ['sentry-sdk>=0.6.6']
+        'sentry': ['sentry-sdk>=0.6.6'],
+        'upload': ['boto3']
     },
     classifiers=[
         'Development Status :: 4 - Beta',
