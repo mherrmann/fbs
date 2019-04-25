@@ -39,6 +39,7 @@ setup(
             'fbs/installer/mac', 'create-dmg'
         )
     },
+    install_requires=['PyInstaller>=3.3'],
     extras_require={
         # Also update requirements.txt when you change this:
         'licensing': ['rsa>=3.4.2'],
