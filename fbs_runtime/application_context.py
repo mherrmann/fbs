@@ -127,7 +127,7 @@ class ApplicationContext:
     @cached_property
     def _project_dir(self):
         assert not is_frozen(), 'Only available when running from source'
-        return _source.get_project_dir(self.__class__)
+        return _source.get_project_dir()
 
 def is_frozen():
     """

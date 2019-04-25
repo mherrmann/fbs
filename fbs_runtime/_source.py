@@ -8,21 +8,19 @@ from fbs_runtime._fbs import get_default_profiles, get_core_settings, \
     filter_public_settings
 from fbs_runtime._settings import load_settings
 from os.path import join, normpath, dirname, pardir, exists
-from pathlib import PurePath
+from pathlib import Path
 
-import inspect
+import os
 
-def get_project_dir(appctxt_cls):
-    class_file = inspect.getfile(appctxt_cls)
-    p = PurePath(class_file)
-    while p != p.parent:
-        parent_names = [p.parents[2].name, p.parents[1].name, p.parent.name]
-        if parent_names == ['src', 'main', 'python']:
-            return str(p.parents[3])
-        p = p.parent
+def get_project_dir():
+    result = Path(os.getcwd())
+    while result != result.parent:
+        if (result / 'src' / 'main' / 'python').is_dir():
+            return str(result)
+        result = result.parent
     raise FbsError(
-        'Could not determine project base directory for %s. Is it in '
-        'src/main/python?' % appctxt_cls
+        'Could not determine the project base directory. '
+        'Was expecting src/main/python.'
     )
 
 def get_resource_dirs(project_dir):
