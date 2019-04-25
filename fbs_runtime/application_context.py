@@ -57,7 +57,10 @@ class ApplicationContext:
         this property, eg. if you wish to use your own subclass of QApplication.
         An example of this is given in the Manual.
         """
-        return QApplication(sys.argv)
+        result = QApplication([])
+        result.setApplicationName(self.build_settings['app_name'])
+        result.setApplicationVersion(self.build_settings['version'])
+        return result
     @cached_property
     def build_settings(self):
         """
