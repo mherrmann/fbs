@@ -64,7 +64,7 @@ def _add_missing_dlls():
                 "https://support.microsoft.com/en-us/kb/2999226. "
                 "In both cases, add the directory containing %s to your PATH "
                 "environment variable afterwards. If there are 32 and 64 bit "
-                "versions of the DLL, use the %s bit one (because that's the"
+                "versions of the DLL, use the %s bit one (because that's the "
                 "bitness of your current Python interpreter)." % (
                     ucrt_dll, ucrt_dll, bitness_32_or_64
                 )
