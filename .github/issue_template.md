@@ -1,8 +1,8 @@
 Welcome to fbs's issue tracker!
 
-Have you already purchased a license for fbs, or are you planning to do so in the near future? If yes, feel free to ask anything you want here. Just delete the text and type away. We will be very happy to help.
+Have you already purchased a license for fbs, or are you planning to do so in the near future? If yes, feel free to ask anything you want here. Just delete this text and type away. We will be very happy to help.
 
-Otherwise, please understand that we are essentially helping you in our spare time. We get many requests. While we're happy to help, we have little patience for people who do not take the time to make it easy for us.
+Otherwise, please understand that we are essentially helping you in our spare time. We get many requests. While we're happy to help, we have little patience for people who do not make the effort to make it easy for us.
 
 First: This is not a place for general programming questions. We do not provide help with PyQt5, even if you are using fbs. If you have a question or an error that is not specific to fbs, please go to StackOverflow instead.
 
@@ -12,7 +12,7 @@ Or are you getting an error? Maybe `fbs run` works, but the app created with `fb
 
 So you're still getting an error, or something else doesn't work as expected in fbs.
 
-Is it a problem with one of your dependencies? If the dependency that causes the problem is PyQt5 or PySide2, then please jump to the next paragraph and let us know! Otherwise, try googling "[your dependency problem] PyInstaller". If this doesn't help, or leaves you with further questions (eg. "how do I add/delete a shared library?"), feel free to ask our help. We'll be happy to advise, but generally do not implement workarounds in fbs for library-related PyInstaller problems. (Unless the library is PyQt5 or PySide2.) Such problems should be reported to (and fixed in) PyInstaller.
+Is it a problem with one of your dependencies? If the dependency that causes the problem is PyQt5 or PySide2, then please jump to the next paragraph and let us know! Otherwise, try googling "[your dependency problem] PyInstaller". If this leaves you with any questions (eg. "how do I add/delete a shared library?"), feel free to ask our help. We'll be happy to advise. We will probably not however implement a workaround in fbs for a library-related PyInstaller problems. (Unless the library is PyQt5 or PySide2.) Such problems should be reported to (and fixed in) PyInstaller.
 
 Okay. So it really does appear as if the problem you are facing is caused by fbs. In this case, please delete this text and let us know the following:
 
