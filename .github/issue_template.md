@@ -2,7 +2,7 @@ Welcome to fbs's issue tracker!
 
 Have you already purchased a license for fbs, or are you planning to do so in the near future? If yes, feel free to ask anything you want here. Just delete this text and type away. We will be very happy to help.
 
-Otherwise, please understand that we are essentially helping you in our spare time. We get many requests. While we're happy to help, we have little patience for people who do not make the effort to make it easy for us.
+Otherwise, please understand that we are essentially helping you in our spare time. We get many requests. While we're happy to help, we have little patience for people who do not take the time to make it easy for us.
 
 First: This is not a place for general programming questions. We do not provide help with PyQt5, even if you are using fbs. If you have a question or an error that is not specific to fbs, please go to StackOverflow instead.
 
@@ -24,4 +24,6 @@ Okay. So it really does appear as if the problem you are facing is caused by fbs
  * A copy of any error messages you are getting. Use ```...``` to format them.
  * If you want us to be able to reproduce the problem, what's a (minimal!) script that does this?
 
-Do not just paste the output of `pip freeze`. We don't have time to parse through random output. Just let us know those library versions which you are think are relevant.
+Do not just paste the output of `pip freeze`. We don't have time to parse through heaps of text. Just let us know those library versions which you are think are relevant.
+
+Thanks!
