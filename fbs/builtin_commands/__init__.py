@@ -150,7 +150,17 @@ def installer():
             'It seems your app has not yet been frozen. Please run:\n'
             '    fbs freeze'
         )
-    out_file = join('target', SETTINGS['installer'])
+    linux_distribution_not_supported_msg = \
+        "Your Linux distribution is not supported, sorry. " \
+        "You can run `fbs buildvm` followed by `fbs runvm` to start a Docker " \
+        "VM of a supported distribution."
+    try:
+        installer_fname = SETTINGS['installer']
+    except KeyError:
+        if is_linux():
+            raise FbsError(linux_distribution_not_supported_msg)
+        raise
+    out_file = join('target', installer_fname)
     msg_parts = ['Created %s.' % out_file]
     if is_windows():
         from fbs.installer.windows import create_installer_windows
@@ -176,7 +186,7 @@ def installer():
             install_cmd = 'sudo dnf install ' + out_file
             remove_cmd = 'sudo dnf remove ' + app_name
         else:
-            raise FbsError('Unsupported Linux distribution')
+            raise FbsError(linux_distribution_not_supported_msg)
         msg_parts.append(
             'You can for instance install it via the following command:\n'
             '    %s\n'
