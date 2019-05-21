@@ -94,7 +94,12 @@ class _paths:
     def __contains__(self, item):
         item = Path(item).resolve()
         for p in self._paths:
-            if p.samefile(item) or p in item.parents:
+            # We do `p == item` here instead of `p.samefile(item)` because a
+            # user reported that the former does not work. The affected paths
+            # were in a VirtualBox shared folder in a Windows guest. They had
+            # different st_ino values even though the paths were the same.
+            # See https://github.com/mherrmann/fbs/issues/112.
+            if p == item or p in item.parents:
                 return True
         return False
     def _resolve_strict(self, path_):
