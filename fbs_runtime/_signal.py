@@ -1,13 +1,8 @@
-try:
-    from PyQt5.QtNetwork import QAbstractSocket
-except ImportError:
-    from PySide2.QtNetwork import QAbstractSocket
-
 from socket import socketpair, SOCK_DGRAM
 
 import signal
 
-class SignalWakeupHandler(QAbstractSocket):
+class SignalWakeupHandler:
     """
     Python's `signal` module lets us define custom signal handlers. What we want
     in particular is a graceful handling of Ctrl+C, meaning that the app shuts
@@ -34,22 +29,22 @@ class SignalWakeupHandler(QAbstractSocket):
 
     See: https://stackoverflow.com/a/37229299/1839209
     """
-    def __init__(self, app):
-        super().__init__(QAbstractSocket.UdpSocket, app)
+    def __init__(self, app, QAbstractSocket):
         self._app = app
         self.old_fd = None
         # Create a socket pair
         self.wsock, self.rsock = socketpair(type=SOCK_DGRAM)
+        self.socket = QAbstractSocket(QAbstractSocket.UdpSocket, app)
         # Let Qt listen on the one end
-        self.setSocketDescriptor(self.rsock.fileno())
+        self.socket.setSocketDescriptor(self.rsock.fileno())
         # And let Python write on the other end
         self.wsock.setblocking(False)
         self.old_fd = signal.set_wakeup_fd(self.wsock.fileno())
         # First Python code executed gets any exception from
         # the signal handler, so add a dummy handler first
-        self.readyRead.connect(lambda : None)
+        self.socket.readyRead.connect(lambda : None)
         # Second handler does the real handling
-        self.readyRead.connect(self._readSignal)
+        self.socket.readyRead.connect(self._readSignal)
     def install(self):
         signal.signal(signal.SIGINT, lambda *_: self._app.exit(130))
     def __del__(self):
@@ -60,4 +55,4 @@ class SignalWakeupHandler(QAbstractSocket):
         # Read the written byte.
         # Note: readyRead is blocked from occurring again until readData()
         # was called, so call it, even if you don't need the value.
-        _ = self.readData(1)
+        _ = self.socket.readData(1)

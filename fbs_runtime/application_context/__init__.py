@@ -1,18 +1,10 @@
+from collections import namedtuple
 from fbs_runtime import _state, _frozen, _source
 from fbs_runtime._resources import ResourceLocator
 from fbs_runtime._signal import SignalWakeupHandler
 from fbs_runtime.excepthook import _Excepthook, StderrExceptionHandler
 from fbs_runtime.platform import is_windows, is_mac
 from functools import lru_cache
-
-try:
-    from PyQt5.QtGui import QIcon
-except ImportError:
-    from PySide2.QtGui import QIcon
-try:
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PySide2.QtWidgets import QApplication
 
 import sys
 
@@ -25,7 +17,7 @@ def cached_property(getter):
     """
     return property(lru_cache()(getter))
 
-class ApplicationContext:
+class _ApplicationContext:
     """
     The main point of contact between your application and fbs. For information
     on how to use it, please see the Manual:
@@ -40,7 +32,8 @@ class ApplicationContext:
         # We don't build as a console app on Windows, so no point in installing
         # the SIGINT handler:
         if not is_windows():
-            self._signal_wakeup_handler = SignalWakeupHandler(self.app)
+            self._signal_wakeup_handler = \
+                SignalWakeupHandler(self.app, self._qt_binding.QAbstractSocket)
             self._signal_wakeup_handler.install()
         if self.app_icon:
             self.app.setWindowIcon(self.app_icon)
@@ -57,7 +50,7 @@ class ApplicationContext:
         this property, eg. if you wish to use your own subclass of QApplication.
         An example of this is given in the Manual.
         """
-        result = QApplication([])
+        result = self._qt_binding.QApplication([])
         result.setApplicationName(self.build_settings['app_name'])
         result.setApplicationVersion(self.build_settings['version'])
         return result
@@ -108,7 +101,7 @@ class ApplicationContext:
         OS there.
         """
         if not is_mac():
-            return QIcon(self.get_resource('Icon.ico'))
+            return self._qt_binding.QIcon(self.get_resource('Icon.ico'))
     @cached_property
     def excepthook(self):
         """
@@ -117,6 +110,10 @@ class ApplicationContext:
         fbs's excepthook implementation.
         """
         return _Excepthook(self.exception_handlers)
+    @cached_property
+    def _qt_binding(self):
+        # Implemented in subclasses.
+        raise NotImplementedError()
     @cached_property
     def _resource_locator(self):
         if is_frozen():
@@ -128,6 +125,9 @@ class ApplicationContext:
     def _project_dir(self):
         assert not is_frozen(), 'Only available when running from source'
         return _source.get_project_dir()
+
+_QtBinding = \
+    namedtuple('_QtBinding', ('QApplication', 'QIcon', 'QAbstractSocket'))
 
 def is_frozen():
     """

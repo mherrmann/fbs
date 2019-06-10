@@ -1,4 +1,4 @@
-from fbs_runtime.application_context import ApplicationContext
+from fbs_runtime.application_context.${python_bindings} import ApplicationContext
 from ${python_bindings}.QtWidgets import QMainWindow
 
 import sys
