@@ -19,7 +19,7 @@ Is it a problem with one of your dependencies? If the dependency that causes the
 Okay. So it really does appear as if the problem you are facing is caused by fbs. In this case, please delete this text and let us know the following:
 
  * Your operating system(s)
- * Your Python version (Must be 3.5 or 3.6 because you followed the above instructions. Right?)
+ * Your Python version (Must be 3.5 or 3.6 because you followed the above instructions.)
  * Your fbs version
  * Your PyInstaller version
  * Your PyQt5 / PySide2 version
