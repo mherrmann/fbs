@@ -10,20 +10,22 @@ Do you want to request a feature in fbs? If yes, please delete this text and exp
 
 Or are you getting an error? Maybe `fbs run` works, but the app created with `fbs freeze` won't start? If yes, please follow the steps at https://build-system.fman.io/troubleshooting. Don't just skim over them. Read and follow them line by line. Hopefully this will fix your problem. If not, read on.
 
+Are you using Python 3.7 and / or Anaconda? These distributions are not (yet) supported. Please switch to vanilla Python 3.5 or 3.6. If the problem persists, read on.
+
 So you're still getting an error, or something else doesn't work as expected in fbs.
 
-Is it a problem with one of your dependencies? If the dependency that causes the problem is PyQt5 or PySide2, then please jump to the next paragraph and let us know! Otherwise, try googling "[your dependency problem] PyInstaller". If this leaves you with any questions (eg. "how do I add/delete a shared library?"), feel free to ask our help. We'll be happy to advise. We will not however implement workarounds in fbs for library-related PyInstaller problems. (Unless the library is PyQt5 or PySide2.) Such problems should be reported to (and fixed in) PyInstaller.
+Is it a problem with one of your dependencies? If the dependency that causes the problem is PyQt5 or PySide2, then please jump to the next paragraph and let us know! Otherwise, try googling "[your dependency problem] PyInstaller". We don't implement workarounds for library-related PyInstaller problems in fbs. (Unless the library is PyQt5 or PySide2.) Such problems should be reported to (and fixed in) PyInstaller.
 
 Okay. So it really does appear as if the problem you are facing is caused by fbs. In this case, please delete this text and let us know the following:
 
  * Your operating system(s)
- * Your Python version
+ * Your Python version (Must be 3.5 or 3.6 because you followed the above instructions. Right?)
  * Your fbs version
  * Your PyInstaller version
  * Your PyQt5 / PySide2 version
  * A copy of any error messages you are getting. Use ```...``` to format them.
- * If you want us to be able to reproduce the problem, what's a (minimal!) script that does this?
+ * A (minimal!) script that reproduces the problem you are experiencing.
 
-Do not just paste the output of `pip freeze`. We don't have time to parse through heaps of text. Just let us know those library versions which you are think are relevant.
+Please don't just paste the output of `pip freeze` here. Also please don't post your entire application's code. We simply won't have time to read it. Create a _minimal_, self-contained script that reproduces the problem.
 
 Thanks!
