@@ -3,5 +3,6 @@
     "files_to_filter": [
         "src/installer/windows/Installer.nsi"
     ],
-    "show_console_window": false
+    "show_console_window": false,
+    "url": ""
 }

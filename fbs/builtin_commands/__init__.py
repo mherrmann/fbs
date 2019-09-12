@@ -5,7 +5,7 @@ your Python build script and execute them there.
 """
 from fbs import path, SETTINGS, activate_profile
 from fbs.builtin_commands._util import prompt_for_value, \
-    require_existing_project, update_json
+    require_existing_project, update_json, require_frozen_app, require_installer
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
 from fbs.upload import _upload_repo
@@ -15,7 +15,7 @@ from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
 from getpass import getuser
 from importlib.util import find_spec
 from os import listdir, remove, unlink, mkdir
-from os.path import join, isfile, isdir, islink, dirname, exists
+from os.path import join, isfile, isdir, islink, dirname, exists, relpath
 from shutil import rmtree
 from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
@@ -140,16 +140,29 @@ def freeze(debug=False):
     )
 
 @command
+def sign():
+    """
+    Sign your app, so the user's OS trusts it
+    """
+    require_frozen_app()
+    if is_windows():
+        from fbs.sign.windows import sign_windows
+        sign_windows()
+        _LOG.info(
+            'Signed all binary files in %s and its subdirectories.',
+            relpath(path('${freeze_dir}'), path('.'))
+        )
+    elif is_mac():
+        _LOG.info('fbs does not yet implement `sign` on macOS.')
+    else:
+        _LOG.info('This platform does not support signing frozen apps.')
+
+@command
 def installer():
     """
     Create an installer for your app
     """
-    require_existing_project()
-    if not exists(path('${freeze_dir}')):
-        raise FbsError(
-            'It seems your app has not yet been frozen. Please run:\n'
-            '    fbs freeze'
-        )
+    require_frozen_app()
     linux_distribution_not_supported_msg = \
         "Your Linux distribution is not supported, sorry. " \
         "You can run `fbs buildvm` followed by `fbs runvm` to start a Docker " \
@@ -203,15 +216,23 @@ def sign_installer():
     """
     Sign installer, so the user's OS trusts it
     """
-    require_existing_project()
-    if is_arch_linux():
+    if is_mac():
+        _LOG.info('fbs does not yet implement `sign_installer` on macOS.')
+        return
+    if is_ubuntu():
+        _LOG.info('Ubuntu does not support signing installers.')
+        return
+    require_installer()
+    if is_windows():
+        from fbs.sign_installer.windows import sign_installer_windows
+        sign_installer_windows()
+    elif is_arch_linux():
         from fbs.sign_installer.arch import sign_installer_arch
         sign_installer_arch()
     elif is_fedora():
         from fbs.sign_installer.fedora import sign_installer_fedora
         sign_installer_fedora()
-    else:
-        _LOG.info('This command is not (yet) supported on this platform.')
+    _LOG.info('Signed %s.', join('target', SETTINGS['installer']))
 
 @command
 def repo():
@@ -397,8 +418,12 @@ def release():
     try:
         clean()
         freeze()
+        if is_windows() and _has_windows_codesigning_certificate():
+            sign()
         installer()
-        sign_installer()
+        if (is_windows() and _has_windows_codesigning_certificate()) or \
+            is_arch_linux() or is_fedora():
+            sign_installer()
         repo()
     finally:
         _LOG.setLevel(log_level)
@@ -457,6 +482,11 @@ def clean():
                 remove(fpath)
             elif islink(fpath):
                 unlink(fpath)
+
+def _has_windows_codesigning_certificate():
+    assert is_windows()
+    from fbs.sign.windows import _CERTIFICATE_PATH
+    return exists(path(_CERTIFICATE_PATH))
 
 def _has_module(name):
     return bool(find_spec(name))

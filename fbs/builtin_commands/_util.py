@@ -42,6 +42,21 @@ def require_existing_project():
             "    fbs startproject ?"
         )
 
+def require_frozen_app():
+    if not exists(path('${freeze_dir}')):
+        raise FbsError(
+            'It seems your app has not yet been frozen. Please run:\n'
+            '    fbs freeze'
+        )
+
+def require_installer():
+    installer = path('target/${installer}')
+    if not exists(installer):
+        raise FbsError(
+            'Installer does not exist. Maybe you need to run:\n'
+            '    fbs installer'
+        )
+
 def update_json(f_path, dict_):
     f = Path(f_path)
     try:
