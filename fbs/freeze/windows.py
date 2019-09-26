@@ -59,7 +59,7 @@ def _add_missing_dlls():
             raise FileNotFoundError(
                 "Could not find %s on your PATH. If you are on Windows 10, you "
                 "may have to install the Windows 10 SDK from "
-                "https://dev.windows.com/en-us/downloads/windows-10-sdk. "
+                "https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk. "
                 "Otherwise, try installing KB2999226 from "
                 "https://support.microsoft.com/en-us/kb/2999226. "
                 "In both cases, add the directory containing %s to your PATH "
