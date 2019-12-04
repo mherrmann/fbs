@@ -34,7 +34,11 @@ def run_pyinstaller(extra_args=None, debug=False):
         '--specpath', path('target/PyInstaller'),
         '--workpath', path('target/PyInstaller')
     ])
+
     args.extend(['--additional-hooks-dir', join(dirname(__file__), 'hooks')])
+    for hook in SETTINGS.get("additional_hooks_dir", []):
+        args.extend(["--additional-hooks-dir", hook])
+
     if debug:
         args.extend(['--debug', 'all'])
         if is_mac():
