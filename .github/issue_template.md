@@ -2,7 +2,7 @@ Welcome to fbs's issue tracker!
 
 Have you already purchased a license for fbs, or are you planning to do so in the near future? If yes, feel free to ask anything you want here. Just delete this text and type away. I will be happy to help.
 
-Otherwise, please understand that I am essentially helping you in my spare time. While I'm happy to help, I have no patience for people who do not take the time to make it easy for me.
+Otherwise, please understand that I am essentially helping you in my spare time. While I'm happy to help, I lead a busy life and have no patience for people who do not take the time to make it easy for me to help them.
 
 Do you want to request an improvement to fbs? If yes, please delete this text and explain your suggestion clearly and why it would be useful for other fbs users.
 
