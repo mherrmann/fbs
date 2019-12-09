@@ -6,7 +6,7 @@ Otherwise, please understand that I am essentially helping you in my spare time.
 
 Do you want to request an improvement to fbs? If yes, please delete this text and explain your suggestion clearly and why it would be useful for other fbs users.
 
-Are you using Python 3.7, 3.8 and / or Anaconda? These distributions are not (yet) supported. Please switch to vanilla Python 3.5 or 3.6. Seriously. fbs's strength comes from being tested with these Python versions on tens of thousands of computers. It is not unlikely that the problems you are experiencing simply come from the fact that fbs doesn't support your Python version. Also, it doesn't exactly make me very motivated to help when I ask "please use Python 3.6" and then people come along "sooo I'm using Python 3.7 and ...".
+Are you using Python 3.7, 3.8 and / or Anaconda? These distributions are not (yet) supported. Please switch to vanilla Python 3.5 or 3.6. Seriously. fbs's strength comes from being tested with these Python versions on tens of thousands of computers. It is not unlikely that the problems you are experiencing simply come from the fact that fbs doesn't support your Python version. Also, it doesn't exactly make me very motivated to help when I ask "please use Python 3.6" and then people come along "I know I shouldn't, but I'm using Python 3.7 and ...".
 
 Are you getting an error? Maybe `fbs run` works, but the app created with `fbs freeze` won't start? If yes, please follow the steps at https://build-system.fman.io/troubleshooting. Do not just skim over them. Read and follow them line by line. Hopefully this will fix your problem. If not, read on.
 
