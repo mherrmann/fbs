@@ -11,6 +11,7 @@
         "src/build/docker/fedora/.rpmmacros"
     ],
     "hidden_imports": [],
+    "exclude_modules": [],
     "public_settings": ["app_name", "author", "version", "environment"],
     "docker_images": {
         "ubuntu": {

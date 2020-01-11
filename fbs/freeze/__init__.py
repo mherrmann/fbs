@@ -28,6 +28,8 @@ def run_pyinstaller(extra_args=None, debug=False):
     ]
     for hidden_import in SETTINGS['hidden_imports']:
         args.extend(['--hidden-import', hidden_import])
+    for exclude_module in SETTINGS['exclude_modules']:
+        args.extend(['--exclude-module', exclude_module])
     args.extend(extra_args)
     args.extend([
         '--distpath', path('target'),
