@@ -23,4 +23,4 @@ def freeze_ubuntu(debug=False):
     # occur when freezing on Ubuntu 14 and running on Ubuntu 16. The reason for
     # this is that libgio depends on libgtk. Because we don't ship libgtk, this
     # loads the user's libgtk, which is incompatible between Ubuntu 14 and 16.
-    remove_shared_libraries('libgio-2.0.so.*')
+    #remove_shared_libraries('libgio-2.0.so.*')
