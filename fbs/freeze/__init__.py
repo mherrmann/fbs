@@ -28,6 +28,7 @@ def run_pyinstaller(extra_args=None, debug=False):
     ]
     for hidden_import in SETTINGS['hidden_imports']:
         args.extend(['--hidden-import', hidden_import])
+    args.extend(SETTINGS['extra_pyinstaller_args'])
     args.extend(extra_args)
     args.extend([
         '--distpath', path('target'),
