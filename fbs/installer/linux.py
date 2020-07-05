@@ -54,6 +54,8 @@ def run_fpm(output_type):
         ])
     if SETTINGS['url']:
         args.extend(['--url', SETTINGS['url']])
+    if SETTINGS['license']:
+        args.extend(['--license', SETTINGS['license']])
     for dependency in SETTINGS['depends']:
         args.extend(['-d', dependency])
     if is_arch_linux():
