@@ -21,9 +21,10 @@ RUN apt-get install ruby ruby-dev build-essential -y && \
 
 WORKDIR /root/${app_name}
 
-# Set up virtual environment:
+# Set up virtual environment, upgrade pip, and install requirements:
 ADD *.txt /tmp/requirements/
 RUN python3.6 -m venv venv && \
+    venv/bin/python -m pip install --upgrade pip && \
     venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
 RUN rm -rf /tmp/requirements/
 
