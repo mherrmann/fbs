@@ -26,6 +26,7 @@ import sys
 
 _LOG = logging.getLogger(__name__)
 
+
 @command
 def startproject():
     """
@@ -75,6 +76,7 @@ def startproject():
         "do:\n\n    fbs run", python_bindings
     )
 
+
 @command
 def run():
     """
@@ -94,6 +96,7 @@ def run():
         pythonpath += os.pathsep + old_pythonpath
     env['PYTHONPATH'] = pythonpath
     subprocess.run([sys.executable, path(SETTINGS['main_module'])], env=env)
+
 
 @command
 def freeze(debug=False):
@@ -139,6 +142,7 @@ def freeze(debug=False):
         "https://build-system.fman.io/troubleshooting.", executable
     )
 
+
 @command
 def sign():
     """
@@ -156,6 +160,7 @@ def sign():
         _LOG.info('fbs does not yet implement `sign` on macOS.')
     else:
         _LOG.info('This platform does not support signing frozen apps.')
+
 
 @command
 def installer():
@@ -211,6 +216,7 @@ def installer():
         raise FbsError('Unsupported OS')
     _LOG.info(' '.join(msg_parts))
 
+
 @command
 def sign_installer():
     """
@@ -233,6 +239,7 @@ def sign_installer():
         from fbs.sign_installer.fedora import sign_installer_fedora
         sign_installer_fedora()
     _LOG.info('Signed %s.', join('target', SETTINGS['installer']))
+
 
 @command
 def repo():
@@ -262,7 +269,7 @@ def repo():
         _LOG.info(
             'Done. You can test the repository with the following commands:\n'
             '    echo "deb [arch=amd64] file://%s stable main" '
-                '| sudo tee /etc/apt/sources.list.d/%s.list\n'
+            '| sudo tee /etc/apt/sources.list.d/%s.list\n'
             '    sudo apt-key add %s\n'
             '    sudo apt-get update\n'
             '    sudo apt-get install %s\n'
@@ -283,7 +290,7 @@ def repo():
             "Done. You can test the repository with the following commands:\n"
             "    sudo cp /etc/pacman.conf /etc/pacman.conf.bu\n"
             "    echo -e '\\n[%s]\\nServer = file://%s' "
-                "| sudo tee -a /etc/pacman.conf\n"
+            "| sudo tee -a /etc/pacman.conf\n"
             "    sudo pacman-key --add %s\n"
             "    sudo pacman-key --lsign-key %s\n"
             "    sudo pacman -Syu %s\n"
@@ -314,6 +321,7 @@ def repo():
         )
     else:
         raise FbsError('This command is not supported on this platform.')
+
 
 @command
 def upload():
@@ -401,15 +409,19 @@ def upload():
         extra = None
     _LOG.info(message, extra=extra)
 
+
 @command
-def release():
+def release(release_version):
     """
     Bump version and run clean,freeze,...,upload
     """
     require_existing_project()
     version = SETTINGS['version']
     next_version = _get_next_version(version)
-    release_version = prompt_for_value('Release version', default=next_version)
+    if release_version == 'bump':
+        release_version = prompt_for_value('Release version', default=next_version)
+    elif release_version == 'current':
+        release_version = SETTINGS['version']
     activate_profile('release')
     SETTINGS['version'] = release_version
     log_level = _LOG.level
@@ -422,15 +434,16 @@ def release():
             sign()
         installer()
         if (is_windows() and _has_windows_codesigning_certificate()) or \
-            is_arch_linux() or is_fedora():
+                is_arch_linux() or is_fedora():
             sign_installer()
         repo()
     finally:
         _LOG.setLevel(log_level)
     upload()
     base_json = 'src/build/settings/base.json'
-    update_json(path(base_json), { 'version': release_version })
+    update_json(path(base_json), {'version': release_version})
     _LOG.info('Also, %s was updated with the new version.', base_json)
+
 
 @command
 def test():
@@ -458,9 +471,10 @@ def test():
         TextTestRunner().run(suite)
     else:
         _LOG.warning(
-            'No tests found. You can add them to:\n * '+
+            'No tests found. You can add them to:\n * ' +
             '\n * '.join(test_dirs)
         )
+
 
 @command
 def clean():
@@ -483,13 +497,61 @@ def clean():
             elif islink(fpath):
                 unlink(fpath)
 
+
+@command
+def generateicons():
+    """
+    Generate App Icons from png
+    """
+    from PIL import Image
+    # icon filename to use
+    icons_dir = 'src/main/icons/'
+    image = Image.open(os.path.join(icons_dir, 'Icon.png'))
+
+    base_icon_sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64)]
+    linux_icon_sizes = [(128, 128), (256, 256), (512, 512), (1024, 1024)]
+    mac_icon_sizes = [(128, 128), (256, 256), (512, 512), (1024, 1024)]
+
+    # Create base icon sizes in src/main/icons/base
+    for size in base_icon_sizes:
+        # print(size[0])
+        fileoutname = os.path.join(icons_dir, "base", str(size[0]) + ".png")
+        new_image = image.resize(size)
+        new_image.save(fileoutname)
+        print('Icon created: ' + fileoutname)
+
+    # Create linux icon sizes in src/main/icons/linux
+    for size in linux_icon_sizes:
+        # print(size[0])
+        fileoutname = os.path.join(icons_dir, "linux", str(size[0]) + ".png")
+        new_image = image.resize(size)
+        new_image.save(fileoutname)
+        print('Icon created: ' + fileoutname)
+
+    # Create mac icon sizes in src/main/icons/mac
+    for size in mac_icon_sizes:
+        # print(size[0])
+        fileoutname = os.path.join(icons_dir, "mac", str(size[0]) + ".png")
+        new_image = image.resize(size)
+        new_image.save(fileoutname)
+        print('Icon created: ' + fileoutname)
+
+    # Create Icon.ico in src/main/icons/Icon.ico
+    new_logo_ico_filename = os.path.join(icons_dir, "Icon.ico")
+    new_logo_ico = image.resize((128, 128))
+    new_logo_ico.save(new_logo_ico_filename, format="ICO", quality=90)
+    print('Icon created: ' + new_logo_ico_filename)
+
+
 def _has_windows_codesigning_certificate():
     assert is_windows()
     from fbs.sign.windows import _CERTIFICATE_PATH
     return exists(path(_CERTIFICATE_PATH))
 
+
 def _has_module(name):
     return bool(find_spec(name))
+
 
 def _get_next_version(version):
     version_parts = version.split('.')
