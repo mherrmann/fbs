@@ -77,13 +77,12 @@ def _get_cmdline_parser():
         for arg in args_without_defaults:
             cmd_parser.add_argument(arg)
         for arg, default in zip(args_with_defaults, defaults):
-            if not isinstance(default, bool):
-                raise FbsError(
-                    'Error in command %r: Only booleans are currently '
-                    'supported as optional arguments.' % cmd_name
+            if isinstance(default, bool):
+                cmd_parser.add_argument(
+                    '--' + arg, action='store_' + str(not default).lower()
                 )
-            cmd_parser.add_argument(
-                '--' + arg, action='store_' + str(not default).lower()
-            )
+            else:
+                type_ = None if default is None else type(default)
+                cmd_parser.add_argument(arg, default=default, type=type_)
         cmd_parser.set_defaults(fn=cmd_fn, args=args, defaults=defaults)
     return parser

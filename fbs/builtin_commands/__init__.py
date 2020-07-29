@@ -402,14 +402,21 @@ def upload():
     _LOG.info(message, extra=extra)
 
 @command
-def release():
+def release(version=None):
     """
     Bump version and run clean,freeze,...,upload
     """
     require_existing_project()
-    version = SETTINGS['version']
-    next_version = _get_next_version(version)
-    release_version = prompt_for_value('Release version', default=next_version)
+    if version is None:
+        curr_version = SETTINGS['version']
+        next_version = _get_next_version(curr_version)
+        release_version = prompt_for_value(
+            'Release version', default=next_version
+        )
+    elif version == 'current':
+        release_version = SETTINGS['version']
+    else:
+        release_version = version
     activate_profile('release')
     SETTINGS['version'] = release_version
     log_level = _LOG.level
