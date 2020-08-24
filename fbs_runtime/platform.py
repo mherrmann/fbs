@@ -47,7 +47,7 @@ def is_ubuntu():
 
 def is_arch_linux():
     try:
-        return linux_distribution() == 'Arch Linux'
+        return linux_distribution() in ('Arch Linux', 'Manjaro Linux')
     except FileNotFoundError:
         return False
 
