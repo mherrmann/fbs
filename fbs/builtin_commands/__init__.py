@@ -106,21 +106,32 @@ def freeze(*args, debug=False):
             "Could not find PyInstaller. Maybe you need to:\n"
             "    pip install PyInstaller==3.4"
         )
+    
     # additional user pyinstaller args
-    args = [(arg.split('=', 1)[0], arg.split('=', 1)[1]) for arg in args]
+    additional_args = []
+    for arg in args:
+        try:
+            k, v = arg.split('=', 1)
+            additional_args.append(k)
+            additional_args.append(v)
+            
+        except ValueError:
+            additional_args.append(arg)
+            
+    print(additional_args)
     
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
     if is_mac():
         from fbs.freeze.mac import freeze_mac
-        freeze_mac(args, debug=debug)
+        freeze_mac(additional_args, debug=debug)
         executable = 'target/%s.app/Contents/MacOS/%s' % (app_name, app_name)
     else:
         executable = join('target', app_name, app_name)
         if is_windows():
             from fbs.freeze.windows import freeze_windows
-            freeze_windows(args, debug=debug)
+            freeze_windows(additional_args, debug=debug)
             executable += '.exe'
         elif is_linux():
             if is_ubuntu():
