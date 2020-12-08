@@ -8,8 +8,7 @@ import os
 import struct
 import sys
 
-def freeze_windows(debug=False):
-    args = []
+def freeze_windows(args, debug=False):
     if not (debug or SETTINGS['show_console_window']):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.

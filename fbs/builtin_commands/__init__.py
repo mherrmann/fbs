@@ -96,7 +96,7 @@ def run():
     subprocess.run([sys.executable, path(SETTINGS['main_module'])], env=env)
 
 @command
-def freeze(debug=False):
+def freeze(*args, debug=False):
     """
     Compile your code to a standalone executable
     """
@@ -106,32 +106,35 @@ def freeze(debug=False):
             "Could not find PyInstaller. Maybe you need to:\n"
             "    pip install PyInstaller==3.4"
         )
+    # additional user pyinstaller args
+    args = [(arg.split('=', 1)[0], arg.split('=', 1)[1]) for arg in args]
+    
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
     app_name = SETTINGS['app_name']
     if is_mac():
         from fbs.freeze.mac import freeze_mac
-        freeze_mac(debug=debug)
+        freeze_mac(args, debug=debug)
         executable = 'target/%s.app/Contents/MacOS/%s' % (app_name, app_name)
     else:
         executable = join('target', app_name, app_name)
         if is_windows():
             from fbs.freeze.windows import freeze_windows
-            freeze_windows(debug=debug)
+            freeze_windows(args, debug=debug)
             executable += '.exe'
         elif is_linux():
             if is_ubuntu():
                 from fbs.freeze.ubuntu import freeze_ubuntu
-                freeze_ubuntu(debug=debug)
+                freeze_ubuntu(args)
             elif is_arch_linux():
                 from fbs.freeze.arch import freeze_arch
-                freeze_arch(debug=debug)
+                freeze_arch(args)
             elif is_fedora():
                 from fbs.freeze.fedora import freeze_fedora
-                freeze_fedora(debug=debug)
+                freeze_fedora(args)
             else:
                 from fbs.freeze.linux import freeze_linux
-                freeze_linux(debug=debug)
+                freeze_linux(args)
         else:
             raise FbsError('Unsupported OS')
     _LOG.info(

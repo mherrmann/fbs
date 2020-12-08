@@ -6,11 +6,11 @@ from os.path import exists
 from shutil import copy, rmtree
 from subprocess import run
 
-def freeze_mac(debug=False):
+def freeze_mac(args, debug=False):
     if not exists(path('target/Icon.icns')):
         _generate_iconset()
         run(['iconutil', '-c', 'icns', path('target/Icon.iconset')], check=True)
-    args = []
+
     if not (debug or SETTINGS['show_console_window']):
         args.append('--windowed')
     args.extend(['--icon', path('target/Icon.icns')])
