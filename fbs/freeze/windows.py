@@ -71,9 +71,6 @@ def freeze_windows(debug=False):
     create_version_file_windows()
     # If Version file exists in repo root we want to make sure PyInstaller is passed it as an argument:
     # https://pyinstaller.readthedocs.io/en/stable/usage.html#capturing-windows-version-data
-    file = path('file_version_info.txt')
-    # if file.exists():
-    #     args.extend(['--version-file', path('file_version_info.txt')])
     args.extend(['--version-file', path('file_version_info.txt')])
     run_pyinstaller(args, debug)
     _restore_corrupted_python_dlls()
