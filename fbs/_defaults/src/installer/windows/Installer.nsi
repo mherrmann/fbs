@@ -1,6 +1,7 @@
 !include MUI2.nsh
 !include FileFunc.nsh
 !define MUI_ICON "..\${app_name}\Icon.ico"
+!define MUI_UNICON "..\${app_name}\Icon.ico"
 ;get version number from exe built from pyinstaller we setup versionfile for
 !getdllversion "..\${app_name}\${app_name}.exe" ver
 !define PRODUCT_VERSION "${ver1}.${ver2}.${ver3}.${ver4}"
