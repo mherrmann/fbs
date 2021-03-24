@@ -1,5 +1,11 @@
 !include MUI2.nsh
 !include FileFunc.nsh
+!define MUI_ICON "..\${app_name}\Icon.ico"
+
+VIAddVersionKey "ProductName" "${app_name}"
+VIAddVersionKey "LegalCopyright" "(C) ${author}"
+VIAddVersionKey "FileDescription" "${app_name}"
+
 
 ;--------------------------------
 ;Perform Machine-level install, if possible
@@ -77,6 +83,7 @@ Section
   WriteRegStr SHCTX "${UNINST_KEY}" "QuietUninstallString" \
     "$\"$InstDir\uninstall.exe$\" /$MultiUser.InstallMode /S"
   WriteRegStr SHCTX "${UNINST_KEY}" "Publisher" "${author}"
+  WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" "$InstDir\uninstall.exe"
   ${GetSize} "$InstDir" "/S=0K" $0 $1 $2
   IntFmt $0 "0x%08X" $0
   WriteRegDWORD SHCTX "${UNINST_KEY}" "EstimatedSize" "$0"
