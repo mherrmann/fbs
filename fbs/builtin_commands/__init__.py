@@ -429,7 +429,7 @@ def release(version=None):
             sign()
         installer()
         if (is_windows() and _has_windows_codesigning_certificate()) or \
-            is_arch_linux() or is_fedora() or is_ubuntu():
+            is_arch_linux() or is_fedora():
             sign_installer()
         # Only want to try to repo/upload when its NOT windows.
         if is_arch_linux() or is_fedora() or is_ubuntu():
