@@ -13,9 +13,9 @@ RUN dnf -y update && \
         dnf clean all
 
 # Install base system libraries additionally specified by user.
-ENV USER_OS_DEPENDS /tmp/requirements/base_os_dependencies.txt
+ENV USER_OS_DEPENDS /tmp/requirements/os_dependencies_${requirements}
 RUN if [ -f "${USER_OS_DEPENDS}" ] && [ -s "${USER_OS_DEPENDS}" ] ; then dnf upgrade -y && \
-    dnf install -y $(cat /tmp/requirements/base_os_dependencies.txt) && \
+    dnf install -y $(cat "${USER_OS_DEPENDS}") && \
     dnf clean all; fi ||True
 
 
@@ -30,11 +30,15 @@ ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 # Reference: https://github.com/pyenv/pyenv/wiki#how-to-build-cpython-with---enable-shared
 ENV PYTHON_CONFIGURE_OPTS="--enable-shared"
 
-# Set default python version to file if provided and trim any whitepace.
+# Set default python version to global file ".python-version.txt" or distro specific if .python-version_fedora.txt
 ENV DEFAULT_PYTHON_VERSION 3.6.12
 ENV PYTHON_VERSION_FILE /tmp/requirements/.python-version.txt
-RUN if [ -f "${PYTHON_VERSION_FILE}" ] && [ -s "${PYTHON_VERSION_FILE}" ] ; then \
-    echo "Existing PYTHON VERSION File found: ${PYTHON_VERSION_FILE}"; else \
+ENV PYTHON_VERSION_FILE_DISTRO /tmp/requirements/.python-version_${requirements}
+RUN if  [ -f "${PYTHON_VERSION_FILE_DISTRO}" ] && [ -s "${PYTHON_VERSION_FILE_DISTRO}" ] ; then \
+    echo "DISTRO PYTHON VERSION File found: ${PYTHON_VERSION_FILE_DISTRO}"; \
+    cp -f "${PYTHON_VERSION_FILE_DISTRO}" "${PYTHON_VERSION_FILE}"; \
+    elif  [ -f "${PYTHON_VERSION_FILE}" ] && [ -s "${PYTHON_VERSION_FILE}" ] ; then \
+    echo "Existing PYTHON VERSION File found: ${PYTHON_VERSION_FILE_DISTRO}" ; else \
     echo "${DEFAULT_PYTHON_VERSION}" > "${PYTHON_VERSION_FILE}" ; fi
 
 # Install pyenv
