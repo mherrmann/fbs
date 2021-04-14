@@ -240,6 +240,8 @@ def repo():
     Generate files for automatic updates
     """
     require_existing_project()
+    if not _repo_is_supported():
+        raise FbsError('This command is not supported on this platform.')
     app_name = SETTINGS['app_name']
     pkg_name = app_name.lower()
     try:
@@ -296,7 +298,8 @@ def repo():
             gpg_key,
             extra={'wrap': False}
         )
-    elif is_fedora():
+    else:
+        assert is_fedora()
         from fbs.repo.fedora import create_repo_fedora
         create_repo_fedora()
         _LOG.info(
@@ -312,8 +315,9 @@ def repo():
             pkg_name, pkg_name, app_name, gpg_key[-8:].lower(),
             extra={'wrap': False}
         )
-    else:
-        raise FbsError('This command is not supported on this platform.')
+
+def _repo_is_supported():
+    return is_ubuntu() or is_arch_linux() or is_fedora()
 
 @command
 def upload():
@@ -431,13 +435,11 @@ def release(version=None):
         if (is_windows() and _has_windows_codesigning_certificate()) or \
             is_arch_linux() or is_fedora():
             sign_installer()
-        # Only want to try to repo/upload when its NOT windows.
-        if is_arch_linux() or is_fedora() or is_ubuntu():
+        if _repo_is_supported():
             repo()
     finally:
         _LOG.setLevel(log_level)
-    if is_arch_linux() or is_fedora() or is_ubuntu():    
-        upload()
+    upload()
     base_json = 'src/build/settings/base.json'
     update_json(path(base_json), { 'version': release_version })
     _LOG.info('Also, %s was updated with the new version.', base_json)
