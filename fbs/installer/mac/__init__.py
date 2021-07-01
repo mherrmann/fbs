@@ -24,7 +24,7 @@ def create_installer_mac():
         ]
 
         if is_mac():
-            major, minor, patch = platform.mac_ver()[0].split('.')
+            major, minor = platform.mac_ver()[0].split('.')[:2]
             if (int(major) == 10 and int(minor) >= 15) or int(major) >= 11:
                 pdata.insert(1, '--no-internet-enable')
 
