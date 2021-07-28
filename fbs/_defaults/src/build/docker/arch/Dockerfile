@@ -44,3 +44,13 @@ RUN rm -rf /tmp/requirements/
 
 # Welcome message, displayed by ~/.bashrc:
 ADD motd /etc/motd
+
+ADD .bashrc /root/.bashrc
+
+# Import GPG key for code signing the installer:
+ADD private-key.gpg public-key.gpg /tmp/
+RUN gpg -q --batch --yes --passphrase ${gpg_pass} --import /tmp/private-key.gpg /tmp/public-key.gpg && \
+    rm /tmp/private-key.gpg /tmp/public-key.gpg
+
+ADD gpg-agent.conf /root/.gnupg/gpg-agent.conf
+RUN gpgconf --kill gpg-agent
