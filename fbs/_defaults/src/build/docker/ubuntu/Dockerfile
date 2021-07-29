@@ -4,7 +4,8 @@ FROM ubuntu:16.04
 ARG requirements
 
 ARG python_version=3.6.12
-ARG python_build_deps="build-essential libssl-dev zlib1g-dev libncurses5-dev libreadline-dev libgdbm-dev libdb5.3-dev libbz2-dev liblzma-dev libsqlite3-dev libffi-dev tcl-dev tk tk-dev"
+# List from https://github.com/pyenv/pyenv/wiki#suggested-build-environment:
+ARG python_build_deps="make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev"
 
 RUN apt-get update && \
     apt-get upgrade -y
@@ -31,7 +32,7 @@ RUN apt-get install ruby ruby-dev build-essential -y && \
 
 WORKDIR /root/${app_name}
 
-# Set up virtual environment, upgrade pip, and install requirements:
+# Install Python requirements:
 ADD *.txt /tmp/requirements/
 RUN pip install --upgrade pip && \
     pip install -r "/tmp/requirements/${requirements}"
