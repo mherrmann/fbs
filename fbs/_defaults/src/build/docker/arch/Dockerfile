@@ -1,27 +1,41 @@
-# Build on an old Arch version on purpose, to maximize compatibility:
-FROM fmanbuildsystem/archlinux:2018.04.01
+# Build on :latest because Arch is a rolling release distribution:
+FROM archlinux:latest
 
 ARG requirements
 
-RUN echo 'Server=https://archive.archlinux.org/repos/2018/04/01/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
+# Python 3.7 is the earliest version that won't crash in Arch as of July 2021.
+ARG python_version=3.7.11
+# List from https://github.com/pyenv/pyenv/wiki#suggested-build-environment:
+ARG python_build_deps="base-devel openssl zlib xz git"
+
+RUN echo 'Server=https://mirror.rackspace.com/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist && \
     pacman -Syy
 
-# Python 3.6:
-RUN pacman -S --noconfirm python
+# Install pyenv:
+RUN pacman -S --noconfirm curl git
+ENV PYENV_ROOT /root/.pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+RUN curl https://pyenv.run | bash
+RUN pyenv update
 
-# fpm:
+# Install Python:
+RUN echo $python_build_deps | xargs pacman -S --noconfirm
+RUN CONFIGURE_OPTS=--enable-shared pyenv install $python_version && \
+    pyenv global $python_version && \
+    pyenv rehash
+
+# Install fpm:
 RUN pacman -S --noconfirm ruby ruby-rdoc && \
     export PATH=$PATH:$(ruby -e "puts Gem.user_dir")/bin && \
     gem update && \
-    gem install --no-ri --no-rdoc fpm
+    gem install --no-document fpm
 
 WORKDIR /root/${app_name}
 
-# Set up virtual environment:
+# Install Python dependencies:
 ADD *.txt /tmp/requirements/
-RUN python -m venv venv && \
-    venv/bin/python -m pip install --upgrade pip && \ 
-    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
+RUN pip install --upgrade pip && \
+    pip install -r "/tmp/requirements/${requirements}"
 RUN rm -rf /tmp/requirements/
 
 # Welcome message, displayed by ~/.bashrc:
