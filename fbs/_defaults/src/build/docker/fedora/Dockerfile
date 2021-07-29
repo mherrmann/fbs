@@ -3,31 +3,46 @@ FROM fmanbuildsystem/fedora:25
 
 ARG requirements
 
-# Python 3.6:
-RUN dnf install -y python36
+ARG python_version=3.6.12
+# List from https://github.com/pyenv/pyenv/wiki#suggested-build-environment:
+ARG python_build_deps="make gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel"
 
-# Absolute minimum requirements for building a PyQt5 app with PyInstaller:
-RUN dnf install -y libstdc++ freetype binutils
+RUN dnf -y update && dnf clean all
 
-# fpm:
+# Install pyenv:
+RUN dnf install -y curl git
+ENV PYENV_ROOT /root/.pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+RUN curl https://pyenv.run | bash
+RUN pyenv update
+
+# Install Python:
+# findutils contains xargs, which is needed for the next step:
+RUN dnf install -y findutils
+RUN echo $python_build_deps | xargs dnf install -y
+RUN CONFIGURE_OPTS=--enable-shared pyenv install $python_version && \
+    pyenv global $python_version && \
+    pyenv rehash
+
+# Install fpm:
 RUN dnf install -y ruby-devel gcc make rpm-build libffi-devel && \
-    gem install --no-ri --no-rdoc fpm
+    gem install --no-document fpm
 
 WORKDIR /root/${app_name}
 
-# Set up virtual environment:
+# Install Python requirements:
 ADD *.txt /tmp/requirements/
-RUN python3.6 -m venv venv && \
-    venv/bin/python -m pip install --upgrade pip && \
-    venv/bin/python -m pip install -r "/tmp/requirements/${requirements}"
+RUN pip install --upgrade pip && \
+    pip install -r "/tmp/requirements/${requirements}"
 RUN rm -rf /tmp/requirements/
 
 # Welcome message, displayed by ~/.bashrc:
 ADD motd /etc/motd
 
-ADD .bashrc /root
+ADD .bashrc /root/.bashrc
 
 ADD gpg-agent.conf /root/.gnupg/gpg-agent.conf
+# Avoid GPG warning "unsafe permissions":
 RUN chmod -R 600 /root/.gnupg
 ADD private-key.gpg public-key.gpg /tmp/
 RUN dnf install -y gpg rpm-sign && \
