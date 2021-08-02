@@ -4,7 +4,7 @@ run `fbs <command>` on the command line. But you are also free to import them in
 your Python build script and execute them there.
 """
 from fbs import path, SETTINGS, activate_profile
-from fbs.builtin_commands._util import prompt_for_value, \
+from fbs.builtin_commands._util import prompt_for_value, is_valid_version, \
     require_existing_project, update_json, require_frozen_app, require_installer
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
@@ -105,6 +105,14 @@ def freeze(debug=False):
         raise FbsError(
             "Could not find PyInstaller. Maybe you need to:\n"
             "    pip install PyInstaller==3.4"
+        )
+    version = SETTINGS['version']
+    if not is_valid_version(version):
+        raise FbsError(
+            'Invalid version detected in settings. It should be three\n'
+            'numbers separated by dots, such as "1.2.3". You have:\n\t"%s".\n'
+            'Usually, this can be fixed in src/build/settings/base.json.'
+            % version
         )
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
@@ -421,6 +429,13 @@ def release(version=None):
         release_version = SETTINGS['version']
     else:
         release_version = version
+    if not is_valid_version(release_version):
+        if not is_valid_version(version):
+            raise FbsError(
+                'The release version of your app is invalid. It should be '
+                'three\nnumbers separated by dots, such as "1.2.3". '
+                'You have: "%s".' % release_version
+            )
     activate_profile('release')
     SETTINGS['version'] = release_version
     log_level = _LOG.level
