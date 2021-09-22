@@ -110,5 +110,5 @@ SectionEnd
 
 Function LaunchLink
   !addplugindir "."
-  ShellExecAsUser::ShellExecAsUser "open" "$SMPROGRAMS\${app_name}.lnk"
+  ExecShell "open" "$SMPROGRAMS\${app_name}.lnk"
 FunctionEnd
