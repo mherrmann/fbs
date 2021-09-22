@@ -22,8 +22,8 @@ If you have read all of the above, and only then, please delete this text and le
  * A copy of any error messages you are getting. Use three backticks ```...``` before and after to format them.
  * A (minimal!) script that reproduces the problem you are experiencing.
 
-Please don't just paste the output of `pip freeze` here. Also, I repeat, do not post your entire application's code. Create a _minimal_, self-contained script that reproduces the problem. It should not have any dependencies other than fbs, PyInstaller and PyQt or PySide. If you post too much code, then it's very likely that you won't get any help because nobody will have the time to look at it.
+Please don't just paste the output of `pip freeze` here. Also, I repeat, do not post your entire application's code. Create a _minimal_, self-contained script that reproduces the problem. It should not have any dependencies other than fbs, PyInstaller and PyQt or PySide. If you post too much code, then nobody will read it.
 
-Thank you for your understanding,
+Thanks,
 
 Michael
