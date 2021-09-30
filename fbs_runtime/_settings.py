@@ -29,7 +29,7 @@ def load_settings(json_paths, base=None):
     else:
         result = dict(base)
     for json_path in json_paths:
-        with open(json_path, 'r') as f:
+        with open(json_path, 'r', encoding='UTF-8') as f:
             data = json.load(f)
         result = data if result is None else _merge(result, data)
     while True:
