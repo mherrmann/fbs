@@ -24,9 +24,14 @@ def get_project_dir():
     )
 
 def get_resource_dirs(project_dir):
+    result = [path(project_dir, 'src/main/icons')]
     resources = path(project_dir, 'src/main/resources')
-    result = [join(resources, profile) for profile in get_default_profiles()]
-    result.append(path(project_dir, 'src/main/icons'))
+    result.extend(
+        join(resources, profile)
+        # Resource dirs are listed most-specific first whereas profiles are
+        # listed most-specific last. We therefore need to reverse the order:
+        for profile in reversed(get_default_profiles())
+    )
     return result
 
 def load_build_settings(project_dir):
