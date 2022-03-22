@@ -41,7 +41,7 @@ def _get_name():
 
 def is_ubuntu():
     try:
-        return linux_distribution() in ('Ubuntu', 'Linux Mint')
+        return linux_distribution() in ('Ubuntu', 'Linux Mint', 'Pop!_OS')
     except FileNotFoundError:
         return False
 
