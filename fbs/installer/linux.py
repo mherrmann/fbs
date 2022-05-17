@@ -65,7 +65,7 @@ def run_fpm(output_type):
         raise FileNotFoundError(
             "fbs could not find executable 'fpm'. Please install fpm using the "
             "instructions at "
-            "https://fpm.readthedocs.io/en/latest/installing.html."
+            "https://fpm.readthedocs.io/en/latest/installation.html."
         ) from None
 
 def _generate_icons():
