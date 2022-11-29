@@ -4,7 +4,9 @@ FROM fmanbuildsystem/fedora:25
 ARG requirements
 
 ARG python_version=3.6.12
-# List from https://github.com/pyenv/pyenv/wiki#suggested-build-environment:
+# List found by trial and error, starting from
+# https://github.com/pyenv/pyenv/wiki#suggested-build-environment. `patch` is
+# required for at least Python 3.9.7.
 ARG python_build_deps="make gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel patch"
 
 RUN dnf -y update && dnf clean all
