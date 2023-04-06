@@ -2,8 +2,8 @@ from fbs import _state
 from fbs._state import LOADED_PROFILES
 from fbs_runtime import FbsError, _source
 from fbs_runtime._fbs import get_core_settings, get_default_profiles
-from fbs_runtime._settings import load_settings, expand_placeholders
-from fbs_runtime._source import get_settings_paths
+from fbs_runtime._settings import expand_placeholders
+from fbs_runtime._source import load_settings_from_paths
 from os.path import abspath
 
 import sys
@@ -38,9 +38,8 @@ def activate_profile(profile_name):
     """
     LOADED_PROFILES.append(profile_name)
     project_dir = SETTINGS['project_dir']
-    json_paths = get_settings_paths(project_dir, LOADED_PROFILES)
     core_settings = get_core_settings(project_dir)
-    SETTINGS.update(load_settings(json_paths, core_settings))
+    SETTINGS.update(load_settings_from_paths(project_dir, LOADED_PROFILES, core_settings))
 
 def path(path_str):
     """
