@@ -88,7 +88,7 @@ def run():
             "    pip install PySide2==5.12.2"
         )
     env = dict(os.environ)
-    pythonpath = path('src/main/python')
+    pythonpath = path(SETTINGS['python_dir'])
     old_pythonpath = env.get('PYTHONPATH', '')
     if old_pythonpath:
         pythonpath += os.pathsep + old_pythonpath
