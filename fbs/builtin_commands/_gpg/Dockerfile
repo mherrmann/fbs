@@ -1,4 +1,4 @@
-FROM debian:9.6
+FROM debian:12.7
 
 ARG name
 ARG email
