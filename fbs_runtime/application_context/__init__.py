@@ -119,7 +119,7 @@ class _ApplicationContext:
         if is_frozen():
             resource_dirs = _frozen.get_resource_dirs()
         else:
-            resource_dirs = _source.get_resource_dirs(self._project_dir)
+            resource_dirs = _source.get_resource_dirs(self._project_dir, self.build_settings)
         return ResourceLocator(resource_dirs)
     @cached_property
     def _project_dir(self):
