@@ -16,14 +16,14 @@ def freeze_windows(debug=False):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.
         args.append('--windowed')
-    args.extend(['--icon', path('src/main/icons/Icon.ico')])
+    args.extend(['--icon', path('${icons_dir}/Icon.ico')])
     for path_fn in default_path, path:
-        _copy(path_fn, 'src/freeze/windows/version_info.py', path('target/PyInstaller'))
+        _copy(path_fn, '%s/windows/version_info.py' % SETTINGS['freeze_config_dir'], path('target/PyInstaller'))
     args.extend(['--version-file', path('target/PyInstaller/version_info.py')])
     run_pyinstaller(args, debug)
     _restore_corrupted_python_dlls()
     _generate_resources()
-    copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
+    copy(path('${icons_dir}/Icon.ico'), path('${freeze_dir}'))
     _add_missing_dlls()
 
 def _restore_corrupted_python_dlls():

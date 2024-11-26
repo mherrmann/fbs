@@ -31,16 +31,23 @@ def load_settings(json_paths, base=None):
     for json_path in json_paths:
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        result = data if result is None else _merge(result, data)
+        result = data if result is None else merge_settings(result, data)
+
+    return expland_all_placeholders(result)
+
+def expland_all_placeholders(settings):
+    if settings is None:
+        return {}
+
     while True:
-        for key, value in result.items():
-            new_value = expand_placeholders(value, result)
+        for key, value in settings.items():
+            new_value = expand_placeholders(value, settings)
             if new_value != value:
-                result[key] = new_value
+                settings[key] = new_value
                 break
         else:
             break
-    return result
+    return settings
 
 def expand_placeholders(obj, settings):
     if isinstance(obj, str):
@@ -52,7 +59,7 @@ def expand_placeholders(obj, settings):
         return {k: expand_placeholders(v, settings) for k, v in obj.items()}
     return obj
 
-def _merge(a, b):
+def merge_settings(a, b):
     if type(a) != type(b):
         raise ValueError('Cannot merge %r and %r' % (a, b))
     if isinstance(a, list):
@@ -60,6 +67,6 @@ def _merge(a, b):
     if isinstance(a, dict):
         result = dict(a)
         for k, v in b.items():
-            result[k] = _merge(a[k], v) if k in a else v
-        return result
+            result[k] = merge_settings(a[k], v) if k in a else v
+        return expland_all_placeholders(result)
     return b
