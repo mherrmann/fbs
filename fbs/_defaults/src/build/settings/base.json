@@ -4,6 +4,11 @@
         "src/unittest/python",
         "src/integrationtest/python"
     ],
+    "python_dir": "src/main/python",
+    "icons_dir": "src/main/icons",
+    "resources_dir": "src/main/resources",
+    "settings_dir": "src/build/settings",
+    "freeze_config_dir": "src/freeze",
     "files_to_filter": [
         "src/build/docker/ubuntu/.bashrc", "src/build/docker/ubuntu/Dockerfile",
         "src/build/docker/arch/.bashrc", "src/build/docker/arch/Dockerfile",
@@ -12,7 +17,7 @@
     ],
     "hidden_imports": [],
     "extra_pyinstaller_args": [],
-    "public_settings": ["app_name", "author", "version", "environment"],
+    "public_settings": ["app_name", "author", "version", "environment", "icons_dir", "resources_dir"],
     "docker_images": {
         "ubuntu": {
             "build_files": ["requirements/", "src/sign/linux/"],

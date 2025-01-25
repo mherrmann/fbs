@@ -21,7 +21,7 @@ def sign_windows():
     if 'windows_sign_pass' not in SETTINGS:
         raise FbsError(
             "Please set 'windows_sign_pass' to the password of %s in either "
-            "src/build/settings/secret.json, .../windows.json or .../base.json."
+            "%s/secret.json, .../windows.json or .../base.json." % SETTINGS['settings_dir']
             % _CERTIFICATE_PATH
         )
     for subdir, _, files in os.walk(path('${freeze_dir}')):
